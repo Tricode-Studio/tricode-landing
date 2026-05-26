@@ -11,11 +11,18 @@ export type LandingSectionId =
   | 'stats'
   | 'about'
   | 'services'
+  | 'cms'
   | 'team'
   | 'process'
   | 'projects'
   | 'faq'
   | 'contact';
+
+export type LandingCmsFeature = {
+  icon?: string;
+  title: string;
+  desc: string;
+};
 
 export type LandingSectionLayout = {
   id: LandingSectionId;
@@ -117,6 +124,22 @@ export type LandingConfig = {
     titleHighlight?: string;
     description?: string;
     steps?: LandingStep[];
+  };
+  cms?: {
+    sectionLabel?: string;
+    titleTop?: string;
+    titleHighlight?: string;
+    description?: string;
+    features?: LandingCmsFeature[];
+    panelTitle?: string;
+    panelSubtitle?: string;
+    panelMetricLabel?: string;
+    panelMetricValue?: string;
+    panelEntities?: string[];
+    primaryCtaLabel?: string;
+    primaryCtaHref?: string;
+    secondaryCtaLabel?: string;
+    secondaryCtaHref?: string;
   };
   projects?: {
     sectionLabel?: string;

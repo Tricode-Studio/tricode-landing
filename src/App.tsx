@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import Stats from './components/Stats';
 import About from './components/About';
 import Services from './components/Services';
+import Cms from './components/Cms';
 import Team from './components/Team';
 import Process from './components/Process';
 import Projects from './components/Projects';
@@ -48,6 +49,7 @@ function Home({ sectionOrder }: { sectionOrder: LandingSectionId[] }) {
     hero: <Hero />,
     about: <About />,
     services: <Services />,
+    cms: <Cms />,
     projects: <Projects />,
     faq: <Faq />,
     process: <Process />,

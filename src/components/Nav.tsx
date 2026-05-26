@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useLandingData } from '../content/LandingDataContext';
 import { resolveNavLinksFromLayout } from '../lib/sections';
+import { EASE_OUT_EXPO } from '../lib/motion';
 
 const BRAND_MARK_SRC = '/isotipo.png?v=20260427-1';
 
@@ -21,15 +23,8 @@ function isSecondaryLocation() {
 
 function normalizeFromSecondaryRoute(href: string) {
   if (!href) return href;
-
-  if (href.startsWith('#/')) {
-    return href.slice(1);
-  }
-
-  if (href.startsWith('#')) {
-    return `/${href}`;
-  }
-
+  if (href.startsWith('#/')) return href.slice(1);
+  if (href.startsWith('#')) return `/${href}`;
   return href;
 }
 
@@ -56,19 +51,37 @@ export default function Nav() {
   }, []);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? 'border-b border-white/5 bg-ink-950/80 backdrop-blur-xl' : 'bg-transparent'
+    <motion.header
+      initial={{ y: -40, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay: 0.05 }}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? 'border-b border-white/8 bg-ink-950/80 backdrop-blur-xl'
+          : 'bg-transparent border-b border-transparent'
       }`}
     >
-      <div className="container-x flex items-center justify-between gap-8 py-2 md:py-2.5">
-        <a href={brandHref} className="flex items-center gap-1.5 sm:gap-2 shrink-0 -ml-2 sm:-ml-4 md:-ml-6">
-          <img src={BRAND_MARK_SRC} alt={`Logo de ${brandName || 'Tricode Studio'}`} className="h-8 sm:h-9 md:h-10 w-auto object-contain" />
+      <div className="container-wide flex items-center justify-between gap-8 py-3 md:py-3.5">
+        <a
+          href={brandHref}
+          className="flex items-center gap-2 shrink-0 group"
+        >
+          <motion.img
+            whileHover={{ rotate: -8, scale: 1.05 }}
+            transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
+            src={BRAND_MARK_SRC}
+            alt={`Logo de ${brandName || 'Tricode Studio'}`}
+            className="h-9 md:h-10 w-auto object-contain"
+          />
           {brandName ? (
-            <div className="flex flex-col items-center leading-none">
-              {brandTop ? <span className="text-xs sm:text-base md:text-lg font-semibold tracking-tight text-white">{brandTop}</span> : null}
+            <div className="flex flex-col items-start leading-none">
+              {brandTop ? (
+                <span className="display-md text-base md:text-lg font-normal tracking-tight text-white">
+                  {brandTop}
+                </span>
+              ) : null}
               {brandBottom ? (
-                <span className="mt-0.5 font-mono text-[6px] sm:text-[7px] md:text-[8px] uppercase tracking-[0.22em] sm:tracking-[0.3em] text-brand-purple/90">
+                <span className="mt-1 font-mono text-[7px] md:text-[8px] uppercase tracking-[0.32em] text-brand-purple/90">
                   {brandBottom}
                 </span>
               ) : null}
@@ -76,67 +89,87 @@ export default function Nav() {
           ) : null}
         </a>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-1">
           {links.map((link) => (
             <a
               key={link.href}
               href={isSecondaryPage ? normalizeFromSecondaryRoute(link.href) : link.href}
-              className="text-sm text-white/70 transition-colors hover:text-white"
+              className="relative px-3 py-2 text-[13px] font-mono uppercase tracking-[0.15em] text-white/65 transition-colors hover:text-white"
             >
-              {link.label}
+              <span className="link-reveal">{link.label}</span>
             </a>
           ))}
         </nav>
 
         <div className="flex items-center gap-3">
           {ctaLabel && resolvedCtaHref ? (
-            <a
+            <motion.a
               href={resolvedCtaHref}
-              className="hidden sm:inline-flex group items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] backdrop-blur-md px-5 py-2 text-sm font-medium text-white/90 transition-all duration-200 hover:border-brand-purple/60 hover:bg-brand-purple/10 hover:text-white"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.25, ease: EASE_OUT_EXPO }}
+              className="hidden sm:inline-flex group items-center gap-2.5 rounded-full bg-grad-brand px-5 py-2.5 text-[13px] font-medium text-white shadow-glow-sm hover:shadow-glow"
             >
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-brand-purple opacity-75 animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-purple" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-white/70 opacity-75 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
               </span>
               {ctaLabel}
-              <span aria-hidden className="text-white/50 group-hover:text-white group-hover:translate-x-0.5 transition-all">
-                →
-              </span>
-            </a>
+              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
+            </motion.a>
           ) : null}
           {hasMobileMenu ? (
             <button
               aria-label="Menú"
-              className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10"
+              className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.03] backdrop-blur-md"
               onClick={() => setOpen((value) => !value)}
             >
-              <span className="block h-0.5 w-5 bg-white relative before:content-[''] before:absolute before:-top-1.5 before:left-0 before:h-0.5 before:w-5 before:bg-white after:content-[''] after:absolute after:top-1.5 after:left-0 after:h-0.5 after:w-5 after:bg-white" />
+              <motion.span
+                animate={{ rotate: open ? 90 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="block h-0.5 w-5 bg-white relative before:content-[''] before:absolute before:-top-1.5 before:left-0 before:h-0.5 before:w-5 before:bg-white after:content-[''] after:absolute after:top-1.5 after:left-0 after:h-0.5 after:w-5 after:bg-white"
+              />
             </button>
           ) : null}
         </div>
       </div>
 
-      {open && hasMobileMenu ? (
-        <div className="md:hidden border-t border-white/5 bg-ink-950/95 backdrop-blur-xl">
-          <div className="container-x py-4 flex flex-col gap-3">
-            {links.map((link) => (
-              <a
-                key={link.href}
-                href={isSecondaryPage ? normalizeFromSecondaryRoute(link.href) : link.href}
-                onClick={() => setOpen(false)}
-                className="py-2 text-white/80"
-              >
-                {link.label}
-              </a>
-            ))}
-            {ctaLabel && resolvedCtaHref ? (
-              <a href={resolvedCtaHref} onClick={() => setOpen(false)} className="btn-primary mt-2">
-                {ctaLabel} →
-              </a>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-    </header>
+      <AnimatePresence>
+        {open && hasMobileMenu ? (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: EASE_OUT_EXPO }}
+            className="md:hidden border-t border-white/8 bg-ink-950/95 backdrop-blur-xl overflow-hidden"
+          >
+            <div className="container-wide py-5 flex flex-col gap-1">
+              {links.map((link, i) => (
+                <motion.a
+                  key={link.href}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.04, ease: EASE_OUT_EXPO }}
+                  href={isSecondaryPage ? normalizeFromSecondaryRoute(link.href) : link.href}
+                  onClick={() => setOpen(false)}
+                  className="py-3 text-white/80 text-lg display-md border-b border-white/5"
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+              {ctaLabel && resolvedCtaHref ? (
+                <a
+                  href={resolvedCtaHref}
+                  onClick={() => setOpen(false)}
+                  className="btn-primary mt-4"
+                >
+                  {ctaLabel} →
+                </a>
+              ) : null}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </motion.header>
   );
 }

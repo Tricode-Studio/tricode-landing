@@ -1,4 +1,7 @@
+import { motion } from 'framer-motion';
+import SplitText from './SplitText';
 import { useLandingData } from '../content/LandingDataContext';
+import { EASE_OUT_EXPO, viewportOnce } from '../lib/motion';
 
 function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -118,23 +121,42 @@ export default function Contact() {
 
       <div className="container-x relative">
         {/* Heading */}
-        <div className="text-center max-w-3xl mx-auto">
-          {sectionLabel ? <div className="label mb-5 reveal">{sectionLabel}</div> : null}
+        <div className="text-center max-w-4xl mx-auto">
+          {sectionLabel ? (
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
+              className="eyebrow justify-center mb-7"
+            >
+              <span className="h-px w-8 bg-brand-purple/50" />
+              {sectionLabel}
+            </motion.div>
+          ) : null}
           {(titleTop || titleHighlight) ? (
-            <h2 className="text-4xl sm:text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05] reveal reveal-delay-1">
-              {titleTop}
+            <h2 className="display-xl text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[6rem] leading-[1]">
+              {titleTop ? <SplitText as="span" text={titleTop} className="block text-white" /> : null}
               {titleHighlight ? (
-                <>
-                  <br />
-                  <span className="text-grad italic font-light inline-block pr-2">{titleHighlight}</span>
-                </>
+                <SplitText
+                  as="span"
+                  text={titleHighlight}
+                  className="block italic-serif text-grad mt-1"
+                  delay={0.2}
+                />
               ) : null}
             </h2>
           ) : null}
           {description ? (
-            <p className="mt-7 text-base md:text-lg text-white/65 max-w-2xl mx-auto reveal reveal-delay-2">
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: 0.8, ease: EASE_OUT_EXPO, delay: 0.4 }}
+              className="mt-8 text-base md:text-lg text-white/65 max-w-2xl mx-auto"
+            >
               {description}
-            </p>
+            </motion.p>
           ) : null}
 
           {/* Guarantee chips inline with hero copy */}

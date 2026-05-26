@@ -22,6 +22,8 @@ export default {
       fontFamily: {
         sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        serif: ['"Fraunces"', 'ui-serif', 'Georgia', 'serif'],
+        display: ['"Fraunces"', 'ui-serif', 'Georgia', 'serif'],
       },
       backgroundImage: {
         'grad-brand': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #C026D3 100%)',

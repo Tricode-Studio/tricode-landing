@@ -52,14 +52,23 @@
   .container-x {
     @apply max-w-6xl mx-auto px-4 sm:px-6 md:px-8;
   }
+  .container-wide {
+    @apply max-w-[110rem] mx-auto px-6 md:px-10 lg:px-16;
+  }
   .label {
     @apply font-mono text-xs uppercase tracking-[0.2em] text-brand-purple/80;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.28em] text-brand-purple/85;
   }
   .card {
     @apply rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm transition-all duration-300;
   }
   .card-hover {
     @apply hover:border-brand-purple/40 hover:bg-white/[0.04] hover:shadow-glow-sm hover:-translate-y-1;
+  }
+  .glass {
+    @apply rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-transparent backdrop-blur-xl;
   }
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-sm transition-all duration-200;
@@ -70,12 +79,107 @@
   .btn-ghost {
     @apply btn border border-white/15 text-white/90 hover:border-brand-purple/60 hover:bg-white/5;
   }
+  .btn-editorial {
+    @apply inline-flex items-center gap-3 rounded-full border border-white/20 px-7 py-3.5 font-mono text-[12px] uppercase tracking-[0.22em] text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-ink-950;
+  }
   .grid-bg {
     background-image:
       linear-gradient(rgba(139, 92, 246, 0.06) 1px, transparent 1px),
       linear-gradient(90deg, rgba(139, 92, 246, 0.06) 1px, transparent 1px);
     background-size: 40px 40px;
   }
+  .grid-bg-soft {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .section-divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent;
+  }
+}
+
+/* Editorial display sizing helpers */
+.display-xl {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 300;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+}
+.display-md {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 300;
+  font-variation-settings: 'opsz' 96;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.italic-serif {
+  font-family: 'Fraunces', Georgia, serif;
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* Marquee gigante editorial */
+.marquee-xl {
+  display: flex;
+  gap: 4rem;
+  width: max-content;
+  animation: marquee-xl-slide 38s linear infinite;
+  will-change: transform;
+}
+.marquee-xl-reverse {
+  animation-direction: reverse;
+}
+@keyframes marquee-xl-slide {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Editorial divider with dot */
+.dot-divider::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: currentColor;
+  margin: 0 0.8em;
+  vertical-align: middle;
+  opacity: 0.5;
+}
+
+/* Noise overlay for premium texture */
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+}
+
+/* Editorial link with underline reveal */
+.link-reveal {
+  position: relative;
+  display: inline-block;
+}
+.link-reveal::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: right center;
+  transform: scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.link-reveal:hover::after {
+  transform-origin: left center;
+  transform: scaleX(1);
 }
 
 .text-grad {

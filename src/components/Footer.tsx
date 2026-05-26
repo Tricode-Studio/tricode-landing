@@ -1,4 +1,7 @@
+import { motion } from 'framer-motion';
 import { useLandingData } from '../content/LandingDataContext';
+import { resolveNavLinksFromLayout } from '../lib/sections';
+import { EASE_OUT_EXPO, viewportOnce } from '../lib/motion';
 
 const BRAND_MARK_SRC = '/isotipo.png?v=20260427-1';
 
@@ -6,7 +9,7 @@ function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function isProjectsLocation() {
+function isSecondaryLocation() {
   const path = window.location.pathname;
   const hash = window.location.hash.replace(/^#/, '');
   return path.startsWith('/proyectos') || hash.startsWith('/proyectos');
@@ -14,35 +17,24 @@ function isProjectsLocation() {
 
 function iconFor(label: string) {
   const normalized = label.toLowerCase();
-
   if (normalized.includes('instagram')) {
     return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
         <rect x="3" y="3" width="18" height="18" rx="5" />
         <circle cx="12" cy="12" r="4" />
         <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" />
       </svg>
     );
   }
-
   if (normalized.includes('linkedin')) {
     return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
         <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.2 0 22.22 0z" />
       </svg>
     );
   }
-
-  if (normalized.includes('facebook')) {
-    return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-        <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.03 4.39 11.03 10.13 11.93v-8.44H7.08v-3.49h3.05V9.41c0-3.03 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z" />
-      </svg>
-    );
-  }
-
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
       <rect x="3" y="5" width="18" height="14" rx="2" />
       <path d="M3 7l9 6 9-6" />
     </svg>
@@ -51,57 +43,130 @@ function iconFor(label: string) {
 
 export default function Footer() {
   const { config } = useLandingData();
-  const socials =
-    Array.isArray(config.footer?.socials)
-      ? config.footer.socials
-          .map((social) => ({
-            label: trimmed(social?.label),
-            url: trimmed(social?.url),
-          }))
-          .filter((social) => social.label && social.url)
-      : [];
+  const socials = Array.isArray(config.footer?.socials)
+    ? config.footer.socials
+        .map((social) => ({
+          label: trimmed(social?.label),
+          url: trimmed(social?.url),
+        }))
+        .filter((social) => social.label && social.url)
+    : [];
   const brandName = trimmed(config.brandName);
   const [brandTop, ...brandBottomParts] = brandName.split(' ');
   const brandBottom = brandBottomParts.join(' ').trim();
   const copyright = trimmed(config.footer?.copyright);
-  const isProjects = isProjectsLocation();
+  const isProjects = isSecondaryLocation();
   const brandHref = isProjects ? '/' : '#top';
+  const navLinks = resolveNavLinksFromLayout(config);
 
   return (
-    <footer className="relative border-t border-white/5 py-10">
-      <div className="container-x flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-        <a href={brandHref} className="flex items-center gap-2 -ml-3 md:-ml-4">
-          <img src={BRAND_MARK_SRC} alt={`Logo de ${brandName || 'Tricode Studio'}`} className="h-12 md:h-14 w-auto object-contain" />
-          {brandName ? (
-            <div className="flex flex-col items-center leading-none">
-              {brandTop ? <span className="text-base md:text-lg font-semibold tracking-tight text-white">{brandTop}</span> : null}
-              {brandBottom ? (
-                <span className="mt-1 font-mono text-[8px] md:text-[9px] uppercase tracking-[0.34em] text-brand-purple/90">
-                  {brandBottom}
-                </span>
+    <footer className="relative border-t border-white/8 overflow-hidden">
+      {/* Giant editorial wordmark */}
+      <div className="container-wide pt-20 md:pt-28 pb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewportOnce}
+          transition={{ duration: 1.1, ease: EASE_OUT_EXPO }}
+          className="grid grid-cols-12 gap-x-6 gap-y-12"
+        >
+          {/* Brand block */}
+          <div className="col-span-12 lg:col-span-5">
+            <a href={brandHref} className="flex items-center gap-3 group">
+              <motion.img
+                whileHover={{ rotate: -8, scale: 1.08 }}
+                transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
+                src={BRAND_MARK_SRC}
+                alt={`Logo de ${brandName || 'Tricode Studio'}`}
+                className="h-14 md:h-16 w-auto object-contain"
+              />
+              {brandName ? (
+                <div className="flex flex-col items-start leading-none">
+                  {brandTop ? (
+                    <span className="display-md text-2xl md:text-3xl text-white">{brandTop}</span>
+                  ) : null}
+                  {brandBottom ? (
+                    <span className="mt-2 font-mono text-[10px] uppercase tracking-[0.34em] text-brand-purple/90">
+                      {brandBottom}
+                    </span>
+                  ) : null}
+                </div>
               ) : null}
+            </a>
+            <p className="mt-7 max-w-md text-sm md:text-base text-white/55 leading-relaxed">
+              Diseñamos y construimos productos digitales pensados para crecer.
+              Si tenés una idea o un problema operativo, vale la pena conversarlo.
+            </p>
+          </div>
+
+          {/* Nav links */}
+          <div className="col-span-6 lg:col-span-4 lg:pl-6">
+            <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/40 mb-5">
+              Explorar
+            </div>
+            <ul className="grid grid-cols-2 gap-y-3 gap-x-6">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-sm text-white/70 hover:text-white transition-colors link-reveal"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Socials */}
+          <div className="col-span-6 lg:col-span-3">
+            <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/40 mb-5">
+              Conectar
+            </div>
+            <ul className="flex flex-col gap-3">
+              {socials.map((social) => (
+                <li key={`${social.label}-${social.url}`}>
+                  <a
+                    href={social.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors group"
+                  >
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 group-hover:border-brand-purple/50 group-hover:bg-brand-purple/10 transition-colors">
+                      {iconFor(social.label)}
+                    </span>
+                    <span className="link-reveal">{social.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+
+        {/* Giant wordmark */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewportOnce}
+          transition={{ duration: 1.2, ease: EASE_OUT_EXPO, delay: 0.2 }}
+          className="mt-16 md:mt-24 relative"
+        >
+          <h2 className="display-xl text-center text-[18vw] md:text-[14vw] leading-[0.85] tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white/20 via-white/5 to-transparent select-none pointer-events-none">
+            tricode
+          </h2>
+        </motion.div>
+
+        {/* Bottom */}
+        <div className="mt-10 pt-8 border-t border-white/8 flex flex-col md:flex-row items-center justify-between gap-4">
+          {copyright ? (
+            <div className="font-mono text-[11px] text-white/40 uppercase tracking-[0.18em]">
+              {copyright}
             </div>
           ) : null}
-        </a>
-
-        {socials.length ? (
-          <div className="flex items-center gap-5 text-white/40">
-            {socials.map((social) => (
-              <a
-                key={`${social.label}-${social.url}`}
-                href={social.url}
-                aria-label={social.label}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-brand-purple transition-colors"
-              >
-                {iconFor(social.label)}
-              </a>
-            ))}
+          <div className="font-mono text-[11px] text-white/40 uppercase tracking-[0.18em]">
+            Hecho desde Trinidad · Flores · UY
           </div>
-        ) : null}
-
-        {copyright ? <div className="font-mono text-xs text-white/40 text-center md:text-right">{copyright}</div> : null}
+        </div>
       </div>
     </footer>
   );

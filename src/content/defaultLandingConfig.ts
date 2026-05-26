@@ -1,4 +1,5 @@
 import type {
+  LandingCmsFeature,
   LandingConfig,
   LandingSectionId,
   LandingSectionLayout,
@@ -33,6 +34,7 @@ const SECTION_META: SectionMeta[] = [
   { id: 'hero' },
   { id: 'about', navLabel: 'Nosotros', navHref: '#nosotros' },
   { id: 'services', navLabel: 'Servicios', navHref: '#servicios' },
+  { id: 'cms', navLabel: 'CMS', navHref: '#cms' },
   { id: 'projects', navLabel: 'Proyectos', navHref: '#proyectos' },
   { id: 'faq', navLabel: 'Preguntas', navHref: '#faq' },
   { id: 'process' },
@@ -93,6 +95,29 @@ const DEFAULT_TEAM: LandingTeamMember[] = [
     name: 'Juan Diego Elissalde',
     role: 'Desarrollador full stack y producto',
     bio: 'Producto, ejecución técnica y enfoque en negocio.',
+  },
+];
+
+const DEFAULT_CMS_FEATURES: LandingCmsFeature[] = [
+  {
+    icon: '◐',
+    title: 'Autogestión total',
+    desc: 'Editás textos, imágenes, productos, proyectos o reservas sin escribir una línea de código y sin pedirnos cambios.',
+  },
+  {
+    icon: '◑',
+    title: 'Interfaz hecha para personas',
+    desc: 'Pensado para no-técnicos: campos claros, vistas previas en vivo y guardado seguro. Si sabés usar Instagram, lo vas a manejar.',
+  },
+  {
+    icon: '◒',
+    title: 'Adaptado a tu negocio',
+    desc: 'Cada CMS se modela según tus entidades reales: catálogo, citas, casos, equipo. No hay campos sobrantes ni atajos genéricos.',
+  },
+  {
+    icon: '◓',
+    title: 'Cambios al instante',
+    desc: 'Lo que actualizás aparece publicado en segundos. Sin recompilar, sin esperar a un desarrollador, sin riesgo de romper nada.',
   },
 ];
 
@@ -229,11 +254,18 @@ function applySequentialSectionLabels(config: LandingConfig): LandingConfig {
             indexBySection.get('services') ?? 2,
           ),
         },
+    cms: {
+      ...config.cms,
+      sectionLabel: renumberSectionLabel(
+        config.cms?.sectionLabel ?? '',
+        indexBySection.get('cms') ?? 3,
+      ),
+    },
     projects: {
       ...config.projects,
       sectionLabel: renumberSectionLabel(
         config.projects?.sectionLabel ?? '',
-        indexBySection.get('projects') ?? 3,
+        indexBySection.get('projects') ?? 4,
       ),
     },
     faq: {
@@ -303,10 +335,10 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
   ],
   about: {
     sectionLabel: '// 01 - Sobre nosotros',
-    titleTop: 'No vendemos plantillas.',
-    titleHighlight: 'Diseñamos soluciones de negocio.',
+    titleTop: 'Empezamos como tres amigos',
+    titleHighlight: 'con la misma obsesión por construir.',
     description:
-      'Tricode Studio es un equipo de producto y desarrollo que convierte objetivos comerciales en software usable, medible y escalable.',
+      'Tricode nació en 2023 en Trinidad, Flores, cuando entendimos que la mayoría de empresas no necesitaba "una web más", sino una herramienta que les diera autonomía real. Hoy somos un estudio compacto de producto, diseño y desarrollo enfocado en construir software que se mantenga útil con el tiempo.',
     microStats: [
       { k: '2023', v: 'Año de fundación' },
       { k: 'Trinidad, Flores', v: 'Base en Uruguay' },
@@ -360,6 +392,23 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     titleHighlight: 'en 5 pasos.',
     description: 'Un proceso claro y transparente para avanzar con foco.',
     steps: DEFAULT_STEPS,
+  },
+  cms: {
+    sectionLabel: '// 03 - CMS',
+    titleTop: 'Tu propio panel para',
+    titleHighlight: 'gestionar todo, sin depender de nadie.',
+    description:
+      'Cada proyecto que entregamos viene con un CMS hecho a medida. Editás contenido, productos, reservas o casos cuando vos quieras, desde una interfaz pensada para que cualquier persona del equipo pueda usarla.',
+    features: DEFAULT_CMS_FEATURES,
+    panelTitle: 'Tu CMS · Demo',
+    panelSubtitle: 'Panel de control',
+    panelMetricLabel: 'Cambios publicados este mes',
+    panelMetricValue: '128',
+    panelEntities: ['Proyectos', 'Servicios', 'Equipo', 'FAQs', 'Hero', 'Footer'],
+    primaryCtaLabel: 'Ver una demo en vivo',
+    primaryCtaHref: '#contacto',
+    secondaryCtaLabel: 'Cómo funciona',
+    secondaryCtaHref: '#proceso',
   },
   projects: {
     sectionLabel: '// 03 - Proyectos',
@@ -575,6 +624,47 @@ export function withLandingDefaults(rawConfig: LandingConfig | null | undefined)
         Array.isArray(teamSource.members) && teamSource.members.length
           ? teamSource.members
           : defaultTeamBlock.members,
+    },
+    cms: {
+      ...DEFAULT_LANDING_CONFIG.cms,
+      ...source.cms,
+      sectionLabel:
+        cleanString(source.cms?.sectionLabel) || DEFAULT_LANDING_CONFIG.cms?.sectionLabel,
+      titleTop: cleanString(source.cms?.titleTop) || DEFAULT_LANDING_CONFIG.cms?.titleTop,
+      titleHighlight:
+        cleanString(source.cms?.titleHighlight) || DEFAULT_LANDING_CONFIG.cms?.titleHighlight,
+      description:
+        cleanString(source.cms?.description) || DEFAULT_LANDING_CONFIG.cms?.description,
+      features:
+        Array.isArray(source.cms?.features) && source.cms.features.length
+          ? source.cms.features
+          : DEFAULT_LANDING_CONFIG.cms?.features,
+      panelTitle:
+        cleanString(source.cms?.panelTitle) || DEFAULT_LANDING_CONFIG.cms?.panelTitle,
+      panelSubtitle:
+        cleanString(source.cms?.panelSubtitle) || DEFAULT_LANDING_CONFIG.cms?.panelSubtitle,
+      panelMetricLabel:
+        cleanString(source.cms?.panelMetricLabel) ||
+        DEFAULT_LANDING_CONFIG.cms?.panelMetricLabel,
+      panelMetricValue:
+        cleanString(source.cms?.panelMetricValue) ||
+        DEFAULT_LANDING_CONFIG.cms?.panelMetricValue,
+      panelEntities: cleanStringArray(
+        source.cms?.panelEntities,
+        DEFAULT_LANDING_CONFIG.cms?.panelEntities ?? [],
+      ),
+      primaryCtaLabel:
+        cleanString(source.cms?.primaryCtaLabel) ||
+        DEFAULT_LANDING_CONFIG.cms?.primaryCtaLabel,
+      primaryCtaHref:
+        cleanString(source.cms?.primaryCtaHref) ||
+        DEFAULT_LANDING_CONFIG.cms?.primaryCtaHref,
+      secondaryCtaLabel:
+        cleanString(source.cms?.secondaryCtaLabel) ||
+        DEFAULT_LANDING_CONFIG.cms?.secondaryCtaLabel,
+      secondaryCtaHref:
+        cleanString(source.cms?.secondaryCtaHref) ||
+        DEFAULT_LANDING_CONFIG.cms?.secondaryCtaHref,
     },
     process: {
       ...DEFAULT_LANDING_CONFIG.process,

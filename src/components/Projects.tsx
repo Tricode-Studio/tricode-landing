@@ -1,5 +1,8 @@
+import { motion } from 'framer-motion';
 import ProjectCard from './ProjectCard';
+import SplitText from './SplitText';
 import { useLandingData } from '../content/LandingDataContext';
+import { EASE_OUT_EXPO, fadeUp, stagger, viewportOnce } from '../lib/motion';
 
 function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -28,49 +31,91 @@ export default function Projects() {
   const emptyStateLabel = trimmed(config.projects?.emptyStateLabel);
 
   return (
-    <section id="proyectos" className="relative py-24 md:py-32 border-t border-white/5">
-      <div className="container-x">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-8">
-          <div>
-            {sectionLabel ? <div className="label mb-4 reveal">{sectionLabel}</div> : null}
+    <section
+      id="proyectos"
+      className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden"
+    >
+      <div className="absolute top-1/4 right-0 h-[400px] w-[400px] rounded-full bg-brand-indigo/10 blur-[160px]" />
+
+      <div className="container-wide relative">
+        <div className="grid grid-cols-12 gap-x-6 gap-y-10 items-end mb-16 md:mb-20">
+          <div className="col-span-12 lg:col-span-8">
+            {sectionLabel ? (
+              <motion.div
+                initial={{ opacity: 0, x: -14 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={viewportOnce}
+                transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
+                className="eyebrow mb-7"
+              >
+                <span className="h-px w-8 bg-brand-purple/50" />
+                {sectionLabel}
+              </motion.div>
+            ) : null}
             {(title || titleHighlight) ? (
-              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight max-w-3xl reveal reveal-delay-1">
-                {title}
+              <h2 className="display-xl text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[5.5rem]">
+                {title ? <SplitText as="span" text={title} className="block text-white" /> : null}
                 {titleHighlight ? (
-                  <>
-                    <br />
-                    <span className="text-grad">{titleHighlight}</span>
-                  </>
+                  <SplitText
+                    as="span"
+                    text={titleHighlight}
+                    className="block italic-serif text-grad mt-1"
+                    delay={0.2}
+                  />
                 ) : null}
               </h2>
             ) : null}
-            {description ? <p className="mt-5 text-white/60 max-w-2xl reveal reveal-delay-2">{description}</p> : null}
+            {description ? (
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportOnce}
+                transition={{ duration: 0.8, ease: EASE_OUT_EXPO, delay: 0.3 }}
+                className="mt-7 text-white/65 leading-relaxed text-base md:text-lg max-w-2xl"
+              >
+                {description}
+              </motion.p>
+            ) : null}
           </div>
           {viewAllLabel && viewAllHref ? (
-            <a href={viewAllHref} className="btn-ghost reveal reveal-delay-3 group self-start md:self-auto">
-              {viewAllLabel}
-              <span aria-hidden className="transition-transform group-hover:translate-x-1">
+            <motion.a
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: 0.8, ease: EASE_OUT_EXPO, delay: 0.4 }}
+              href={viewAllHref}
+              className="col-span-12 lg:col-span-4 lg:text-right group inline-flex lg:justify-end items-center gap-3 font-mono text-[12px] uppercase tracking-[0.22em] text-white/80 hover:text-white"
+            >
+              <span className="link-reveal">{viewAllLabel}</span>
+              <span aria-hidden className="transition-transform group-hover:translate-x-1.5">
                 →
               </span>
-            </a>
+            </motion.a>
           ) : null}
         </div>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {featured.length
-            ? featured.map((project, index) => (
-                <div key={project.slug || `${project.name}-${index}`} className="reveal" style={{ transitionDelay: `${(index % 3) * 80}ms` }}>
-                  <ProjectCard project={project} ctaLabel={cardCtaLabel} />
-                </div>
-              ))
-            : emptyStateLabel
-              ? (
-                <div className="col-span-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
-                  {emptyStateLabel}
-                </div>
-                )
-              : null}
-        </div>
+        {featured.length ? (
+          <motion.div
+            variants={stagger(0.08, 0.15)}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          >
+            {featured.map((project, index) => (
+              <motion.div
+                key={project.slug || `${project.name}-${index}`}
+                variants={fadeUp}
+              >
+                <ProjectCard project={project} ctaLabel={cardCtaLabel} />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : emptyStateLabel ? (
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8 text-center text-white/65">
+            {emptyStateLabel}
+          </div>
+        ) : null}
       </div>
     </section>
   );
