@@ -108,11 +108,11 @@ export default function Nav() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.25, ease: EASE_OUT_EXPO }}
-              className="hidden sm:inline-flex group items-center gap-2.5 rounded-full bg-grad-brand px-5 py-2.5 text-[13px] font-medium text-white shadow-glow-sm hover:shadow-glow"
+              className="hidden sm:inline-flex group items-center gap-2.5 rounded-full bg-bone-50 px-5 py-2.5 text-[13px] font-medium text-ink-950 hover:bg-brand-mist transition-colors"
             >
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-white/70 opacity-75 animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-brand-purple opacity-60 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-purple" />
               </span>
               {ctaLabel}
               <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>

@@ -5,18 +5,26 @@ export default {
     extend: {
       colors: {
         ink: {
-          950: '#050509',
-          900: '#0A0A12',
-          800: '#10101C',
-          700: '#181828',
-          600: '#22223A',
+          950: '#05060B',
+          900: '#0A0C14',
+          800: '#10131D',
+          700: '#171B28',
+          600: '#212638',
+        },
+        bone: {
+          50: '#F7F4EC',
+          100: '#EDE9DD',
+          200: '#D9D4C5',
+          300: '#A8A395',
+          400: '#7C7868',
         },
         brand: {
           violet: '#7C3AED',
           purple: '#8B5CF6',
+          lavender: '#B9A7FF',
+          mist: '#D8CCFF',
           indigo: '#6366F1',
-          blue: '#3B82F6',
-          cyan: '#22D3EE',
+          ink: '#1B1740',
         },
       },
       fontFamily: {
@@ -26,12 +34,15 @@ export default {
         display: ['"Fraunces"', 'ui-serif', 'Georgia', 'serif'],
       },
       backgroundImage: {
-        'grad-brand': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #C026D3 100%)',
-        'grad-soft': 'linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.15) 100%)',
+        'grad-brand': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 55%, #B9A7FF 100%)',
+        'grad-soft': 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.12) 100%)',
+        'grad-bone': 'linear-gradient(135deg, #F7F4EC 0%, #B9A7FF 100%)',
+        'grad-deep': 'linear-gradient(180deg, #05060B 0%, #0A0C14 60%, #05060B 100%)',
       },
       boxShadow: {
-        glow: '0 0 60px -10px rgba(139, 92, 246, 0.45)',
-        'glow-sm': '0 0 30px -5px rgba(139, 92, 246, 0.35)',
+        glow: '0 0 80px -20px rgba(139, 92, 246, 0.35)',
+        'glow-sm': '0 0 40px -10px rgba(139, 92, 246, 0.25)',
+        'glow-bone': '0 30px 80px -30px rgba(247, 244, 236, 0.15)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

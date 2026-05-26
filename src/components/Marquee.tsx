@@ -102,9 +102,9 @@ export default function Marquee() {
   const loopItems = [...techs, ...techs];
 
   return (
-    <div className="relative py-8 border-y border-white/5 overflow-hidden bg-ink-900/30">
-      <div className="absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-ink-950 to-transparent z-10 pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-ink-950 to-transparent z-10 pointer-events-none" />
+    <div className="relative py-7 border-y border-bone-50/[0.06] overflow-hidden bg-ink-900/40 backdrop-blur-md">
+      <div className="absolute inset-y-0 left-0 w-20 sm:w-40 bg-gradient-to-r from-ink-950 to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-20 sm:w-40 bg-gradient-to-l from-ink-950 to-transparent z-10 pointer-events-none" />
 
       <div className="marquee-track">
         {loopItems.map((tech, index) => {
@@ -113,18 +113,19 @@ export default function Marquee() {
             <div key={`${tech}-${index}`} className="flex items-center gap-3 shrink-0 group">
               {slug ? (
                 <img
-                  src={`https://cdn.simpleicons.org/${slug}/a78bfa`}
+                  src={`https://cdn.simpleicons.org/${slug}/B9A7FF`}
                   alt={tech}
                   loading="lazy"
                   draggable={false}
-                  className="h-4 w-4 sm:h-5 sm:w-5 opacity-75 group-hover:opacity-100 transition-opacity"
+                  className="h-4 w-4 sm:h-[18px] sm:w-[18px] opacity-60 group-hover:opacity-100 transition-opacity"
                 />
               ) : (
-                <span className="h-2 w-2 rounded-full bg-brand-purple/70 group-hover:bg-brand-purple transition-colors" />
+                <span className="h-1.5 w-1.5 rounded-full bg-brand-lavender/70 group-hover:bg-brand-lavender transition-colors" />
               )}
-              <span className="font-mono text-xs sm:text-sm md:text-base uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white/40 group-hover:text-white transition-colors whitespace-nowrap">
+              <span className="font-mono text-[11px] sm:text-xs md:text-sm uppercase tracking-[0.22em] text-bone-50/45 group-hover:text-bone-50 transition-colors whitespace-nowrap">
                 {tech}
               </span>
+              <span className="text-bone-50/15 ml-2">／</span>
             </div>
           );
         })}

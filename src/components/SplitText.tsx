@@ -32,7 +32,7 @@ export default function SplitText({
       {words.map((word, index) => (
         <span
           key={`${word}-${index}`}
-          className="inline-block overflow-hidden align-top pb-[0.12em]"
+          className="word-mask"
         >
           <motion.span
             variants={wordReveal}

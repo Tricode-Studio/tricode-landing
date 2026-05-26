@@ -15,6 +15,7 @@ import Cursor from './components/Cursor';
 import ProjectsPage from './components/ProjectsPage';
 import BriefPage from './components/BriefPage';
 import { useReveal } from './hooks/useReveal';
+import { useLenis } from './hooks/useLenis';
 import type { Project } from './types/project';
 import {
   LandingDataProvider,
@@ -44,6 +45,7 @@ function getRoute() {
 
 function Home({ sectionOrder }: { sectionOrder: LandingSectionId[] }) {
   useReveal();
+  useLenis();
 
   const sectionMap: Record<LandingSectionId, JSX.Element> = {
     hero: <Hero />,
