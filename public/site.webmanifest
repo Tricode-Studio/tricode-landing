@@ -1,0 +1,21 @@
+{
+  "name": "Tricode Studio",
+  "short_name": "Tricode Studio",
+  "description": "Tricode Studio: desarrollo web y software a medida en Uruguay.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f1a",
+  "theme_color": "#0b0f1a",
+  "icons": [
+    {
+      "src": "/isotipo.png?v=20260427-1",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/isotipo.png?v=20260427-1",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
