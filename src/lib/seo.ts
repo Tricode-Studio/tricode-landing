@@ -177,7 +177,7 @@ export function applyLandingSeo(route: string, config: LandingConfig) {
       '@type': 'Organization',
       '@id': `${siteUrl}/#organization`,
       name: brandName,
-      alternateName: ['Tricode', 'Tricode Studio'],
+      alternateName: ['Tricode'],
       url: siteUrl,
       logo: toAbsoluteUrl(siteUrl, '/isotipo.png?v=20260427-1'),
       description: heroDescription,
@@ -207,7 +207,7 @@ export function applyLandingSeo(route: string, config: LandingConfig) {
       '@id': `${siteUrl}/#website`,
       url: siteUrl,
       name: SITE_NAME,
-      alternateName: ['tricode.studio', 'Tricode'],
+      alternateName: ['Tricode'],
       inLanguage: 'es',
     },
     {
