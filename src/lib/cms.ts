@@ -34,6 +34,8 @@ type PublicProjectsResponse = {
       year?: string;
       accent?: string;
       url?: string;
+      featured?: boolean;
+      position?: number;
     };
   }>;
 };
@@ -218,6 +220,7 @@ function normalizeProject(
     url: asString(data.url) || undefined,
     year: asString(data.year),
     accent: asString(data.accent) || DEFAULT_PROJECT_ACCENT,
+    featured: data.featured === true,
   };
 }
 

@@ -417,7 +417,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     description: 'Una selección de proyectos donde aplicamos diseño, código y producto.',
     viewAllLabel: 'Ver todos los proyectos',
     viewAllHref: '/proyectos',
-    featuredLimit: 9,
+    featuredLimit: 6,
     cardCtaLabel: 'Ver proyecto',
     emptyStateLabel: 'Todavía no hay proyectos publicados.',
     pageLabel: '// proyectos',

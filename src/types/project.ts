@@ -9,4 +9,5 @@ export type Project = {
   url?: string;
   year: string;
   accent: string;
+  featured: boolean;
 };

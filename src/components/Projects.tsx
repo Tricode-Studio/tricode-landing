@@ -20,7 +20,10 @@ export default function Projects() {
     typeof config.projects?.featuredLimit === 'number' && config.projects.featuredLimit > 0
       ? Math.floor(config.projects.featuredLimit)
       : projects.length;
-  const featured = projects.slice(0, featuredLimit);
+  // El backend ya devuelve los proyectos en el orden manual (data.position)
+  // definido por drag&drop en apps/workspace -- acá solo filtramos por
+  // "destacado" y recortamos, sin volver a ordenar nada.
+  const featured = projects.filter((project) => project.featured).slice(0, featuredLimit);
   const sectionLabel = trimmed(config.projects?.sectionLabel);
   const title = trimmed(config.projects?.title);
   const titleHighlight = trimmed(config.projects?.titleHighlight);
