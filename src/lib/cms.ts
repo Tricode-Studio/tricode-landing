@@ -27,8 +27,8 @@ type PublicProjectsResponse = {
       short?: string;
       long?: string;
       image?: string;
-      tags?: string[];
-      stack?: string[];
+      tags?: unknown;
+      stack?: unknown;
       year?: string;
       accent?: string;
       url?: string;
@@ -189,6 +189,21 @@ function asString(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+// Some entries were saved with tags/stack wrapped as `{ items: [...] }`
+// instead of a plain array (a bug in the workspace's project editor, fixed
+// separately) -- handle both shapes so those existing entries still render.
+function asStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((tag): tag is string => typeof tag === 'string');
+  }
+  if (value && typeof value === 'object' && Array.isArray((value as { items?: unknown }).items)) {
+    return (value as { items: unknown[] }).items.filter(
+      (tag): tag is string => typeof tag === 'string',
+    );
+  }
+  return [];
+}
+
 function normalizeProject(
   item: PublicProjectsResponse['items'][number],
   index: number,
@@ -206,11 +221,7 @@ function normalizeProject(
       asString(data.long) ||
       asString(data.descripcion),
     image: asString(data.image),
-    tags: Array.isArray(data.tags)
-      ? data.tags.filter((tag): tag is string => typeof tag === 'string')
-      : Array.isArray(data.stack)
-        ? data.stack.filter((tag): tag is string => typeof tag === 'string')
-        : [],
+    tags: asStringArray(data.tags).length ? asStringArray(data.tags) : asStringArray(data.stack),
     url: asString(data.url) || undefined,
     year: asString(data.year),
     accent: asString(data.accent) || DEFAULT_PROJECT_ACCENT,
