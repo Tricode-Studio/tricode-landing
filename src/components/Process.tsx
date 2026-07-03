@@ -68,42 +68,40 @@ export default function Process() {
       <div className="absolute top-1/3 -right-32 h-[400px] w-[400px] rounded-full bg-brand-indigo/10 blur-[160px]" />
 
       <div className="container-wide relative">
-        <div className="grid grid-cols-12 gap-x-6 gap-y-10 items-end mb-16 md:mb-24">
-          <div className="col-span-12 lg:col-span-8">
-            {sectionLabel ? (
-              <motion.div
-                initial={{ opacity: 0, x: -14 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={viewportOnce}
-                transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
-                className="eyebrow mb-7"
-              >
-                <span className="h-px w-8 bg-brand-purple/50" />
-                {sectionLabel}
-              </motion.div>
-            ) : null}
-            {(titleTop || titleHighlight) ? (
-              <h2 className="display-xl text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[5.5rem]">
-                {titleTop ? <SplitText as="span" text={titleTop} className="block text-white" /> : null}
-                {titleHighlight ? (
-                  <SplitText
-                    as="span"
-                    text={titleHighlight}
-                    className="block mt-1"
-                    wordClassName="italic-serif text-grad"
-                    delay={0.2}
-                  />
-                ) : null}
-              </h2>
-            ) : null}
-          </div>
+        <div className="max-w-4xl mx-auto mb-16 md:mb-24">
+          {sectionLabel ? (
+            <motion.div
+              initial={{ opacity: 0, x: -14 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
+              className="eyebrow mb-7"
+            >
+              <span className="h-px w-8 bg-brand-purple/50" />
+              {sectionLabel}
+            </motion.div>
+          ) : null}
+          {(titleTop || titleHighlight) ? (
+            <h2 className="display-xl text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[5.5rem]">
+              {titleTop ? <SplitText as="span" text={titleTop} className="block text-white" /> : null}
+              {titleHighlight ? (
+                <SplitText
+                  as="span"
+                  text={titleHighlight}
+                  className="block mt-1"
+                  wordClassName="italic-serif text-grad"
+                  delay={0.2}
+                />
+              ) : null}
+            </h2>
+          ) : null}
           {description ? (
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={viewportOnce}
               transition={{ duration: 0.8, ease: EASE_OUT_EXPO, delay: 0.3 }}
-              className="col-span-12 lg:col-span-4 text-white/65 leading-relaxed text-base md:text-lg"
+              className="mt-6 max-w-md text-white/65 leading-relaxed text-base md:text-lg"
             >
               {description}
             </motion.p>
