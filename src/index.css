@@ -93,29 +93,16 @@
   .text-strong { @apply text-bone-50; }
 }
 
-/* --- Gradients --- */
+/* --- Acentos --- */
+/* Antes era un degradado con background-clip:text -- se cambia a un color
+   sólido: más sobrio/editorial, sin el efecto "gradient text" tan asociado a
+   landings genéricas. La itálica serif ya aporta suficiente carácter por sí
+   sola. Se mantienen los nombres de clase para no tocar los ~15 call sites. */
 .text-grad {
-  background: linear-gradient(135deg, #F7F4EC 0%, #D8CCFF 50%, #B9A7FF 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #B9A7FF;
 }
 .text-grad-violet {
-  background: linear-gradient(135deg, #C4B5FD 0%, #8B5CF6 60%, #6366F1 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-/* El fondo violeta oscuro del ::selection global (más abajo) tapaba por completo
-   el degradado claro al seleccionar texto -- se desactiva sobre estos elementos
-   para que la selección no oculte las letras. */
-.text-grad::selection,
-.text-grad-violet::selection {
-  background-color: transparent;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #8B5CF6;
 }
 
 /* --- Editorial display typography --- */

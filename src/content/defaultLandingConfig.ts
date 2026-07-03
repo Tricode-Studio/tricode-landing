@@ -383,7 +383,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     { value: 15, prefix: '+', label: 'Proyectos en producción' },
   ],
   about: {
-    sectionLabel: '// 01 - Sobre nosotros',
+    sectionLabel: 'Sobre nosotros',
     titleTop: 'Empezamos como tres amigos',
     titleHighlight: 'con la misma obsesión por construir.',
     description:
@@ -421,7 +421,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     },
   },
   services: {
-    sectionLabel: '// 02 - Servicios',
+    sectionLabel: 'Servicios',
     titleTop: '¿Qué podemos',
     titleHighlight: 'construir para vos?',
     description:
@@ -429,21 +429,21 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     items: DEFAULT_SERVICES,
   },
   team: {
-    sectionLabel: '// 05 - Equipo',
+    sectionLabel: 'Equipo',
     titleTop: 'Las personas detrás',
     titleHighlight: 'del código.',
     description: 'Amigos antes que colegas. Producto y tecnología, lado a lado.',
     members: DEFAULT_TEAM,
   },
   process: {
-    sectionLabel: '// 04 - Proceso',
+    sectionLabel: 'Proceso',
     titleTop: 'De la idea al producto',
     titleHighlight: 'en 5 pasos.',
     description: 'Un proceso claro y transparente para avanzar con foco.',
     steps: DEFAULT_STEPS,
   },
   cms: {
-    sectionLabel: '// 03 - CMS',
+    sectionLabel: 'CMS',
     titleTop: 'Tu propio panel para',
     titleHighlight: 'gestionar todo, sin depender de nadie.',
     description:
@@ -460,7 +460,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     secondaryCtaHref: '#proceso',
   },
   included: {
-    sectionLabel: '// 04 - Todo incluido',
+    sectionLabel: 'Todo incluido',
     titleTop: 'Un proyecto no termina',
     titleHighlight: 'cuando se lanza.',
     description:
@@ -468,7 +468,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     items: DEFAULT_INCLUDED_ITEMS,
   },
   projects: {
-    sectionLabel: '// 03 - Proyectos',
+    sectionLabel: 'Proyectos',
     title: 'Lo que somos capaces',
     titleHighlight: 'de construir.',
     description: 'Una selección de proyectos donde aplicamos diseño, código y producto.',
@@ -491,7 +491,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     pageCtaHref: '/brief',
   },
   faq: {
-    sectionLabel: '// 06 - Preguntas frecuentes',
+    sectionLabel: 'Preguntas frecuentes',
     titleTop: 'Preguntas',
     titleHighlight: 'frecuentes',
     description: 'Respuestas rápidas para tomar decisión con claridad.',
@@ -529,7 +529,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     ],
   },
   contact: {
-    sectionLabel: '// 07 - Hablemos',
+    sectionLabel: 'Hablemos',
     titleTop: 'Tu próximo proyecto',
     titleHighlight: 'empieza con una charla.',
     description: 'Completá un cuestionario estratégico y te devolvemos una propuesta clara de alcance, tiempos y costo.',
