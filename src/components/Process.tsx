@@ -178,7 +178,7 @@ export default function Process() {
               initial="hidden"
               whileInView="show"
               viewport={viewportOnce}
-              className="relative flex flex-col"
+              className="process-track relative flex flex-col"
             >
               {steps.map((step, index) => {
                 const isRight = index % 2 === 1;
@@ -186,7 +186,7 @@ export default function Process() {
                   <motion.li
                     key={`${step.n}-${index}`}
                     variants={fadeUp}
-                    className={`relative flex items-center py-8 md:py-12 md:min-h-[190px] pl-16 md:pl-0 ${
+                    className={`process-item relative flex items-center py-8 md:py-12 md:min-h-[190px] pl-16 md:pl-0 ${
                       isRight ? 'md:justify-end' : 'md:justify-start'
                     }`}
                   >
@@ -195,8 +195,8 @@ export default function Process() {
                       className="hidden md:flex absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-7 w-7 items-center justify-center"
                       style={{ left: `${desktopXs[index]}%` }}
                     >
-                      <span className="absolute h-7 w-7 rounded-full border border-brand-purple/35 group-hover:border-brand-purple transition-colors" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-grad-brand shadow-[0_0_14px_rgba(124,58,237,0.7)]" />
+                      <span className="process-node-ring absolute h-7 w-7 rounded-full border border-brand-purple/35" />
+                      <span className="process-node-dot h-2.5 w-2.5 rounded-full bg-grad-brand shadow-[0_0_14px_rgba(124,58,237,0.7)]" />
                     </span>
 
                     {/* Node - mobile, fixed to the narrow left spine */}
@@ -204,8 +204,8 @@ export default function Process() {
                       className="md:hidden absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center"
                       style={{ left: mobileXs[index] }}
                     >
-                      <span className="absolute h-6 w-6 rounded-full border border-brand-purple/40" />
-                      <span className="h-2 w-2 rounded-full bg-grad-brand shadow-[0_0_14px_rgba(124,58,237,0.7)]" />
+                      <span className="process-node-ring absolute h-6 w-6 rounded-full border border-brand-purple/40" />
+                      <span className="process-node-dot h-2 w-2 rounded-full bg-grad-brand shadow-[0_0_14px_rgba(124,58,237,0.7)]" />
                     </span>
 
                     <div
