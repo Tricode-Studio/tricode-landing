@@ -15,6 +15,16 @@ function isSecondaryLocation() {
   return path.startsWith('/proyectos') || hash.startsWith('/proyectos');
 }
 
+function normalizeWhatsAppNumber(value: string) {
+  const digits = value.replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.startsWith('00')) return digits.slice(2);
+  if (digits.startsWith('598')) return digits;
+  if (digits.startsWith('0') && digits.length >= 8) return `598${digits.slice(1)}`;
+  if (digits.length === 8) return `598${digits}`;
+  return digits;
+}
+
 function iconFor(label: string) {
   const normalized = label.toLowerCase();
   if (normalized.includes('instagram')) {
@@ -59,10 +69,14 @@ export default function Footer() {
   const brandHref = isProjects ? '/' : '#top';
   const navLinks = resolveNavLinksFromLayout(config);
 
+  const email = trimmed(config.contact?.email);
+  const location = trimmed(config.contact?.location);
+  const whatsappNumber = normalizeWhatsAppNumber(trimmed(config.contact?.whatsappNumber));
+  const whatsappHref = whatsappNumber ? `https://wa.me/${whatsappNumber}` : '';
+
   return (
     <footer className="relative border-t border-white/8 overflow-hidden">
-      {/* Giant editorial wordmark */}
-      <div className="container-wide pt-20 md:pt-28 pb-10">
+      <div className="container-wide pt-20 md:pt-28 pb-10 relative">
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -71,40 +85,42 @@ export default function Footer() {
           className="grid grid-cols-12 gap-x-6 gap-y-12"
         >
           {/* Brand block */}
-          <div className="col-span-12 lg:col-span-5">
+          <div className="col-span-12 lg:col-span-4">
             <a href={brandHref} className="flex items-center gap-3 group">
               <motion.img
                 whileHover={{ rotate: -8, scale: 1.08 }}
                 transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
                 src={BRAND_MARK_SRC}
                 alt={`Logo de ${brandName || 'Tricode Studio'}`}
-                className="h-14 md:h-16 w-auto object-contain"
+                className="h-9 w-auto object-contain"
               />
               {brandName ? (
-                <div className="flex flex-col items-start leading-none">
+                <div className="flex items-baseline gap-1.5 leading-none">
                   {brandTop ? (
-                    <span className="display-md text-2xl md:text-3xl text-white">{brandTop}</span>
+                    <span className="font-sans text-base font-semibold tracking-tight text-white">
+                      {brandTop}
+                    </span>
                   ) : null}
                   {brandBottom ? (
-                    <span className="mt-2 font-mono text-[10px] uppercase tracking-[0.34em] text-brand-purple/90">
+                    <span className="font-sans text-base font-medium tracking-tight text-white/45">
                       {brandBottom}
                     </span>
                   ) : null}
                 </div>
               ) : null}
             </a>
-            <p className="mt-7 max-w-md text-sm md:text-base text-white/55 leading-relaxed">
+            <p className="mt-6 max-w-xs text-sm text-white/55 leading-relaxed">
               Diseñamos y construimos productos digitales pensados para crecer.
               Si tenés una idea o un problema operativo, vale la pena conversarlo.
             </p>
           </div>
 
-          {/* Nav links */}
-          <div className="col-span-6 lg:col-span-4 lg:pl-6">
+          {/* Navegación */}
+          <div className="col-span-6 sm:col-span-4 lg:col-span-2">
             <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/40 mb-5">
-              Explorar
+              Navegación
             </div>
-            <ul className="grid grid-cols-2 gap-y-3 gap-x-6">
+            <ul className="flex flex-col gap-3">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <a
@@ -118,46 +134,91 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Socials */}
-          <div className="col-span-6 lg:col-span-3">
-            <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/40 mb-5">
-              Conectar
+          {/* Contacto */}
+          {(email || whatsappHref || location) ? (
+            <div className="col-span-6 sm:col-span-4 lg:col-span-3">
+              <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/40 mb-5">
+                Contacto
+              </div>
+              <ul className="flex flex-col gap-3">
+                {email ? (
+                  <li>
+                    <a
+                      href={`mailto:${email}`}
+                      className="text-sm text-white/70 hover:text-white transition-colors link-reveal"
+                    >
+                      {email}
+                    </a>
+                  </li>
+                ) : null}
+                {whatsappHref ? (
+                  <li>
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm text-white/70 hover:text-white transition-colors link-reveal"
+                    >
+                      WhatsApp
+                    </a>
+                  </li>
+                ) : null}
+                {location ? (
+                  <li className="text-sm text-white/45">{location}</li>
+                ) : null}
+              </ul>
             </div>
-            <ul className="flex flex-col gap-3">
-              {socials.map((social) => (
-                <li key={`${social.label}-${social.url}`}>
-                  <a
-                    href={social.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors group"
-                  >
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 group-hover:border-brand-purple/50 group-hover:bg-brand-purple/10 transition-colors">
-                      {iconFor(social.label)}
-                    </span>
-                    <span className="link-reveal">{social.label}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </motion.div>
+          ) : null}
 
-        {/* Giant wordmark */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={viewportOnce}
-          transition={{ duration: 1.2, ease: EASE_OUT_EXPO, delay: 0.2 }}
-          className="mt-16 md:mt-24 relative"
-        >
-          <h2 className="display-xl text-center text-[18vw] md:text-[14vw] leading-[0.85] tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white/20 via-white/5 to-transparent select-none pointer-events-none">
-            tricode
-          </h2>
+          {/* Seguinos */}
+          {socials.length ? (
+            <div className="col-span-6 sm:col-span-4 lg:col-span-3">
+              <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-white/40 mb-5">
+                Seguinos
+              </div>
+              <ul className="flex flex-col gap-3">
+                {socials.map((social) => (
+                  <li key={`${social.label}-${social.url}`}>
+                    <a
+                      href={social.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-3 text-sm text-white/70 hover:text-white transition-colors group"
+                    >
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 group-hover:border-brand-purple/50 group-hover:bg-brand-purple/10 transition-colors">
+                        {iconFor(social.label)}
+                      </span>
+                      <span className="link-reveal">{social.label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </motion.div>
+      </div>
 
-        {/* Bottom */}
-        <div className="mt-10 pt-8 border-t border-white/8 flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Big visual band: isotipo gigante + glow */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={viewportOnce}
+        transition={{ duration: 1.4, ease: EASE_OUT_EXPO }}
+        className="relative h-[240px] sm:h-[320px] md:h-[420px] mt-8 md:mt-4 select-none pointer-events-none"
+        aria-hidden
+      >
+        <div className="absolute inset-x-0 bottom-0 mx-auto h-[220px] w-[220px] sm:h-[320px] sm:w-[320px] md:h-[420px] md:w-[420px] rounded-full bg-grad-brand opacity-20 blur-[120px]" />
+        <img
+          src={BRAND_MARK_SRC}
+          alt=""
+          className="absolute left-1/2 bottom-[-12%] -translate-x-1/2 h-[280px] sm:h-[380px] md:h-[520px] w-auto object-contain opacity-90"
+        />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-950 to-transparent" />
+      </motion.div>
+
+      {/* Bottom */}
+      <div className="container-wide pb-10">
+        <div className="pt-8 border-t border-white/8 flex flex-col md:flex-row items-center justify-between gap-4">
           {copyright ? (
             <div className="font-mono text-[11px] text-white/40 uppercase tracking-[0.18em]">
               {copyright}
