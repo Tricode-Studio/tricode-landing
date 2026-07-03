@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import SplitText from './SplitText';
+import CardParticles from './CardParticles';
 import { useLandingData } from '../content/LandingDataContext';
 import { EASE_OUT_EXPO, fadeUp, stagger, viewportOnce } from '../lib/motion';
 
@@ -89,7 +90,7 @@ export default function Included() {
               variants={fadeUp}
               className="group relative overflow-hidden rounded-2xl border border-white/8 bg-white/[0.025] p-6 transition-all duration-500 hover:border-brand-purple/40 hover:bg-white/[0.045] hover:-translate-y-1"
             >
-              <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-brand-violet/15 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <CardParticles />
               <div className="relative">
                 <div className="flex items-center justify-between">
                   <span className="text-2xl text-brand-purple">{item.icon || '◆'}</span>

@@ -74,8 +74,8 @@ export default function Nav() {
           className="flex items-center gap-2 shrink-0 group"
         >
           <motion.img
-            whileHover={{ rotate: -8, scale: 1.05 }}
-            transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
+            whileHover={{ scale: 1.08 }}
+            transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
             src={BRAND_MARK_SRC}
             alt={`Logo de ${brandName || 'Tricode Studio'}`}
             className="h-9 md:h-10 w-auto object-contain"

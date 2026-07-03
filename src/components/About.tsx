@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { MouseEvent, useRef } from 'react';
-import Spotlight from './Spotlight';
+import CardParticles from './CardParticles';
 import SplitText from './SplitText';
 import { useLandingData } from '../content/LandingDataContext';
 import { EASE_OUT_EXPO, fadeUp, stagger, viewportOnce } from '../lib/motion';
@@ -333,13 +333,14 @@ export default function About() {
             >
               {pillars.map((pillar) => (
                 <motion.div key={pillar.title} variants={fadeUp}>
-                  <Spotlight as="div" className="card card-hover h-full p-6 rounded-2xl">
+                  <div className="group card card-hover relative h-full overflow-hidden rounded-2xl p-6">
+                    <CardParticles />
                     {pillar.icon ? (
-                      <div className="text-3xl text-brand-lavender leading-none">{pillar.icon}</div>
+                      <div className="relative text-3xl text-brand-lavender leading-none">{pillar.icon}</div>
                     ) : null}
-                    <div className="mt-5 font-medium text-bone-50 text-base">{pillar.title}</div>
-                    <div className="mt-2 text-sm text-bone-50/55 leading-relaxed">{pillar.desc}</div>
-                  </Spotlight>
+                    <div className="relative mt-5 font-medium text-bone-50 text-base">{pillar.title}</div>
+                    <div className="relative mt-2 text-sm text-bone-50/55 leading-relaxed">{pillar.desc}</div>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>

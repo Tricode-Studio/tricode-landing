@@ -177,63 +177,6 @@
   }
 }
 
-/* --- Spotlight on hover --- */
-.spotlight {
-  position: relative;
-  overflow: hidden;
-}
-.spotlight::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  background: radial-gradient(
-    520px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(185, 167, 255, 0.18),
-    transparent 40%
-  );
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-.spotlight:hover::before { opacity: 1; }
-.spotlight > * { position: relative; z-index: 1; }
-
-/* --- Conic border for special cards --- */
-.conic-border {
-  position: relative;
-  isolation: isolate;
-}
-.conic-border::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(
-    from var(--angle, 0deg),
-    transparent 0%,
-    rgba(185, 167, 255, 0.45) 25%,
-    rgba(99, 102, 241, 0.45) 45%,
-    transparent 65%
-  );
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: spin 8s linear infinite;
-  opacity: 0;
-  transition: opacity 0.5s;
-  pointer-events: none;
-}
-.conic-border:hover::before { opacity: 1; }
-
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
 /* --- Shimmer text --- */
 .shimmer-text {
   background: linear-gradient(
