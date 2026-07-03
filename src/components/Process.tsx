@@ -1,11 +1,31 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import SplitText from './SplitText';
 import { useLandingData } from '../content/LandingDataContext';
 import { EASE_OUT_EXPO, fadeUp, stagger, viewportOnce } from '../lib/motion';
 
 function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+const ROW_UNIT = 100;
+const DESKTOP_X = [42, 58];
+const MOBILE_WIDTH = 56;
+const MOBILE_X = [18, 38];
+
+function buildWavePath(xs: number[], rowUnit = ROW_UNIT): string {
+  if (!xs.length) return '';
+  const points = xs.map((x, i) => ({ x, y: (i + 0.5) * rowUnit }));
+  let d = `M ${points[0].x} 0 L ${points[0].x} ${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const a = points[i];
+    const b = points[i + 1];
+    const midY = (a.y + b.y) / 2;
+    d += ` C ${a.x} ${midY}, ${b.x} ${midY}, ${b.x} ${b.y}`;
+  }
+  const last = points[points.length - 1];
+  d += ` L ${last.x} ${points.length * rowUnit}`;
+  return d;
 }
 
 export default function Process() {
@@ -27,9 +47,18 @@ export default function Process() {
   const trackRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: trackRef,
-    offset: ['start 80%', 'end 30%'],
+    offset: ['start 78%', 'end 45%'],
   });
-  const progressHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  const desktopXs = useMemo(
+    () => steps.map((_, i) => DESKTOP_X[i % 2]),
+    [steps],
+  );
+  const mobileXs = useMemo(() => steps.map((_, i) => MOBILE_X[i % 2]), [steps]);
+  const desktopPath = useMemo(() => buildWavePath(desktopXs), [desktopXs]);
+  const mobilePath = useMemo(() => buildWavePath(mobileXs), [mobileXs]);
+  const viewBoxHeight = steps.length * ROW_UNIT;
 
   return (
     <section
@@ -82,49 +111,123 @@ export default function Process() {
         </div>
 
         {steps.length ? (
-          <div ref={trackRef} className="relative pl-8 md:pl-14">
-            {/* Background spine */}
-            <div className="absolute left-2 md:left-5 top-0 bottom-0 w-px bg-white/10" />
-            {/* Animated progress */}
-            <motion.div
-              style={{ height: progressHeight }}
-              className="absolute left-2 md:left-5 top-0 w-px bg-gradient-to-b from-brand-violet via-brand-indigo to-transparent shadow-[0_0_18px_rgba(124,58,237,0.6)]"
-            />
+          <div ref={trackRef} className="relative">
+            {/* Wavy spine - desktop: meanders between the alternating columns */}
+            <svg
+              className="hidden md:block absolute inset-0 h-full w-full"
+              viewBox={`0 0 100 ${viewBoxHeight}`}
+              preserveAspectRatio="none"
+              fill="none"
+              aria-hidden
+            >
+              <path
+                d={desktopPath}
+                stroke="rgba(255,255,255,0.08)"
+                strokeWidth="1.5"
+                vectorEffect="non-scaling-stroke"
+              />
+              <motion.path
+                d={desktopPath}
+                stroke="url(#process-wave-grad)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+                style={{ pathLength }}
+              />
+              <defs>
+                <linearGradient id="process-wave-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#B9A7FF" />
+                  <stop offset="55%" stopColor="#8B5CF6" />
+                  <stop offset="100%" stopColor="#6366F1" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            {/* Wavy spine - mobile: narrow column hugging the left edge */}
+            <svg
+              className="md:hidden absolute left-0 inset-y-0 h-full"
+              width={MOBILE_WIDTH}
+              viewBox={`0 0 ${MOBILE_WIDTH} ${viewBoxHeight}`}
+              preserveAspectRatio="none"
+              fill="none"
+              aria-hidden
+            >
+              <path
+                d={mobilePath}
+                stroke="rgba(255,255,255,0.08)"
+                strokeWidth="1.5"
+                vectorEffect="non-scaling-stroke"
+              />
+              <motion.path
+                d={mobilePath}
+                stroke="url(#process-wave-grad-mobile)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+                style={{ pathLength }}
+              />
+              <defs>
+                <linearGradient id="process-wave-grad-mobile" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#B9A7FF" />
+                  <stop offset="55%" stopColor="#8B5CF6" />
+                  <stop offset="100%" stopColor="#6366F1" />
+                </linearGradient>
+              </defs>
+            </svg>
 
             <motion.ol
-              variants={stagger(0.1, 0.1)}
+              variants={stagger(0.12, 0.1)}
               initial="hidden"
               whileInView="show"
               viewport={viewportOnce}
-              className="flex flex-col gap-12 md:gap-16"
+              className="relative flex flex-col"
             >
-              {steps.map((step, index) => (
-                <motion.li
-                  key={`${step.n}-${index}`}
-                  variants={fadeUp}
-                  className="relative group"
-                >
-                  {/* Node */}
-                  <span className="absolute -left-[33px] md:-left-[57px] top-2 flex h-6 w-6 items-center justify-center">
-                    <span className="absolute h-6 w-6 rounded-full border border-brand-purple/40 group-hover:border-brand-purple transition-colors" />
-                    <span className="h-2 w-2 rounded-full bg-grad-brand shadow-[0_0_14px_rgba(124,58,237,0.7)]" />
-                  </span>
+              {steps.map((step, index) => {
+                const isRight = index % 2 === 1;
+                return (
+                  <motion.li
+                    key={`${step.n}-${index}`}
+                    variants={fadeUp}
+                    className={`relative flex items-center py-8 md:py-12 md:min-h-[190px] pl-16 md:pl-0 ${
+                      isRight ? 'md:justify-end' : 'md:justify-start'
+                    }`}
+                  >
+                    {/* Node - desktop, sits on the wave at this step's alternating side */}
+                    <span
+                      className="hidden md:flex absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-7 w-7 items-center justify-center"
+                      style={{ left: `${desktopXs[index]}%` }}
+                    >
+                      <span className="absolute h-7 w-7 rounded-full border border-brand-purple/35 group-hover:border-brand-purple transition-colors" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-grad-brand shadow-[0_0_14px_rgba(124,58,237,0.7)]" />
+                    </span>
 
-                  <div className="grid grid-cols-12 gap-x-6 gap-y-3 items-baseline">
-                    <div className="col-span-12 md:col-span-2 font-mono text-[11px] uppercase tracking-[0.28em] text-brand-purple/85">
-                      Etapa {step.n}
-                    </div>
-                    <div className="col-span-12 md:col-span-4">
-                      <h3 className="display-md text-3xl md:text-4xl text-white">
+                    {/* Node - mobile, fixed to the narrow left spine */}
+                    <span
+                      className="md:hidden absolute top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center"
+                      style={{ left: mobileXs[index] }}
+                    >
+                      <span className="absolute h-6 w-6 rounded-full border border-brand-purple/40" />
+                      <span className="h-2 w-2 rounded-full bg-grad-brand shadow-[0_0_14px_rgba(124,58,237,0.7)]" />
+                    </span>
+
+                    <div
+                      className={`w-full md:w-[40%] ${isRight ? 'md:text-right' : ''}`}
+                    >
+                      <div
+                        className={`font-mono text-[11px] uppercase tracking-[0.28em] text-brand-purple/85 mb-2`}
+                      >
+                        Etapa {step.n}
+                      </div>
+                      <h3 className="display-md text-2xl md:text-3xl text-white mb-2">
                         {step.title}
                       </h3>
+                      <p className="text-white/65 leading-relaxed text-sm md:text-base max-w-sm md:max-w-xs md:inline-block">
+                        {step.desc}
+                      </p>
                     </div>
-                    <div className="col-span-12 md:col-span-6 text-white/70 leading-relaxed text-base md:text-lg">
-                      {step.desc}
-                    </div>
-                  </div>
-                </motion.li>
-              ))}
+                  </motion.li>
+                );
+              })}
             </motion.ol>
           </div>
         ) : null}
