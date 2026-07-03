@@ -36,7 +36,7 @@ export default function Stats() {
           initial="hidden"
           whileInView="show"
           viewport={viewportOnce}
-          className="grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-6"
+          className="grid grid-cols-2 md:grid-cols-4 gap-y-12 md:gap-10 max-w-4xl mx-auto"
         >
           {stats.map((stat, index) => (
             <motion.div
