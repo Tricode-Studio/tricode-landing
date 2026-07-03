@@ -38,6 +38,7 @@ export default function Nav() {
   const brandBottom = brandBottomParts.join(' ').trim();
   const ctaLabel = trimmed(config.nav?.ctaLabel);
   const ctaHref = trimmed(config.nav?.ctaHref);
+  const email = trimmed(config.contact?.email);
   const hasMobileMenu = Boolean(links.length || (ctaLabel && ctaHref));
   const isSecondaryPage = isSecondaryLocation();
   const brandHref = isSecondaryPage ? '/' : '#top';
@@ -174,9 +175,17 @@ export default function Nav() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
-            className="md:hidden fixed inset-y-0 right-0 z-40 flex w-[78%] max-w-sm flex-col border-l border-white/10 bg-ink-950/98 backdrop-blur-2xl"
+            className="md:hidden fixed inset-y-0 right-0 z-40 flex w-[78%] max-w-sm flex-col overflow-hidden border-l border-white/10 bg-ink-950/98 backdrop-blur-2xl"
           >
-            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-7 pb-8 pt-28">
+            <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-brand-purple/12 blur-[120px]" />
+            <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-brand-indigo/10 blur-[120px]" />
+
+            <div className="eyebrow relative px-7 pt-24 pb-5">
+              <span className="h-px w-6 bg-brand-purple/50" />
+              Menú
+            </div>
+
+            <nav className="relative flex flex-1 flex-col overflow-y-auto px-7 pb-8">
               {links.map((link, i) => (
                 <motion.a
                   key={link.href}
@@ -185,19 +194,33 @@ export default function Nav() {
                   transition={{ duration: 0.4, delay: 0.1 + i * 0.05, ease: EASE_OUT_EXPO }}
                   href={isSecondaryPage ? normalizeFromSecondaryRoute(link.href) : link.href}
                   onClick={() => setOpen(false)}
-                  className="border-b border-white/5 py-4 font-sans text-2xl font-medium text-white/85 transition-colors hover:text-white"
+                  className="group flex items-center justify-between gap-4 border-b border-white/8 py-4"
                 >
-                  {link.label}
+                  <span className="flex items-baseline gap-4">
+                    <span className="font-mono text-xs text-brand-purple/70">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="font-sans text-2xl font-medium text-white/85 transition-colors group-hover:text-white">
+                      {link.label}
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden
+                    className="text-white/25 transition-all duration-300 group-hover:translate-x-1 group-hover:text-brand-lavender"
+                  >
+                    →
+                  </span>
                 </motion.a>
               ))}
             </nav>
-            {ctaLabel && resolvedCtaHref ? (
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.15 + links.length * 0.05, ease: EASE_OUT_EXPO }}
-                className="border-t border-white/8 p-7"
-              >
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15 + links.length * 0.05, ease: EASE_OUT_EXPO }}
+              className="relative border-t border-white/8 p-7"
+            >
+              {ctaLabel && resolvedCtaHref ? (
                 <a
                   href={resolvedCtaHref}
                   onClick={() => setOpen(false)}
@@ -205,8 +228,16 @@ export default function Nav() {
                 >
                   {ctaLabel} →
                 </a>
-              </motion.div>
-            ) : null}
+              ) : null}
+              {email ? (
+                <a
+                  href={`mailto:${email}`}
+                  className="mt-4 block text-center font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 transition-colors hover:text-white/70"
+                >
+                  {email}
+                </a>
+              ) : null}
+            </motion.div>
           </motion.div>
         ) : null}
       </AnimatePresence>
