@@ -51,10 +51,7 @@ export default function Nav() {
   }, []);
 
   return (
-    <motion.header
-      initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay: 0.05 }}
+    <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrolled
           ? 'border-b border-white/8 bg-ink-950/80 backdrop-blur-xl'
@@ -184,6 +181,6 @@ export default function Nav() {
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }
