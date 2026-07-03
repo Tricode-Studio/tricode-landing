@@ -111,7 +111,7 @@ export default function Process() {
         </div>
 
         {steps.length ? (
-          <div ref={trackRef} className="relative">
+          <div ref={trackRef} className="relative md:max-w-4xl md:mx-auto">
             {/* Wavy spine - desktop: meanders between the alternating columns */}
             <svg
               className="hidden md:block absolute inset-0 h-full w-full"
