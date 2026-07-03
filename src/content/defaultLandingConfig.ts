@@ -35,6 +35,7 @@ const SECTION_META: SectionMeta[] = [
   { id: 'about', navLabel: 'Nosotros', navHref: '#nosotros' },
   { id: 'services', navLabel: 'Servicios', navHref: '#servicios' },
   { id: 'cms', navLabel: 'CMS', navHref: '#cms' },
+  { id: 'included' },
   { id: 'projects', navLabel: 'Proyectos', navHref: '#proyectos' },
   { id: 'faq', navLabel: 'Preguntas', navHref: '#faq' },
   { id: 'process' },
@@ -118,6 +119,29 @@ const DEFAULT_CMS_FEATURES: LandingCmsFeature[] = [
     icon: '◓',
     title: 'Cambios al instante',
     desc: 'Lo que actualizás aparece publicado en segundos. Sin recompilar, sin esperar a un desarrollador, sin riesgo de romper nada.',
+  },
+];
+
+const DEFAULT_INCLUDED_ITEMS: LandingCmsFeature[] = [
+  {
+    icon: '✉',
+    title: 'Correos profesionales',
+    desc: 'tuequipo@tudominio.com configurado y funcionando desde el lanzamiento, no un Gmail genérico.',
+  },
+  {
+    icon: '☎',
+    title: 'Soporte directo',
+    desc: 'Hablás con el mismo equipo que construyó tu proyecto, no con una cola de tickets genérica.',
+  },
+  {
+    icon: '⟳',
+    title: 'Mantenimiento continuo',
+    desc: 'Actualizaciones, backups y monitoreo para que todo siga funcionando sin sorpresas.',
+  },
+  {
+    icon: '◎',
+    title: 'SEO técnico',
+    desc: 'Estructura, metadatos y velocidad pensados desde el día uno para que Google te encuentre.',
   },
 ];
 
@@ -259,6 +283,13 @@ function applySequentialSectionLabels(config: LandingConfig): LandingConfig {
       sectionLabel: renumberSectionLabel(
         config.cms?.sectionLabel ?? '',
         indexBySection.get('cms') ?? 3,
+      ),
+    },
+    included: {
+      ...config.included,
+      sectionLabel: renumberSectionLabel(
+        config.included?.sectionLabel ?? '',
+        indexBySection.get('included') ?? 4,
       ),
     },
     projects: {
@@ -409,6 +440,14 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     primaryCtaHref: '#contacto',
     secondaryCtaLabel: 'Cómo funciona',
     secondaryCtaHref: '#proceso',
+  },
+  included: {
+    sectionLabel: '// 04 - Todo incluido',
+    titleTop: 'Un proyecto no termina',
+    titleHighlight: 'cuando se lanza.',
+    description:
+      'Cada entrega incluye lo que hace falta para sostenerlo en el tiempo, no solo para prenderlo.',
+    items: DEFAULT_INCLUDED_ITEMS,
   },
   projects: {
     sectionLabel: '// 03 - Proyectos',
@@ -665,6 +704,23 @@ export function withLandingDefaults(rawConfig: LandingConfig | null | undefined)
       secondaryCtaHref:
         cleanString(source.cms?.secondaryCtaHref) ||
         DEFAULT_LANDING_CONFIG.cms?.secondaryCtaHref,
+    },
+    included: {
+      ...DEFAULT_LANDING_CONFIG.included,
+      ...source.included,
+      sectionLabel:
+        cleanString(source.included?.sectionLabel) || DEFAULT_LANDING_CONFIG.included?.sectionLabel,
+      titleTop:
+        cleanString(source.included?.titleTop) || DEFAULT_LANDING_CONFIG.included?.titleTop,
+      titleHighlight:
+        cleanString(source.included?.titleHighlight) ||
+        DEFAULT_LANDING_CONFIG.included?.titleHighlight,
+      description:
+        cleanString(source.included?.description) || DEFAULT_LANDING_CONFIG.included?.description,
+      items:
+        Array.isArray(source.included?.items) && source.included.items.length
+          ? source.included.items
+          : DEFAULT_LANDING_CONFIG.included?.items,
     },
     process: {
       ...DEFAULT_LANDING_CONFIG.process,

@@ -16,6 +16,7 @@ const SECTION_META: SectionMeta[] = [
   { id: 'about', defaultEnabled: true, defaultNavLabel: 'Nosotros', defaultNavHref: '#nosotros' },
   { id: 'services', defaultEnabled: true, defaultNavLabel: 'Servicios', defaultNavHref: '#servicios' },
   { id: 'cms', defaultEnabled: true, defaultNavLabel: 'CMS', defaultNavHref: '#cms' },
+  { id: 'included', defaultEnabled: true },
   { id: 'projects', defaultEnabled: true, defaultNavLabel: 'Proyectos', defaultNavHref: '#proyectos' },
   { id: 'faq', defaultEnabled: true, defaultNavLabel: 'Preguntas', defaultNavHref: '#faq' },
   { id: 'process', defaultEnabled: true },

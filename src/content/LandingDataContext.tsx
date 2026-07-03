@@ -12,6 +12,7 @@ export type LandingSectionId =
   | 'about'
   | 'services'
   | 'cms'
+  | 'included'
   | 'team'
   | 'process'
   | 'projects'
@@ -140,6 +141,13 @@ export type LandingConfig = {
     primaryCtaHref?: string;
     secondaryCtaLabel?: string;
     secondaryCtaHref?: string;
+  };
+  included?: {
+    sectionLabel?: string;
+    titleTop?: string;
+    titleHighlight?: string;
+    description?: string;
+    items?: LandingCmsFeature[];
   };
   projects?: {
     sectionLabel?: string;
