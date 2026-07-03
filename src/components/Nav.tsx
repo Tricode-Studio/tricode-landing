@@ -50,6 +50,15 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
@@ -148,36 +157,56 @@ export default function Nav() {
       <AnimatePresence>
         {open && hasMobileMenu ? (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.35, ease: EASE_OUT_EXPO }}
-            className="md:hidden border-t border-white/8 bg-ink-950/95 backdrop-blur-xl overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden fixed inset-0 z-30 bg-ink-950/70 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {open && hasMobileMenu ? (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
+            className="md:hidden fixed inset-y-0 right-0 z-40 flex w-[78%] max-w-sm flex-col border-l border-white/10 bg-ink-950/98 backdrop-blur-2xl"
           >
-            <div className="container-wide py-5 flex flex-col gap-1">
+            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-7 pb-8 pt-28">
               {links.map((link, i) => (
                 <motion.a
                   key={link.href}
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: 24 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.04, ease: EASE_OUT_EXPO }}
+                  transition={{ duration: 0.4, delay: 0.1 + i * 0.05, ease: EASE_OUT_EXPO }}
                   href={isSecondaryPage ? normalizeFromSecondaryRoute(link.href) : link.href}
                   onClick={() => setOpen(false)}
-                  className="py-3 text-white/80 text-lg font-sans font-medium border-b border-white/5"
+                  className="border-b border-white/5 py-4 font-sans text-2xl font-medium text-white/85 transition-colors hover:text-white"
                 >
                   {link.label}
                 </motion.a>
               ))}
-              {ctaLabel && resolvedCtaHref ? (
+            </nav>
+            {ctaLabel && resolvedCtaHref ? (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.15 + links.length * 0.05, ease: EASE_OUT_EXPO }}
+                className="border-t border-white/8 p-7"
+              >
                 <a
                   href={resolvedCtaHref}
                   onClick={() => setOpen(false)}
-                  className="btn-primary mt-4"
+                  className="btn-primary w-full justify-center"
                 >
                   {ctaLabel} →
                 </a>
-              ) : null}
-            </div>
+              </motion.div>
+            ) : null}
           </motion.div>
         ) : null}
       </AnimatePresence>
