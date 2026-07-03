@@ -9,29 +9,61 @@ function trimmed(value: unknown) {
 }
 
 function ServiceIcon({ index }: { index: number }) {
-  const variant = index % 4;
   const common = 'h-6 w-6';
-  if (variant === 0) {
+  // Landing page
+  if (index === 0) {
     return (
       <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
         <path d="M3 4h18v4H3zM3 12h12v8H3zM17 12h4v8h-4z" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
-  if (variant === 1) {
+  // Sitio institucional
+  if (index === 1) {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5a3 3 0 013-3 3 3 0 013 3v5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  // Catálogos
+  if (index === 2) {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>
+    );
+  }
+  // Comercio electrónico
+  if (index === 3) {
     return (
       <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
         <path d="M3 6h18l-2 11H5L3 6zM3 6L2 3H1M9 21a1 1 0 100-2 1 1 0 000 2zM18 21a1 1 0 100-2 1 1 0 000 2z" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
-  if (variant === 2) {
+  // Sistemas de reservas
+  if (index === 4) {
     return (
       <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
         <path d="M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
+  // Blogs
+  if (index === 5) {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 2v6h6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M9 13h6M9 17h4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  // Soluciones personalizadas (y cualquier servicio adicional futuro)
   return (
     <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
       <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeLinecap="round" />
@@ -77,6 +109,81 @@ function LandingMockup() {
           <div key={stat} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
             <div className="display-md text-lg text-white">{stat}</div>
             <div className="mt-1 h-1.5 w-3/4 rounded-full bg-white/15" />
+          </div>
+        ))}
+      </div>
+    </MockupChrome>
+  );
+}
+
+function InstitutionalMockup() {
+  return (
+    <MockupChrome url="tuempresa.studio">
+      <div className="flex items-center gap-5 mb-7 font-mono text-[9px] uppercase tracking-widest text-white/35">
+        <span className="text-white/70">Nosotros</span>
+        <span>Servicios</span>
+        <span>Contacto</span>
+      </div>
+      <div className="space-y-2.5">
+        <div className="h-2.5 w-24 rounded-full bg-brand-purple/40" />
+        <div className="h-5 w-3/4 rounded-md bg-white/85" />
+      </div>
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        {[0, 1].map((i) => (
+          <div key={i} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+            <div className="h-6 w-6 rounded-lg bg-brand-purple/25" />
+            <div className="mt-3 h-1.5 w-4/5 rounded-full bg-white/25" />
+            <div className="mt-1.5 h-1.5 w-3/5 rounded-full bg-white/15" />
+          </div>
+        ))}
+      </div>
+    </MockupChrome>
+  );
+}
+
+function CatalogMockup() {
+  return (
+    <MockupChrome url="catalogo.studio">
+      <div className="flex items-center justify-between mb-4">
+        <div className="h-2.5 w-24 rounded-full bg-white/30" />
+        <div className="h-2 w-14 rounded-full bg-white/15" />
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+            <div
+              className={`aspect-square ${
+                i % 4 === 0 ? 'bg-gradient-to-br from-brand-purple/25 to-brand-indigo/15' : 'bg-white/[0.04]'
+              }`}
+            />
+            <div className="p-2">
+              <div className="h-1.5 w-4/5 rounded-full bg-white/25" />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 text-[11px] text-white/40">Sin checkout · consultá por WhatsApp</div>
+    </MockupChrome>
+  );
+}
+
+function BlogMockup() {
+  return (
+    <MockupChrome url="blog.studio/articulos">
+      <div className="h-2.5 w-28 rounded-full bg-white/30 mb-5" />
+      <div className="space-y-3">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+            <div
+              className={`h-12 w-16 shrink-0 rounded-lg ${
+                i === 0 ? 'bg-gradient-to-br from-brand-purple/30 to-brand-indigo/20' : 'bg-white/[0.05]'
+              }`}
+            />
+            <div className="flex-1 space-y-1.5">
+              <div className="h-1.5 w-3/4 rounded-full bg-white/30" />
+              <div className="h-1.5 w-1/2 rounded-full bg-white/15" />
+              <div className="h-1 w-1/4 rounded-full bg-brand-lavender/50" />
+            </div>
           </div>
         ))}
       </div>
@@ -177,10 +284,12 @@ function DashboardMockup() {
 }
 
 function ServiceMockup({ index }: { index: number }) {
-  const variant = index % 4;
-  if (variant === 0) return <LandingMockup />;
-  if (variant === 1) return <EcommerceMockup />;
-  if (variant === 2) return <BookingMockup />;
+  if (index === 0) return <LandingMockup />;
+  if (index === 1) return <InstitutionalMockup />;
+  if (index === 2) return <CatalogMockup />;
+  if (index === 3) return <EcommerceMockup />;
+  if (index === 4) return <BookingMockup />;
+  if (index === 5) return <BlogMockup />;
   return <DashboardMockup />;
 }
 

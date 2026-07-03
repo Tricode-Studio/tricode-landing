@@ -53,10 +53,22 @@ const DEFAULT_LAYOUT_SECTIONS: LandingSectionLayout[] = SECTION_META.map((sectio
 
 const DEFAULT_SERVICES: LandingService[] = [
   {
-    title: 'Páginas de aterrizaje',
+    title: 'Landing page',
     desc: 'Landing pages pensadas para convertir tráfico en consultas reales, con estructura clara, velocidad alta y medición de conversiones.',
     tag: 'Alta conversión',
     audience: 'Ideal para empresas de servicios, campañas puntuales y lanzamientos que necesitan resultados rápidos.',
+  },
+  {
+    title: 'Sitio institucional',
+    desc: 'Presencia web clara para tu marca: quiénes somos, servicios, contacto y ubicación, sin necesidad de un sistema complejo detrás.',
+    tag: 'Presencia digital',
+    audience: 'Ideal para profesionales, estudios y negocios que necesitan estar online con una base sólida.',
+  },
+  {
+    title: 'Catálogos',
+    desc: 'Mostrás todo tu catálogo de productos o servicios, organizado y fácil de navegar, sin necesidad de checkout ni pagos online.',
+    tag: 'Catálogo digital',
+    audience: 'Ideal para negocios que venden por WhatsApp, showroom o local físico y quieren mostrar su catálogo online.',
   },
   {
     title: 'Comercio electrónico',
@@ -69,6 +81,12 @@ const DEFAULT_SERVICES: LandingService[] = [
     desc: 'Sistemas de turnos y reservas con confirmaciones automáticas, disponibilidad en tiempo real y mejor experiencia para el cliente final.',
     tag: 'Más eficiencia',
     audience: 'Ideal para clínicas, consultorios, estudios y servicios con agenda.',
+  },
+  {
+    title: 'Blogs',
+    desc: 'Espacio de contenido propio para publicar artículos y novedades, integrado a tu sitio y editable desde tu CMS, pensado para SEO de largo plazo.',
+    tag: 'Contenido y SEO',
+    audience: 'Ideal para marcas que quieren posicionarse con contenido y atraer tráfico orgánico.',
   },
   {
     title: 'Soluciones Personalizadas',
@@ -101,22 +119,22 @@ const DEFAULT_TEAM: LandingTeamMember[] = [
 
 const DEFAULT_CMS_FEATURES: LandingCmsFeature[] = [
   {
-    icon: '◐',
+    icon: 'edit',
     title: 'Autogestión total',
     desc: 'Editás textos, imágenes, productos, proyectos o reservas sin escribir una línea de código y sin pedirnos cambios.',
   },
   {
-    icon: '◑',
+    icon: 'people',
     title: 'Interfaz hecha para personas',
     desc: 'Pensado para no-técnicos: campos claros, vistas previas en vivo y guardado seguro. Si sabés usar Instagram, lo vas a manejar.',
   },
   {
-    icon: '◒',
+    icon: 'puzzle',
     title: 'Adaptado a tu negocio',
     desc: 'Cada CMS se modela según tus entidades reales: catálogo, citas, casos, equipo. No hay campos sobrantes ni atajos genéricos.',
   },
   {
-    icon: '◓',
+    icon: 'bolt',
     title: 'Cambios al instante',
     desc: 'Lo que actualizás aparece publicado en segundos. Sin recompilar, sin esperar a un desarrollador, sin riesgo de romper nada.',
   },

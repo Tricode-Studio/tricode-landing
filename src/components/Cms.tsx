@@ -8,6 +8,52 @@ function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+function FeatureIcon({ iconKey }: { iconKey: string }) {
+  const common = 'h-6 w-6';
+  if (iconKey === 'edit') {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  if (iconKey === 'people') {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <path
+          d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+  if (iconKey === 'puzzle') {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <line x1="4" y1="6" x2="20" y2="6" strokeLinecap="round" />
+        <circle cx="9" cy="6" r="2" fill="currentColor" stroke="none" />
+        <line x1="4" y1="12" x2="20" y2="12" strokeLinecap="round" />
+        <circle cx="15" cy="12" r="2" fill="currentColor" stroke="none" />
+        <line x1="4" y1="18" x2="20" y2="18" strokeLinecap="round" />
+        <circle cx="7" cy="18" r="2" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+  if (iconKey === 'bolt') {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+      <path d="M12 2l4 4-4 4-4-4 4-4zM12 14l4 4-4 4-4-4 4-4z" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function CmsPanel({
   title,
   subtitle,
@@ -353,7 +399,9 @@ export default function Cms() {
                 <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-brand-violet/15 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative">
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl text-brand-purple">{feature.icon || '◆'}</span>
+                    <div className="h-11 w-11 rounded-xl bg-grad-soft border border-brand-purple/30 flex items-center justify-center text-brand-purple">
+                      <FeatureIcon iconKey={feature.icon || ''} />
+                    </div>
                     <span className="font-mono text-[10px] text-white/35">
                       0{index + 1}
                     </span>
