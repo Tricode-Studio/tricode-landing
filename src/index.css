@@ -99,12 +99,23 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 .text-grad-violet {
   background: linear-gradient(135deg, #C4B5FD 0%, #8B5CF6 60%, #6366F1 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+/* El fondo violeta oscuro del ::selection global (más abajo) tapaba por completo
+   el degradado claro al seleccionar texto -- se desactiva sobre estos elementos
+   para que la selección no oculte las letras. */
+.text-grad::selection,
+.text-grad-violet::selection {
+  background-color: transparent;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* --- Editorial display typography --- */

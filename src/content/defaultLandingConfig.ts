@@ -38,7 +38,7 @@ const SECTION_META: SectionMeta[] = [
   { id: 'projects', navLabel: 'Proyectos', navHref: '#proyectos' },
   { id: 'faq', navLabel: 'Preguntas', navHref: '#faq' },
   { id: 'process' },
-  { id: 'team', navLabel: 'Equipo', navHref: '#equipo' },
+  { id: 'team' },
   { id: 'contact', navLabel: 'Contacto', navHref: '#contacto' },
   { id: 'stats' },
 ];
