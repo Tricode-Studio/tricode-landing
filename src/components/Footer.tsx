@@ -64,7 +64,6 @@ export default function Footer() {
   const brandName = trimmed(config.brandName);
   const [brandTop, ...brandBottomParts] = brandName.split(' ');
   const brandBottom = brandBottomParts.join(' ').trim();
-  const copyright = trimmed(config.footer?.copyright);
   const isProjects = isSecondaryLocation();
   const brandHref = isProjects ? '/' : '#top';
   const navLinks = resolveNavLinksFromLayout(config);
@@ -196,20 +195,6 @@ export default function Footer() {
             </div>
           ) : null}
         </motion.div>
-      </div>
-
-      {/* Bottom */}
-      <div className="container-wide pb-10">
-        <div className="pt-8 border-t border-white/8 flex flex-col md:flex-row items-center justify-between gap-4">
-          {copyright ? (
-            <div className="font-mono text-[11px] text-white/40 uppercase tracking-[0.18em]">
-              {copyright}
-            </div>
-          ) : null}
-          <div className="font-mono text-[11px] text-white/40 uppercase tracking-[0.18em]">
-            Hecho desde Trinidad · Flores · UY
-          </div>
-        </div>
       </div>
     </footer>
   );
