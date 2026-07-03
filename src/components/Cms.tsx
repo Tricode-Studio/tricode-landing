@@ -270,7 +270,8 @@ export default function Cms() {
                   <SplitText
                     as="span"
                     text={titleHighlight}
-                    className="block italic-serif text-grad mt-1"
+                    className="block mt-1"
+                    wordClassName="italic-serif text-grad"
                     delay={0.2}
                   />
                 ) : null}

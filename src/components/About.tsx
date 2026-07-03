@@ -174,7 +174,8 @@ export default function About() {
                   <SplitText
                     as="span"
                     text={titleHighlight}
-                    className="block italic-serif text-grad mt-2"
+                    className="block mt-2"
+                    wordClassName="italic-serif text-grad"
                     delay={0.18}
                   />
                 ) : null}

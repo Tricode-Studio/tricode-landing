@@ -54,13 +54,14 @@ export default function SectionHeading({
             <SplitText
               as="span"
               text={titleHighlight}
-              className={`block mt-1 ${
+              className="block mt-1"
+              wordClassName={
                 highlightAs === 'gradient'
                   ? 'text-grad'
                   : highlightAs === 'serif'
                   ? 'italic text-white/90'
                   : 'italic text-grad'
-              }`}
+              }
               delay={0.18}
             />
           ) : null}
