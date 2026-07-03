@@ -63,10 +63,8 @@ export default function Process() {
   return (
     <section
       id="proceso"
-      className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden bg-cover bg-center"
-      style={{ backgroundImage: "url('/bg-section02.png')" }}
+      className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/55 to-ink-950" />
       <div className="absolute top-1/3 -right-32 h-[400px] w-[400px] rounded-full bg-brand-indigo/10 blur-[160px]" />
 
       <div className="container-wide relative">

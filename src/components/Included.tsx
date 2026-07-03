@@ -26,7 +26,11 @@ export default function Included() {
   if (!items.length) return null;
 
   return (
-    <section className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden">
+    <section
+      className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden bg-cover bg-center"
+      style={{ backgroundImage: "url('/bg-section02.png')" }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/55 to-ink-950" />
       <div className="absolute bottom-0 left-1/3 h-[380px] w-[380px] rounded-full bg-brand-indigo/8 blur-[160px]" />
 
       <div className="container-wide relative">
