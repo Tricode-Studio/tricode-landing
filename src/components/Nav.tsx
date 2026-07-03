@@ -120,15 +120,29 @@ export default function Nav() {
           ) : null}
           {hasMobileMenu ? (
             <button
+              type="button"
               aria-label="Menú"
-              className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.03] backdrop-blur-md"
+              aria-expanded={open}
+              className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-white/[0.04] backdrop-blur-md transition-colors duration-300 hover:border-white/25 hover:bg-white/[0.08]"
               onClick={() => setOpen((value) => !value)}
             >
-              <motion.span
-                animate={{ rotate: open ? 90 : 0 }}
-                transition={{ duration: 0.3 }}
-                className="block h-0.5 w-5 bg-white relative before:content-[''] before:absolute before:-top-1.5 before:left-0 before:h-0.5 before:w-5 before:bg-white after:content-[''] after:absolute after:top-1.5 after:left-0 after:h-0.5 after:w-5 after:bg-white"
-              />
+              <span className="relative flex h-[15px] w-5 flex-col justify-between">
+                <motion.span
+                  animate={{ rotate: open ? 45 : 0, y: open ? 6.5 : 0 }}
+                  transition={{ duration: 0.35, ease: EASE_OUT_EXPO }}
+                  className="block h-[1.5px] w-full rounded-full bg-white origin-center"
+                />
+                <motion.span
+                  animate={{ opacity: open ? 0 : 1, x: open ? 8 : 0 }}
+                  transition={{ duration: 0.2, ease: EASE_OUT_EXPO }}
+                  className="block h-[1.5px] w-full rounded-full bg-white"
+                />
+                <motion.span
+                  animate={{ rotate: open ? -45 : 0, y: open ? -6.5 : 0 }}
+                  transition={{ duration: 0.35, ease: EASE_OUT_EXPO }}
+                  className="block h-[1.5px] w-full rounded-full bg-white origin-center"
+                />
+              </span>
             </button>
           ) : null}
         </div>

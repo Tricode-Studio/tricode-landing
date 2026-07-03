@@ -86,7 +86,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-[100svh] flex flex-col justify-end pt-32 pb-32 md:pb-36 overflow-hidden"
+      className="relative flex flex-col justify-end pt-24 pb-24 sm:min-h-[100svh] sm:pt-32 sm:pb-32 md:pb-36 overflow-hidden"
     >
       {/* Layered background */}
       {backgroundImage ? (
