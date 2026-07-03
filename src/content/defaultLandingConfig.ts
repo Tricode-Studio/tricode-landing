@@ -535,10 +535,10 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     description: 'Completá un cuestionario estratégico y te devolvemos una propuesta clara de alcance, tiempos y costo.',
     whatsappNumber: '091035868',
     whatsappText: '¡Hola Tricode! Quiero cotizar un proyecto.',
-    email: 'hola@tricode.studio',
+    email: 'contacto@tricode.studio',
     primaryCtaLabel: 'Escribinos por WhatsApp',
     primaryCtaHref: '',
-    secondaryCtaLabel: 'hola@tricode.studio',
+    secondaryCtaLabel: 'contacto@tricode.studio',
     secondaryCtaHref: 'https://mail.google.com/mail/?view=cm&fs=1',
     emailSubject: 'Quiero cotizar un proyecto con Tricode',
     emailBody:
@@ -549,7 +549,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     socials: [
       { label: 'Instagram', url: 'https://instagram.com/tricode.studio' },
       { label: 'LinkedIn', url: 'https://linkedin.com' },
-      { label: 'Email', url: 'mailto:hola@tricode.studio' },
+      { label: 'Email', url: 'mailto:contacto@tricode.studio' },
     ],
     copyright: `© ${new Date().getFullYear()} Tricode Studio. Todos los derechos reservados.`,
   },
