@@ -76,12 +76,12 @@ export default function Nav() {
           {brandName ? (
             <div className="flex items-baseline gap-1.5 leading-none">
               {brandTop ? (
-                <span className="display-md text-base md:text-lg font-normal tracking-tight text-white">
+                <span className="font-sans text-base md:text-lg font-semibold tracking-tight text-white">
                   {brandTop}
                 </span>
               ) : null}
               {brandBottom ? (
-                <span className="display-md text-base md:text-lg font-normal tracking-tight text-white/45">
+                <span className="font-sans text-base md:text-lg font-medium tracking-tight text-white/45">
                   {brandBottom}
                 </span>
               ) : null}
@@ -94,7 +94,7 @@ export default function Nav() {
             <a
               key={link.href}
               href={isSecondaryPage ? normalizeFromSecondaryRoute(link.href) : link.href}
-              className="relative px-3 py-2 text-[13px] font-mono uppercase tracking-[0.15em] text-white/65 transition-colors hover:text-white"
+              className="relative px-3 py-2 font-sans text-[14px] font-medium text-white/65 transition-colors hover:text-white"
             >
               <span className="link-reveal">{link.label}</span>
             </a>
@@ -152,7 +152,7 @@ export default function Nav() {
                   transition={{ duration: 0.4, delay: i * 0.04, ease: EASE_OUT_EXPO }}
                   href={isSecondaryPage ? normalizeFromSecondaryRoute(link.href) : link.href}
                   onClick={() => setOpen(false)}
-                  className="py-3 text-white/80 text-lg display-md border-b border-white/5"
+                  className="py-3 text-white/80 text-lg font-sans font-medium border-b border-white/5"
                 >
                   {link.label}
                 </motion.a>

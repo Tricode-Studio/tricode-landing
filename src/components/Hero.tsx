@@ -115,9 +115,9 @@ export default function Hero() {
         {/* Display block */}
         <div className="grid grid-cols-12 gap-x-8 gap-y-14 items-end">
           <div className="col-span-12 lg:col-span-9 xl:col-span-9">
-            <h1 className="display-xl text-[3rem] xs:text-[3.6rem] sm:text-[5rem] md:text-[7rem] lg:text-[8.6rem] xl:text-[10.5rem]">
+            <h1 className="font-sans font-semibold tracking-tight leading-[1.06] text-[2.5rem] xs:text-[2.9rem] sm:text-[3.6rem] md:text-[4.5rem] lg:text-[5.1rem] xl:text-[5.6rem]">
               <motion.span
-                initial={{ y: 60, opacity: 0 }}
+                initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 1.1, ease: EASE_OUT_EXPO, delay: 0.25 }}
                 className="block text-bone-50"
@@ -127,7 +127,7 @@ export default function Hero() {
 
               {rotating.length ? (
                 <motion.span
-                  initial={{ y: 60, opacity: 0 }}
+                  initial={{ y: 40, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 1.1, ease: EASE_OUT_EXPO, delay: 0.42 }}
                   className="block"
@@ -146,7 +146,7 @@ export default function Hero() {
 
               {titleSuffix ? (
                 <motion.span
-                  initial={{ y: 60, opacity: 0 }}
+                  initial={{ y: 40, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 1.1, ease: EASE_OUT_EXPO, delay: 0.6 }}
                   className="block text-bone-50"
