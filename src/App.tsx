@@ -11,7 +11,6 @@ import Projects from './components/Projects';
 import Faq from './components/Faq';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import Cursor from './components/Cursor';
 import ProjectsPage from './components/ProjectsPage';
 import BriefPage from './components/BriefPage';
 import { useReveal } from './hooks/useReveal';
@@ -62,7 +61,6 @@ function Home({ sectionOrder }: { sectionOrder: LandingSectionId[] }) {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <Cursor />
       <Nav />
       <main>
         {sectionOrder.map((sectionId) => (

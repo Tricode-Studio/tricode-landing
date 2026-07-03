@@ -214,47 +214,6 @@
   inherits: false;
 }
 
-/* --- Custom cursor --- */
-@media (pointer: fine) {
-  .cursor-blob {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 6px;
-    border-radius: 9999px;
-    background: rgba(247, 244, 236, 0.9);
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, opacity 0.25s ease;
-    mix-blend-mode: difference;
-  }
-  .cursor-ring {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 9999px;
-    border: 1px solid rgba(247, 244, 236, 0.22);
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, background 0.25s ease;
-  }
-  .cursor-blob.is-active { width: 0; height: 0; opacity: 0; }
-  .cursor-ring.is-active {
-    width: 60px;
-    height: 60px;
-    border-color: rgba(185, 167, 255, 0.7);
-    background: rgba(139, 92, 246, 0.08);
-  }
-  body.has-custom-cursor,
-  body.has-custom-cursor a,
-  body.has-custom-cursor button { cursor: none; }
-}
-
 /* --- Shimmer text --- */
 .shimmer-text {
   background: linear-gradient(

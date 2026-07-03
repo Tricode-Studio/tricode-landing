@@ -112,18 +112,6 @@ export default function Hero() {
       <Particles count={20} />
 
       <div className="relative w-full container-wide">
-        {/* Top eyebrow row */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay: 0.1 }}
-          className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-10 sm:mb-14 font-mono text-[10px] uppercase tracking-[0.32em] text-bone-50/55"
-        >
-          <span>Trinidad · Flores · Uruguay</span>
-          <span className="text-bone-50/20 hidden sm:inline">／</span>
-          <span className="hidden sm:inline">Producto · Diseño · Código</span>
-        </motion.div>
-
         {/* Display block */}
         <div className="grid grid-cols-12 gap-x-8 gap-y-14 items-end">
           <div className="col-span-12 lg:col-span-9 xl:col-span-9">

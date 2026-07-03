@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import Nav from './Nav';
 import Footer from './Footer';
-import Cursor from './Cursor';
 import { submitPublicBudgetRequest } from '../lib/cms';
 
 type BriefFormState = {
@@ -315,7 +314,6 @@ export default function BriefPage() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <Cursor />
       <Nav />
 
       <main className="pt-32 md:pt-40 pb-24 md:pb-32">

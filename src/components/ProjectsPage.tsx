@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import ProjectCard from './ProjectCard';
 import Nav from './Nav';
 import Footer from './Footer';
-import Cursor from './Cursor';
 import { useReveal } from '../hooks/useReveal';
 import { useLandingData } from '../content/LandingDataContext';
 
@@ -51,7 +50,6 @@ export default function ProjectsPage() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <Cursor />
       <Nav />
 
       <main className="pt-32 md:pt-40 pb-24 md:pb-32">
