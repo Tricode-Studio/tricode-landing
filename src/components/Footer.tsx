@@ -198,24 +198,6 @@ export default function Footer() {
         </motion.div>
       </div>
 
-      {/* Big visual band: isotipo gigante + glow */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={viewportOnce}
-        transition={{ duration: 1.4, ease: EASE_OUT_EXPO }}
-        className="relative h-[240px] sm:h-[320px] md:h-[420px] mt-8 md:mt-4 select-none pointer-events-none"
-        aria-hidden
-      >
-        <div className="absolute inset-x-0 bottom-0 mx-auto h-[220px] w-[220px] sm:h-[320px] sm:w-[320px] md:h-[420px] md:w-[420px] rounded-full bg-grad-brand opacity-20 blur-[120px]" />
-        <img
-          src={BRAND_MARK_SRC}
-          alt=""
-          className="absolute left-1/2 bottom-[-12%] -translate-x-1/2 h-[280px] sm:h-[380px] md:h-[520px] w-auto object-contain opacity-90"
-        />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-950 to-transparent" />
-      </motion.div>
-
       {/* Bottom */}
       <div className="container-wide pb-10">
         <div className="pt-8 border-t border-white/8 flex flex-col md:flex-row items-center justify-between gap-4">
