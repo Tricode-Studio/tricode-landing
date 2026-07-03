@@ -145,10 +145,8 @@ export default function About() {
   return (
     <section
       id="nosotros"
-      className="relative py-28 md:py-44 overflow-hidden border-t border-bone-50/5 bg-cover bg-center"
-      style={{ backgroundImage: "url('/bg-section01.png')" }}
+      className="relative py-28 md:py-44 overflow-hidden border-t border-bone-50/5"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/55 to-ink-950" />
       <div className="absolute -top-40 left-1/3 h-[500px] w-[500px] rounded-full bg-brand-purple/8 blur-[160px]" />
       <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-brand-indigo/8 blur-[160px]" />
 

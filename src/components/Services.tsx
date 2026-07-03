@@ -325,8 +325,10 @@ export default function Services() {
   return (
     <section
       id="servicios"
-      className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden"
+      className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden bg-cover bg-center"
+      style={{ backgroundImage: "url('/bg-section01.png')" }}
     >
+      <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/55 to-ink-950" />
       <div className="absolute -top-32 left-1/4 h-[420px] w-[420px] rounded-full bg-brand-violet/10 blur-[160px]" />
 
       <div className="container-wide relative">
