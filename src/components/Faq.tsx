@@ -36,7 +36,7 @@ export default function Faq() {
       className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: "url('/bg-section03.png')" }}
     >
-      <div className="absolute inset-0 bg-ink-950/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/55 to-ink-950" />
       <div className="absolute bottom-1/4 left-0 h-[360px] w-[360px] rounded-full bg-brand-violet/10 blur-[140px]" />
 
       <div className="container-wide relative">
