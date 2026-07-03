@@ -22,7 +22,7 @@ import {
   type LandingSectionId,
 } from './content/LandingDataContext';
 import { withLandingDefaults } from './content/defaultLandingConfig';
-import { fetchCmsProjects, fetchLandingConfig } from './lib/cms';
+import { fetchCmsProjects } from './lib/cms';
 import { resolveEnabledSectionOrder } from './lib/sections';
 import { applyLandingSeo } from './lib/seo';
 
@@ -75,9 +75,8 @@ function Home({ sectionOrder }: { sectionOrder: LandingSectionId[] }) {
 
 export default function App() {
   const [route, setRoute] = useState(getRoute());
-  const [config, setConfig] = useState<LandingConfig>(() => withLandingDefaults({}));
+  const [config] = useState<LandingConfig>(() => withLandingDefaults({}));
   const [projects, setProjects] = useState<Project[]>([]);
-  const [isConfigReady, setIsConfigReady] = useState(true);
   const sectionOrder = resolveEnabledSectionOrder(config);
 
   useEffect(() => {
@@ -94,32 +93,23 @@ export default function App() {
   useEffect(() => {
     let alive = true;
 
-    const loadLandingData = async () => {
-      const [configResult, projectsResult] = await Promise.allSettled([
-        fetchLandingConfig(),
-        fetchCmsProjects(),
-      ]);
+    // El copy/layout del sitio (nav, hero, secciones) vive 100% en
+    // defaultLandingConfig.ts -- ya no se pisa con un landing-config remoto
+    // del CMS. Solo los proyectos destacados siguen viniendo de ahí (son la
+    // única pieza de contenido que se gestiona desde el workspace).
+    const loadProjects = async () => {
+      const result = await fetchCmsProjects().catch((error) => {
+        console.error('No se pudieron cargar los proyectos destacados', error);
+        return null;
+      });
 
-      if (!alive) {
-        return;
-      }
-
-      if (configResult.status === 'fulfilled') {
-        setConfig(withLandingDefaults(configResult.value));
-      } else {
-        setConfig((current) => withLandingDefaults(current));
-      }
-
-      if (projectsResult.status === 'fulfilled') {
-        setProjects(projectsResult.value);
-      }
-
-      setIsConfigReady(true);
+      if (!alive || !result) return;
+      setProjects(result);
     };
 
-    void loadLandingData();
+    void loadProjects();
     const timer = window.setInterval(() => {
-      void loadLandingData();
+      void loadProjects();
     }, 45_000);
 
     return () => {
@@ -133,7 +123,7 @@ export default function App() {
   }, [route, config]);
 
   return (
-    <LandingDataProvider value={{ config, projects, isConfigReady }}>
+    <LandingDataProvider value={{ config, projects, isConfigReady: true }}>
       {route.startsWith('/proyectos')
         ? <ProjectsPage />
         : route.startsWith('/brief')

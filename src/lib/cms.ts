@@ -1,5 +1,3 @@
-import type { LandingConfig } from '../content/LandingDataContext';
-import { withLandingDefaults } from '../content/defaultLandingConfig';
 import type { Project } from '../types/project';
 
 const configuredApiBaseUrl =
@@ -38,10 +36,6 @@ type PublicProjectsResponse = {
       position?: number;
     };
   }>;
-};
-
-type PublicLandingConfigResponse = {
-  config: LandingConfig | null;
 };
 
 export type PublicBudgetFormPayload = {
@@ -233,19 +227,6 @@ function getTenantSlugOrThrow() {
   return TENANT_SLUG;
 }
 
-export async function fetchLandingConfig() {
-  const tenantSlug = getTenantSlugOrThrow();
-  const response = await fetch(`${API_BASE_URL}/public/${tenantSlug}/landing-config`, {
-    cache: 'no-store',
-    headers: { 'Cache-Control': 'no-cache' },
-  });
-  if (!response.ok) {
-    throw new Error(`No se pudo cargar la configuración de landing (${response.status})`);
-  }
-
-  const payload = (await response.json()) as PublicLandingConfigResponse;
-  return withLandingDefaults(payload.config ?? {});
-}
 
 export async function fetchCmsProjects() {
   const tenantSlug = getTenantSlugOrThrow();
