@@ -125,7 +125,6 @@ export default function Marquee() {
               <span className="font-mono text-[11px] sm:text-xs md:text-sm uppercase tracking-[0.22em] text-bone-50/45 group-hover:text-bone-50 transition-colors whitespace-nowrap">
                 {tech}
               </span>
-              <span className="text-bone-50/15 ml-2">／</span>
             </div>
           );
         })}

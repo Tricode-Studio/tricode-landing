@@ -123,7 +123,7 @@ export default function Nav() {
               type="button"
               aria-label="Menú"
               aria-expanded={open}
-              className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-white/[0.04] backdrop-blur-md transition-colors duration-300 hover:border-white/25 hover:bg-white/[0.08]"
+              className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-300 hover:bg-white/[0.06] active:bg-white/[0.1]"
               onClick={() => setOpen((value) => !value)}
             >
               <span className="relative flex h-[15px] w-5 flex-col justify-between">
