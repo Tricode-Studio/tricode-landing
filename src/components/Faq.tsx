@@ -31,7 +31,12 @@ export default function Faq() {
   }
 
   return (
-    <section id="faq" className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden">
+    <section
+      id="faq"
+      className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden bg-cover bg-center"
+      style={{ backgroundImage: "url('/bg-section03.png')" }}
+    >
+      <div className="absolute inset-0 bg-ink-950/60" />
       <div className="absolute bottom-1/4 left-0 h-[360px] w-[360px] rounded-full bg-brand-violet/10 blur-[140px]" />
 
       <div className="container-wide relative">

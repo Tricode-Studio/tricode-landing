@@ -78,6 +78,9 @@ export default function Footer() {
       className="relative border-t border-white/8 overflow-hidden bg-cover bg-bottom bg-no-repeat"
       style={{ backgroundImage: "url('/footer-bg.png')" }}
     >
+      <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/75 to-ink-950/50" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink-950/40 via-transparent to-transparent" />
+
       <div className="container-wide pt-20 md:pt-28 pb-16 relative">
         <motion.div
           initial={{ opacity: 0, y: 32 }}
