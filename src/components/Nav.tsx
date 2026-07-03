@@ -74,14 +74,14 @@ export default function Nav() {
             className="h-9 md:h-10 w-auto object-contain"
           />
           {brandName ? (
-            <div className="flex flex-col items-start leading-none">
+            <div className="flex items-baseline gap-1.5 leading-none">
               {brandTop ? (
                 <span className="display-md text-base md:text-lg font-normal tracking-tight text-white">
                   {brandTop}
                 </span>
               ) : null}
               {brandBottom ? (
-                <span className="mt-1 font-mono text-[7px] md:text-[8px] uppercase tracking-[0.32em] text-brand-purple/90">
+                <span className="display-md text-base md:text-lg font-normal tracking-tight text-white/45">
                   {brandBottom}
                 </span>
               ) : null}

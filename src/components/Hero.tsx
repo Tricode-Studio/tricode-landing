@@ -33,7 +33,6 @@ export default function Hero() {
   const secondaryCtaLabel = trimmed(config.hero?.secondaryCtaLabel);
   const primaryCtaHref = trimmed(config.hero?.primaryCtaHref);
   const secondaryCtaHref = trimmed(config.hero?.secondaryCtaHref);
-  const statusLabel = trimmed(config.hero?.statusLabel);
   const techStack =
     Array.isArray(config.hero?.techStack)
       ? config.hero.techStack.map((item) => trimmed(item)).filter(Boolean)
@@ -120,14 +119,6 @@ export default function Hero() {
           transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay: 0.1 }}
           className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-10 sm:mb-14 font-mono text-[10px] uppercase tracking-[0.32em] text-bone-50/55"
         >
-          <span className="flex items-center gap-2.5">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400/60 animate-ping" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            </span>
-            {statusLabel || 'Estudio · Disponible 2026'}
-          </span>
-          <span className="text-bone-50/20">／</span>
           <span>Trinidad · Flores · Uruguay</span>
           <span className="text-bone-50/20 hidden sm:inline">／</span>
           <span className="hidden sm:inline">Producto · Diseño · Código</span>
@@ -246,21 +237,6 @@ export default function Hero() {
           </motion.div>
         ) : null}
       </div>
-
-      {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.6, duration: 1 }}
-        className="hidden md:flex absolute bottom-32 right-12 lg:right-20 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.32em] text-bone-50/35"
-      >
-        <span>Scroll</span>
-        <motion.span
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          className="block h-14 w-px bg-gradient-to-b from-bone-50/45 to-transparent"
-        />
-      </motion.div>
 
       <div className="absolute inset-x-0 bottom-0 z-20">
         <Marquee />
