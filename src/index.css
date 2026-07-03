@@ -150,6 +150,8 @@
   display: inline-block;
   position: relative;
   vertical-align: top;
+  padding-top: 0.22em;
+  margin-top: -0.22em;
   padding-bottom: 0.18em;
   margin-bottom: -0.12em;
   overflow: clip;
