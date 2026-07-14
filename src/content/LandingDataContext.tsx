@@ -9,14 +9,14 @@ export type LandingLink = {
 export type LandingSectionId =
   | 'hero'
   | 'stats'
+  | 'clients'
   | 'about'
   | 'services'
   | 'cms'
+  | 'statement'
   | 'included'
-  | 'team'
   | 'process'
   | 'projects'
-  | 'faq'
   | 'contact';
 
 export type LandingCmsFeature = {
@@ -33,10 +33,14 @@ export type LandingSectionLayout = {
 };
 
 export type LandingStat = {
-  value: number;
-  prefix?: string;
-  suffix?: string;
+  value: string;
   label: string;
+};
+
+export type LandingClientLogo = {
+  name: string;
+  src?: string;
+  url?: string;
 };
 
 export type LandingService = {
@@ -53,7 +57,6 @@ export type LandingPillar = {
 };
 
 export type LandingTeamMember = {
-  seed: string;
   name: string;
   role: string;
   bio: string;
@@ -110,15 +113,18 @@ export type LandingConfig = {
         description?: string;
         items?: LandingService[];
       };
-  team?:
-    | LandingTeamMember[]
-    | {
-        sectionLabel?: string;
-        titleTop?: string;
-        titleHighlight?: string;
-        description?: string;
-        members?: LandingTeamMember[];
-      };
+  clients?: {
+    sectionLabel?: string;
+    title?: string;
+    logos?: LandingClientLogo[];
+  };
+  team?: {
+    sectionLabel?: string;
+    titleTop?: string;
+    titleHighlight?: string;
+    description?: string;
+    members?: LandingTeamMember[];
+  };
   process?: {
     sectionLabel?: string;
     titleTop?: string;
@@ -172,13 +178,6 @@ export type LandingConfig = {
     pageCtaLabel?: string;
     pageCtaHref?: string;
   };
-  faq?: {
-    sectionLabel?: string;
-    titleTop?: string;
-    titleHighlight?: string;
-    description?: string;
-    items?: Array<{ question: string; answer: string }>;
-  };
   contact?: {
     sectionLabel?: string;
     titleTop?: string;
@@ -205,6 +204,9 @@ type LandingDataValue = {
   config: LandingConfig;
   projects: Project[];
   isConfigReady: boolean;
+  // false hasta que termina el primer fetch de proyectos (éxito o error).
+  // Permite distinguir "cargando" de "genuinamente vacío" en las páginas.
+  projectsReady: boolean;
 };
 
 const LandingDataContext = createContext<LandingDataValue | undefined>(undefined);

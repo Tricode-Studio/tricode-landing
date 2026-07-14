@@ -235,7 +235,7 @@ function BookingMockup() {
             key={slot}
             className={`aspect-square rounded-md flex items-center justify-center text-[10px] font-mono ${
               busy.includes(slot)
-                ? 'bg-grad-brand text-white shadow-[0_0_12px_rgba(124,58,237,0.55)]'
+                ? 'bg-grad-brand text-[#fff] shadow-[0_0_12px_rgba(124,58,237,0.55)]'
                 : 'border border-white/[0.06] bg-white/[0.02] text-white/25'
             }`}
           >
@@ -325,11 +325,9 @@ export default function Services() {
   return (
     <section
       id="servicios"
-      className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden bg-cover bg-center"
-      style={{ backgroundImage: "url('/bg-section01.png')" }}
+      className="sbg-services relative py-28 md:py-40 border-t border-white/5 overflow-hidden bg-cover bg-center"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/55 to-ink-950" />
-      <div className="absolute -top-32 left-1/4 h-[420px] w-[420px] rounded-full bg-brand-violet/10 blur-[160px]" />
 
       <div className="container-wide relative">
         <div className="max-w-4xl mb-16 md:mb-24">
@@ -353,8 +351,8 @@ export default function Services() {
                 <SplitText
                   as="span"
                   text={titleHighlight}
-                  className="block mt-1"
-                  wordClassName="italic-serif text-grad"
+                  className="block mt-1 text-white"
+                  markWord="construir"
                   delay={0.2}
                 />
               ) : null}

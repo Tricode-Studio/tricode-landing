@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ProjectCard from './ProjectCard';
 import Nav from './Nav';
 import Footer from './Footer';
@@ -7,6 +7,15 @@ import { useLandingData } from '../content/LandingDataContext';
 
 function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function normalize(value: string) {
+  // NFD descompone acentos en marcas combinantes; el filtro final a [a-z0-9]
+  // ya las elimina, así "E-commerce", "Reservas" y "reserva" matchean igual.
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[^a-z0-9]/g, '');
 }
 
 function normalizeBackToHomeHref(href: string) {
@@ -25,7 +34,7 @@ function normalizeProjectsCtaHref(href: string) {
 }
 
 export default function ProjectsPage() {
-  const { projects, config } = useLandingData();
+  const { projects, projectsReady, config } = useLandingData();
   useReveal();
   const pageLabel = trimmed(config.projects?.pageLabel);
   const pageTitle = trimmed(config.projects?.pageTitle);
@@ -43,6 +52,23 @@ export default function ProjectsPage() {
   const nextStepTitleTop = trimmed(config.projects?.nextStepTitleTop);
   const nextStepTitleHighlight = trimmed(config.projects?.nextStepTitleHighlight);
   const cardCtaLabel = trimmed(config.projects?.cardCtaLabel);
+
+  // El primer filtro ("Todos") muestra todo; el resto matchea contra la
+  // categoría o los tags del proyecto (normalizado, tolerante a acentos/guiones).
+  const [activeFilter, setActiveFilter] = useState(0);
+  const visibleProjects = useMemo(() => {
+    if (activeFilter <= 0 || !filters.length) {
+      return projects;
+    }
+    const needle = normalize(filters[activeFilter] ?? '');
+    if (!needle) return projects;
+    return projects.filter((project) => {
+      const haystack = [project.category, ...(project.tags ?? [])]
+        .map((value) => normalize(trimmed(value)))
+        .filter(Boolean);
+      return haystack.some((value) => value.includes(needle) || needle.includes(value));
+    });
+  }, [projects, filters, activeFilter]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,13 +103,24 @@ export default function ProjectsPage() {
               </p>
             ) : null}
 
+            {projectsReady && projects.length ? (
+              <div className="mt-6 font-mono text-[11px] uppercase tracking-[0.24em] text-white/40 reveal reveal-delay-2">
+                {visibleProjects.length}
+                {activeFilter > 0 ? ` de ${projects.length}` : ''} proyecto
+                {(activeFilter > 0 ? visibleProjects.length : projects.length) === 1 ? '' : 's'}
+              </div>
+            ) : null}
+
             {filters.length ? (
               <div className="mt-8 flex flex-wrap gap-3 reveal reveal-delay-3">
                 {filters.map((filterLabel, index) => (
                   <button
                     key={`${filterLabel}-${index}`}
+                    type="button"
+                    onClick={() => setActiveFilter(index)}
+                    aria-pressed={index === activeFilter}
                     className={`rounded-full px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest transition-colors ${
-                      index === 0
+                      index === activeFilter
                         ? 'bg-brand-purple/20 border border-brand-purple/50 text-white'
                         : 'border border-white/10 text-white/60 hover:text-white hover:border-white/20'
                     }`}
@@ -99,19 +136,34 @@ export default function ProjectsPage() {
         <section className="mt-16 md:mt-24">
           <div className="container-x">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {projects.length
-                ? projects.map((project, index) => (
-                    <div key={project.slug || `${project.name}-${index}`} className="reveal" style={{ transitionDelay: `${(index % 3) * 80}ms` }}>
-                      <ProjectCard project={project} ctaLabel={cardCtaLabel} />
+              {!projectsReady ? (
+                // Skeletons mientras carga el CMS -- evita el flash de "no hay proyectos".
+                Array.from({ length: 6 }, (_, i) => (
+                  <div
+                    key={`skeleton-${i}`}
+                    className="animate-pulse overflow-hidden rounded-2xl border border-white/[0.06] bg-ink-900/40"
+                  >
+                    <div className="aspect-[16/10] bg-white/[0.03]" />
+                    <div className="p-6 space-y-3">
+                      <div className="h-4 w-2/3 rounded bg-white/[0.06]" />
+                      <div className="h-3 w-full rounded bg-white/[0.04]" />
+                      <div className="h-3 w-4/5 rounded bg-white/[0.04]" />
                     </div>
-                  ))
-                : pageEmptyStateLabel
-                  ? (
-                    <div className="col-span-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
-                      {pageEmptyStateLabel}
-                    </div>
-                    )
-                  : null}
+                  </div>
+                ))
+              ) : visibleProjects.length ? (
+                visibleProjects.map((project, index) => (
+                  <div key={project.slug || `${project.name}-${index}`} className="reveal" style={{ transitionDelay: `${(index % 3) * 80}ms` }}>
+                    <ProjectCard project={project} ctaLabel={cardCtaLabel} />
+                  </div>
+                ))
+              ) : pageEmptyStateLabel ? (
+                <div className="col-span-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
+                  {activeFilter > 0
+                    ? 'No hay proyectos en esta categoría todavía.'
+                    : pageEmptyStateLabel}
+                </div>
+              ) : null}
             </div>
           </div>
         </section>

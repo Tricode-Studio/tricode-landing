@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import ThemeToggle from './ThemeToggle';
 import { useLandingData } from '../content/LandingDataContext';
 import { resolveNavLinksFromLayout } from '../lib/sections';
 import { EASE_OUT_EXPO } from '../lib/motion';
 
-const BRAND_MARK_SRC = '/isotipo.png?v=20260427-1';
+const BRAND_MARK_SRC = '/isotipo.webp?v=20260714-1';
 
 function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -16,6 +17,8 @@ function isSecondaryLocation() {
   return (
     path.startsWith('/proyectos') ||
     hash.startsWith('/proyectos') ||
+    path.startsWith('/nosotros') ||
+    hash.startsWith('/nosotros') ||
     path.startsWith('/brief') ||
     hash.startsWith('/brief')
   );
@@ -108,7 +111,8 @@ export default function Nav() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <ThemeToggle />
           {ctaLabel && resolvedCtaHref ? (
             <motion.a
               href={resolvedCtaHref}

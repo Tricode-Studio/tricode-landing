@@ -1,4 +1,5 @@
 import type { LandingConfig } from '../content/LandingDataContext';
+import type { Project } from '../types/project';
 
 const DEFAULT_SITE_URL = 'https://www.tricode.studio';
 const DEFAULT_OG_IMAGE = '/branding.png';
@@ -79,8 +80,14 @@ function normalizeSocialUrl(value: string) {
 }
 
 function getCanonicalPath(route: string) {
+  if (route.startsWith('/proyectos/')) {
+    return route.replace(/\/+$/, '');
+  }
   if (route.startsWith('/proyectos')) {
     return '/proyectos';
+  }
+  if (route.startsWith('/nosotros')) {
+    return '/nosotros';
   }
   if (route.startsWith('/brief')) {
     return '/brief';
@@ -97,10 +104,34 @@ function normalizeUruguayPhone(value: string) {
   return `+${digits}`;
 }
 
-export function applyLandingSeo(route: string, config: LandingConfig) {
+export type LandingMeta = {
+  title: string;
+  description: string;
+  keywords: string;
+  brandName: string;
+  canonicalUrl: string;
+  ogImageUrl: string;
+  graph: Array<Record<string, unknown>>;
+};
+
+// Cómputo puro (sin tocar `document`) -- reusado por `applyLandingSeo` (runtime,
+// SPA) y por `scripts/prerender.mjs` (build-time, genera el <head> estático por
+// ruta para que bots/unfurlers que no ejecutan JS vean el meta correcto).
+export function computeLandingMeta(
+  route: string,
+  config: LandingConfig,
+  projects: Project[] = [],
+): LandingMeta {
   const siteUrl = normalizeSiteUrl(import.meta.env.VITE_SITE_URL ?? DEFAULT_SITE_URL);
   const canonicalPath = getCanonicalPath(route);
   const canonicalUrl = toAbsoluteUrl(siteUrl, canonicalPath);
+
+  const detailSlug = route.startsWith('/proyectos/')
+    ? decodeURIComponent(route.slice('/proyectos/'.length).replace(/\/+$/, ''))
+    : '';
+  const detailProject = detailSlug
+    ? projects.find((item) => item.slug === detailSlug) ?? null
+    : null;
 
   const brandName = cleanString(config.brandName) || 'Tricode Studio';
   const heroDescription =
@@ -115,31 +146,42 @@ export function applyLandingSeo(route: string, config: LandingConfig) {
   const normalizedPhone = normalizeUruguayPhone(
     cleanString(config.contact?.whatsappNumber),
   );
-  const faqItems = Array.isArray(config.faq?.items)
-    ? config.faq.items
-        .map((item) => ({
-          question: cleanString(item?.question),
-          answer: cleanString(item?.answer),
-        }))
-        .filter((item) => item.question && item.answer)
-    : [];
   const sameAs = (config.footer?.socials ?? [])
     .map((item) => normalizeSocialUrl(cleanString(item.url)))
     .filter(Boolean);
 
   const isProjectsPage = canonicalPath === '/proyectos';
   const isBriefPage = canonicalPath === '/brief';
-  const title = isProjectsPage
-    ? `Proyectos de ${brandName} | Desarrollo web y software a medida`
-    : isBriefPage
-      ? `Cuestionario de Proyecto | ${brandName}`
-    : `${brandName} | Desarrollo web y software a medida en Uruguay`;
-  const description = isProjectsPage
-    ? `${projectsDescription} Conocé proyectos de Tricode y su impacto en negocio.`
-    : isBriefPage
-      ? briefDescription
-    : `${heroDescription} En Tricode creamos landing pages, e-commerce y sistemas personalizados.`;
-  const ogImageUrl = toAbsoluteUrl(siteUrl, DEFAULT_OG_IMAGE);
+  const isNosotrosPage = canonicalPath === '/nosotros';
+  const nosotrosDescription =
+    cleanString(config.about?.description) ||
+    'Conocé a Tricode: un estudio compacto de producto, diseño y desarrollo en Trinidad, Flores, Uruguay.';
+
+  let title: string;
+  let description: string;
+  if (detailProject) {
+    const projectName = cleanString(detailProject.name) || 'Proyecto';
+    title = `${projectName} | Proyectos de ${brandName}`;
+    description =
+      cleanString(detailProject.short) ||
+      cleanString(detailProject.long) ||
+      `Caso de ${brandName}: ${projectName}. Diseño, desarrollo y producto a medida.`;
+  } else if (isProjectsPage) {
+    title = `Proyectos de ${brandName} | Desarrollo web y software a medida`;
+    description = `${projectsDescription} Conocé proyectos de Tricode y su impacto en negocio.`;
+  } else if (isNosotrosPage) {
+    title = `Nosotros | ${brandName}, estudio de desarrollo en Uruguay`;
+    description = nosotrosDescription;
+  } else if (isBriefPage) {
+    title = `Cuestionario de Proyecto | ${brandName}`;
+    description = briefDescription;
+  } else {
+    title = `${brandName} | Desarrollo web y software a medida en Uruguay`;
+    description = `${heroDescription} En Tricode creamos landing pages, e-commerce y sistemas personalizados.`;
+  }
+  const ogImageUrl = detailProject && cleanString(detailProject.image)
+    ? cleanString(detailProject.image)
+    : toAbsoluteUrl(siteUrl, DEFAULT_OG_IMAGE);
   const keywords = [
     'Tricode',
     'Tricode Studio',
@@ -150,28 +192,6 @@ export function applyLandingSeo(route: string, config: LandingConfig) {
     'sistemas a medida',
   ].join(', ');
 
-  document.title = title;
-
-  ensureMetaByName('description').setAttribute('content', description);
-  ensureMetaByName('application-name').setAttribute('content', SITE_NAME);
-  ensureMetaByName('robots').setAttribute('content', 'index, follow, max-image-preview:large');
-  ensureMetaByName('keywords').setAttribute('content', keywords);
-  ensureMetaByName('author').setAttribute('content', brandName);
-  ensureMetaByName('twitter:card').setAttribute('content', 'summary_large_image');
-  ensureMetaByName('twitter:title').setAttribute('content', title);
-  ensureMetaByName('twitter:description').setAttribute('content', description);
-  ensureMetaByName('twitter:image').setAttribute('content', ogImageUrl);
-
-  ensureMetaByProperty('og:type').setAttribute('content', 'website');
-  ensureMetaByProperty('og:site_name').setAttribute('content', SITE_NAME);
-  ensureMetaByProperty('og:locale').setAttribute('content', 'es_UY');
-  ensureMetaByProperty('og:title').setAttribute('content', title);
-  ensureMetaByProperty('og:description').setAttribute('content', description);
-  ensureMetaByProperty('og:url').setAttribute('content', canonicalUrl);
-  ensureMetaByProperty('og:image').setAttribute('content', ogImageUrl);
-
-  ensureLink('canonical').setAttribute('href', canonicalUrl);
-
   const graph: Array<Record<string, unknown>> = [
     {
       '@type': 'Organization',
@@ -179,7 +199,7 @@ export function applyLandingSeo(route: string, config: LandingConfig) {
       name: brandName,
       alternateName: ['Tricode'],
       url: siteUrl,
-      logo: toAbsoluteUrl(siteUrl, '/isotipo.png?v=20260427-1'),
+      logo: toAbsoluteUrl(siteUrl, '/isotipo.webp?v=20260714-1'),
       description: heroDescription,
       foundingDate: DEFAULT_FOUNDING_YEAR,
       ...(normalizedPhone ? { telephone: normalizedPhone } : {}),
@@ -242,21 +262,61 @@ export function applyLandingSeo(route: string, config: LandingConfig) {
       ],
     });
   }
-
-  if (faqItems.length) {
+  if (isNosotrosPage) {
     graph.push({
-      '@type': 'FAQPage',
-      '@id': `${siteUrl}/#faq`,
-      mainEntity: faqItems.map((item) => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: item.answer,
-        },
-      })),
+      '@type': 'BreadcrumbList',
+      '@id': `${canonicalUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: 'Nosotros', item: canonicalUrl },
+      ],
     });
   }
+  if (detailProject) {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${canonicalUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: 'Proyectos', item: toAbsoluteUrl(siteUrl, '/proyectos') },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: cleanString(detailProject.name) || 'Proyecto',
+          item: canonicalUrl,
+        },
+      ],
+    });
+  }
+
+  return { title, description, keywords, brandName, canonicalUrl, ogImageUrl, graph };
+}
+
+export function applyLandingSeo(route: string, config: LandingConfig, projects: Project[] = []) {
+  const { title, description, keywords, brandName, canonicalUrl, ogImageUrl, graph } =
+    computeLandingMeta(route, config, projects);
+
+  document.title = title;
+
+  ensureMetaByName('description').setAttribute('content', description);
+  ensureMetaByName('application-name').setAttribute('content', SITE_NAME);
+  ensureMetaByName('robots').setAttribute('content', 'index, follow, max-image-preview:large');
+  ensureMetaByName('keywords').setAttribute('content', keywords);
+  ensureMetaByName('author').setAttribute('content', brandName);
+  ensureMetaByName('twitter:card').setAttribute('content', 'summary_large_image');
+  ensureMetaByName('twitter:title').setAttribute('content', title);
+  ensureMetaByName('twitter:description').setAttribute('content', description);
+  ensureMetaByName('twitter:image').setAttribute('content', ogImageUrl);
+
+  ensureMetaByProperty('og:type').setAttribute('content', 'website');
+  ensureMetaByProperty('og:site_name').setAttribute('content', SITE_NAME);
+  ensureMetaByProperty('og:locale').setAttribute('content', 'es_UY');
+  ensureMetaByProperty('og:title').setAttribute('content', title);
+  ensureMetaByProperty('og:description').setAttribute('content', description);
+  ensureMetaByProperty('og:url').setAttribute('content', canonicalUrl);
+  ensureMetaByProperty('og:image').setAttribute('content', ogImageUrl);
+
+  ensureLink('canonical').setAttribute('href', canonicalUrl);
 
   setJsonLd('tricode-ld-json', {
     '@context': 'https://schema.org',

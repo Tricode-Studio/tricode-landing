@@ -1,7 +1,16 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import Nav from './Nav';
 import Footer from './Footer';
 import { submitPublicBudgetRequest } from '../lib/cms';
+import { EASE_OUT_EXPO } from '../lib/motion';
 
 type BriefFormState = {
   nombre: string;
@@ -10,6 +19,7 @@ type BriefFormState = {
   empresa: string;
   rubro: string;
   tipoProyecto: string;
+  tipoAlcance: string;
   objetivoPrincipal: string;
   publicoObjetivo: string;
   funcionalidadClave: string;
@@ -24,6 +34,7 @@ const defaultState: BriefFormState = {
   empresa: '',
   rubro: '',
   tipoProyecto: 'Landing',
+  tipoAlcance: '',
   objetivoPrincipal: '',
   publicoObjetivo: '',
   funcionalidadClave: '',
@@ -31,10 +42,23 @@ const defaultState: BriefFormState = {
   plazoDeseado: '',
 };
 
+const STEPS = [
+  { label: 'Sobre vos', hint: 'Para saber cómo y a quién responderle.' },
+  { label: 'Tu proyecto', hint: 'Qué querés construir y en qué contexto.' },
+  { label: 'Objetivos', hint: 'Qué tiene que lograr y para quién.' },
+  { label: 'Inversión', hint: 'Para alinear alcance con realidad.' },
+] as const;
+
+const TOTAL_STEPS = STEPS.length;
+
 const inputClass =
   'peer h-12 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 text-[15px] text-white outline-none transition-all placeholder:text-white/30 hover:border-white/20 focus:border-emerald-400/70 focus:bg-white/[0.05] focus:ring-4 focus:ring-emerald-400/15';
 const textareaClass =
   'peer min-h-[120px] w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-[15px] text-white outline-none transition-all placeholder:text-white/30 hover:border-white/20 focus:border-emerald-400/70 focus:bg-white/[0.05] focus:ring-4 focus:ring-emerald-400/15';
+
+function emailIsValid(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
 
 function ChevronDown() {
   return (
@@ -52,32 +76,51 @@ function CheckIcon() {
   );
 }
 
+function ArrowRight() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
+      <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ArrowLeft() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
+      <path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 type FieldProps = {
-  index: number;
   label: string;
   children: ReactNode;
   filled: boolean;
+  optional?: boolean;
   hint?: string;
   className?: string;
 };
 
-function Field({ index, label, children, filled, hint, className }: FieldProps) {
+function Field({ label, children, filled, optional, hint, className }: FieldProps) {
   return (
     <div className={`group relative ${className ?? ''}`}>
       <div className="mb-2 flex items-center gap-2.5">
         <span
-          className={`inline-flex h-6 w-6 items-center justify-center rounded-md text-[11px] font-semibold tabular-nums transition-all ${
+          className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
             filled
-              ? 'bg-emerald-400 text-emerald-950 ring-2 ring-emerald-400/30'
-              : 'bg-white/[0.06] text-white/55 ring-1 ring-white/10'
+              ? 'bg-emerald-400 text-emerald-950 ring-2 ring-emerald-400/25'
+              : 'border border-white/15 text-transparent'
           }`}
         >
-          {filled ? <CheckIcon /> : index}
+          <CheckIcon />
         </span>
         <label className="text-[13.5px] font-medium text-white/85">{label}</label>
+        {optional ? (
+          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/30">opcional</span>
+        ) : null}
       </div>
       {children}
-      {hint ? <p className="mt-1.5 pl-9 text-[12px] text-white/40">{hint}</p> : null}
+      {hint ? <p className="mt-1.5 pl-[30px] text-[12px] text-white/40">{hint}</p> : null}
     </div>
   );
 }
@@ -171,9 +214,7 @@ function CustomSelect({ value, options, placeholder, onChange, required }: Custo
         aria-haspopup="listbox"
         aria-expanded={open}
         className={`peer flex h-12 w-full items-center justify-between rounded-xl border bg-white/[0.03] pl-4 pr-3 text-left text-[15px] outline-none transition-all hover:border-white/20 focus:ring-4 focus:ring-emerald-400/15 ${
-          open
-            ? 'border-emerald-400/70 bg-white/[0.05]'
-            : 'border-white/10'
+          open ? 'border-emerald-400/70 bg-white/[0.05]' : 'border-white/10'
         }`}
       >
         <span className={selected ? 'text-white' : 'text-white/35'}>
@@ -203,7 +244,7 @@ function CustomSelect({ value, options, placeholder, onChange, required }: Custo
         <ul
           ref={listRef}
           role="listbox"
-          className={`absolute z-40 max-h-64 w-full overflow-auto rounded-xl border border-white/12 bg-[linear-gradient(180deg,rgba(20,22,40,0.98),rgba(11,14,30,0.98))] p-1.5 shadow-[0_25px_60px_-20px_rgba(0,0,0,0.8)] backdrop-blur-xl ${
+          className={`surface-pop absolute z-40 max-h-64 w-full overflow-auto rounded-xl border border-white/12 p-1.5 shadow-[0_25px_60px_-20px_rgba(0,0,0,0.5)] backdrop-blur-xl ${
             dropUp ? 'bottom-full mb-2' : 'top-full mt-2'
           }`}
         >
@@ -220,9 +261,7 @@ function CustomSelect({ value, options, placeholder, onChange, required }: Custo
                     setOpen(false);
                   }}
                   className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-[14px] transition-colors ${
-                    isHighlighted
-                      ? 'bg-emerald-400/12 text-white'
-                      : 'text-white/80 hover:bg-white/[0.04]'
+                    isHighlighted ? 'bg-emerald-400/12 text-white' : 'text-white/80 hover:bg-white/[0.04]'
                   }`}
                 >
                   <span className={isSelected ? 'font-medium' : ''}>
@@ -243,39 +282,172 @@ function CustomSelect({ value, options, placeholder, onChange, required }: Custo
   );
 }
 
+function Stepper({
+  current,
+  isValid,
+  canJumpTo,
+  onJump,
+}: {
+  current: number;
+  isValid: (step: number) => boolean;
+  canJumpTo: (step: number) => boolean;
+  onJump: (step: number) => void;
+}) {
+  return (
+    <div className="w-full">
+      <ol className="flex items-center">
+        {STEPS.map((step, index) => {
+          const done = isValid(index);
+          const isCurrent = index === current;
+          const reachable = canJumpTo(index);
+          return (
+            <li key={step.label} className="flex flex-1 items-center last:flex-none">
+              <button
+                type="button"
+                onClick={() => reachable && onJump(index)}
+                disabled={!reachable}
+                aria-current={isCurrent ? 'step' : undefined}
+                className={`group flex flex-col items-center gap-2 ${reachable ? 'cursor-pointer' : 'cursor-default'}`}
+              >
+                <span
+                  className={`relative flex h-9 w-9 items-center justify-center rounded-full border text-[13px] font-semibold tabular-nums transition-all duration-300 ${
+                    isCurrent
+                      ? 'border-emerald-400 bg-emerald-400/15 text-emerald-200 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]'
+                      : done
+                        ? 'border-emerald-400/60 bg-emerald-400 text-emerald-950'
+                        : 'border-white/15 bg-white/[0.03] text-white/45'
+                  }`}
+                >
+                  {done && !isCurrent ? <CheckIcon /> : index + 1}
+                  {isCurrent ? (
+                    <span className="absolute -inset-0.5 rounded-full border border-emerald-400/40 animate-ping opacity-40" aria-hidden />
+                  ) : null}
+                </span>
+                <span
+                  className={`hidden sm:block text-[11px] font-mono uppercase tracking-[0.16em] transition-colors ${
+                    isCurrent ? 'text-white' : done ? 'text-white/60' : 'text-white/35'
+                  }`}
+                >
+                  {step.label}
+                </span>
+              </button>
+
+              {index < TOTAL_STEPS - 1 ? (
+                <span className="relative mx-2 sm:mx-3 -mt-6 sm:-mt-7 h-px flex-1 overflow-hidden rounded-full bg-white/10">
+                  <span
+                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300 transition-all duration-500"
+                    style={{ width: isValid(index) ? '100%' : '0%' }}
+                  />
+                </span>
+              ) : null}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+function SuccessPanel() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+      className="surface-card relative overflow-hidden rounded-3xl border border-emerald-400/25 p-8 md:p-14 text-center"
+    >
+      <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-64 w-80 rounded-full bg-emerald-400/20 blur-[100px]" />
+      <motion.div
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.15, duration: 0.6, ease: EASE_OUT_EXPO }}
+        className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-500 text-[#fff] shadow-[0_15px_40px_-12px_rgba(16,185,129,0.9)]"
+      >
+        <svg viewBox="0 0 24 24" fill="none" className="h-8 w-8" aria-hidden>
+          <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </motion.div>
+      <h2 className="relative mt-7 display-md text-2xl md:text-4xl text-white">
+        Cuestionario <span className="kw-mark">recibido</span>.
+      </h2>
+      <p className="relative mx-auto mt-4 max-w-md text-white/65 leading-relaxed">
+        Gracias por el detalle. Lo revisamos y te contactamos en menos de{' '}
+        <span className="text-white">24h hábiles</span> con una propuesta concreta de alcance,
+        tiempos y costo.
+      </p>
+      <div className="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="/" className="btn-primary">
+          Volver al inicio
+        </a>
+        <a
+          href="/proyectos"
+          className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-white/85 transition-colors hover:border-white/35 hover:bg-white/[0.04]"
+        >
+          Ver proyectos
+          <span aria-hidden>→</span>
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function BriefPage() {
   const [formState, setFormState] = useState<BriefFormState>(defaultState);
+  const [step, setStep] = useState(0);
+  const [dir, setDir] = useState(1);
   const [sending, setSending] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const didMount = useRef(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const completion = useMemo(() => {
-    const fields: Array<keyof BriefFormState> = [
-      'nombre',
-      'email',
-      'telefono',
-      'empresa',
-      'rubro',
-      'tipoProyecto',
-      'objetivoPrincipal',
-      'publicoObjetivo',
-      'funcionalidadClave',
-      'rangoPresupuesto',
-    ];
-    const filled = fields.filter((key) => formState[key].trim().length > 0).length;
-    return Math.round((filled / fields.length) * 100);
-  }, [formState]);
+  const isStepValid = useMemo(
+    () => (target: number) => {
+      const f = formState;
+      if (target === 0) return f.nombre.trim().length > 1 && emailIsValid(f.email);
+      if (target === 1) return !!f.tipoProyecto.trim() && !!f.tipoAlcance.trim() && !!f.rubro.trim();
+      if (target === 2) return !!f.objetivoPrincipal.trim() && f.funcionalidadClave.trim().length > 2;
+      if (target === 3) return !!f.rangoPresupuesto.trim() && !!f.plazoDeseado.trim();
+      return false;
+    },
+    [formState],
+  );
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const allValid = [0, 1, 2, 3].every((s) => isStepValid(s));
+  const canJumpTo = (target: number) =>
+    target <= step || Array.from({ length: target }, (_, i) => i).every(isStepValid);
+
+  // Al cambiar de paso, subir al inicio de la tarjeta (no en el montaje inicial).
+  useEffect(() => {
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+    cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [step]);
+
+  const goNext = () => {
+    if (!isStepValid(step)) return;
+    setDir(1);
+    setStep((s) => Math.min(TOTAL_STEPS - 1, s + 1));
+  };
+  const goBack = () => {
+    setDir(-1);
+    setStep((s) => Math.max(0, s - 1));
+  };
+  const jumpTo = (target: number) => {
+    if (!canJumpTo(target)) return;
+    setDir(target > step ? 1 : -1);
+    setStep(target);
+  };
+
+  const submit = async () => {
     setSending(true);
     setError(null);
-    setFeedback(null);
-
     try {
       await submitPublicBudgetRequest({
         nombre: formState.nombre.trim(),
@@ -286,6 +458,7 @@ export default function BriefPage() {
         tipoProyecto: formState.tipoProyecto.trim(),
         objetivo: [
           `Objetivo principal: ${formState.objetivoPrincipal.trim()}`,
+          `Alcance: ${formState.tipoAlcance.trim()}`,
           `Público objetivo: ${formState.publicoObjetivo.trim()}`,
           `Funcionalidad clave: ${formState.funcionalidadClave.trim()}`,
         ]
@@ -293,24 +466,39 @@ export default function BriefPage() {
           .join(' | '),
         rangoPresupuesto: formState.rangoPresupuesto.trim() || undefined,
         plazoDeseado: formState.plazoDeseado.trim() || undefined,
-        funcionalidades: formState.funcionalidadClave
-          ? [formState.funcionalidadClave.trim()]
-          : [],
+        funcionalidades: formState.funcionalidadClave ? [formState.funcionalidadClave.trim()] : [],
         referencia: formState.publicoObjetivo.trim() || '',
         aceptaContacto: true,
       });
-
-      setFeedback('Cuestionario recibido. Te contactamos en menos de 24h hábiles con próximos pasos.');
-      setFormState(defaultState);
+      setDone(true);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : 'No pudimos enviar el cuestionario');
+      setError(
+        requestError instanceof Error && requestError.message
+          ? requestError.message
+          : 'No pudimos enviar el cuestionario. Probá de nuevo o escribinos por WhatsApp.',
+      );
     } finally {
       setSending(false);
     }
   };
 
+  const onFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (step < TOTAL_STEPS - 1) {
+      goNext();
+      return;
+    }
+    if (allValid) void submit();
+  };
+
   const update = <K extends keyof BriefFormState>(key: K, value: BriefFormState[K]) =>
     setFormState((cur) => ({ ...cur, [key]: value }));
+
+  const stepVariants = {
+    enter: (direction: number) => ({ opacity: 0, x: direction > 0 ? 40 : -40 }),
+    center: { opacity: 1, x: 0 },
+    exit: (direction: number) => ({ opacity: 0, x: direction > 0 ? -40 : 40 }),
+  };
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
@@ -328,264 +516,321 @@ export default function BriefPage() {
               Volver al inicio
             </a>
 
-            <div className="label mb-4">{"// cuestionario de proyecto"}</div>
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-semibold tracking-tight max-w-4xl">
-              Cotización clara, basada en
-              {' '}
-              <span className="text-grad italic font-light inline-block pr-2">10 respuestas precisas</span>
+            <div className="label mb-4">{'// cuestionario de proyecto'}</div>
+            <h1 className="display-xl text-[2.15rem] sm:text-5xl md:text-6xl text-white max-w-4xl leading-[1.04]">
+              Una cotización clara,{' '}
+en 4 <span className="kw-mark">pasos</span>.
             </h1>
-            <p className="mt-6 text-white/62 max-w-3xl text-base md:text-lg">
-              Este cuestionario nos permite entender exactamente qué necesitás, para quién, con qué prioridad y con qué alcance.
-              Con eso te devolvemos una propuesta concreta, sin suposiciones.
+            <p className="mt-6 text-white/62 max-w-2xl text-base md:text-lg">
+              Nada de formularios eternos. Respondé de a poco y te devolvemos una propuesta concreta
+              de alcance, tiempos y costo, sin suposiciones.
             </p>
           </div>
         </section>
 
-        <section className="mt-14">
+        <section className="mt-12 md:mt-16">
           <div className="container-x">
-            <div className="max-w-5xl mx-auto">
-              {/* Progress bar */}
-              <div className="mb-6 flex items-center gap-4">
-                <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300 transition-all duration-500 shadow-[0_0_20px_rgba(16,185,129,0.6)]"
-                    style={{ width: `${completion}%` }}
-                  />
-                </div>
-                <span className="text-[12px] font-mono tabular-nums text-white/55">
-                  {completion}% completado
-                </span>
-              </div>
-
-              <div className="relative rounded-3xl border border-white/12 bg-[linear-gradient(180deg,rgba(11,14,32,0.85),rgba(6,8,22,0.85))] backdrop-blur-xl shadow-[0_30px_100px_-40px_rgba(99,102,241,0.65)]">
-                <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
-                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-purple/70 to-transparent" />
-                  <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-brand-violet/15 blur-[100px]" />
-                  <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-[100px]" />
-                </div>
-
-                <form className="relative grid gap-10 p-6 md:p-10" onSubmit={onSubmit}>
-                  {/* Section: Identidad */}
-                  <section className="grid gap-6">
-                    <header className="flex items-center gap-3 pb-4 border-b border-white/8">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/12 text-emerald-300 ring-1 ring-emerald-400/25 font-mono text-[12px]">01</span>
-                      <div>
-                        <h2 className="text-base font-semibold text-white">Identidad</h2>
-                        <p className="text-[12.5px] text-white/45">Para que sepamos cómo y a quién responderle.</p>
-                      </div>
-                    </header>
-
-                    <Field index={1} label="¿Cuál es tu nombre completo?" filled={!!formState.nombre.trim()}>
-                      <input
-                        className={inputClass}
-                        autoComplete="name"
-                        placeholder="Ej: Juan Pérez"
-                        value={formState.nombre}
-                        onChange={(event) => update('nombre', event.target.value)}
-                        required
-                      />
-                    </Field>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <Field index={2} label="Email principal para enviarte la propuesta" filled={!!formState.email.trim()}>
-                        <input
-                          type="email"
-                          className={inputClass}
-                          autoComplete="email"
-                          placeholder="nombre@empresa.com"
-                          value={formState.email}
-                          onChange={(event) => update('email', event.target.value)}
-                          required
-                        />
-                      </Field>
-                      <Field index={3} label="¿A qué WhatsApp podemos contactarte?" filled={!!formState.telefono.trim()}>
-                        <input
-                          className={inputClass}
-                          autoComplete="tel"
-                          placeholder="+598 9X XXX XXX"
-                          value={formState.telefono}
-                          onChange={(event) => update('telefono', event.target.value)}
-                        />
-                      </Field>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <Field index={4} label="¿Cómo se llama tu empresa o marca?" filled={!!formState.empresa.trim()}>
-                        <input
-                          className={inputClass}
-                          autoComplete="organization"
-                          placeholder="Ej: Acme S.A."
-                          value={formState.empresa}
-                          onChange={(event) => update('empresa', event.target.value)}
-                        />
-                      </Field>
-                      <Field index={5} label="¿En qué rubro operás?" filled={!!formState.rubro.trim()}>
-                        <input
-                          className={inputClass}
-                          placeholder="Ej: salud, legal, ecommerce, turismo…"
-                          value={formState.rubro}
-                          onChange={(event) => update('rubro', event.target.value)}
-                          required
-                        />
-                      </Field>
-                    </div>
-                  </section>
-
-                  {/* Section: Proyecto */}
-                  <section className="grid gap-6">
-                    <header className="flex items-center gap-3 pb-4 border-b border-white/8">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-violet/15 text-brand-violet ring-1 ring-brand-violet/30 font-mono text-[12px]">02</span>
-                      <div>
-                        <h2 className="text-base font-semibold text-white">Proyecto y objetivos</h2>
-                        <p className="text-[12.5px] text-white/45">Lo que vamos a construir y por qué importa.</p>
-                      </div>
-                    </header>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <Field index={6} label="¿Qué tipo de proyecto necesitás resolver hoy?" filled={!!formState.tipoProyecto.trim()}>
-                        <CustomSelect
-                          value={formState.tipoProyecto}
-                          placeholder="Seleccionar tipo de proyecto"
-                          onChange={(value) => update('tipoProyecto', value)}
-                          options={[
-                            { value: 'Landing', label: 'Landing' },
-                            { value: 'E-commerce', label: 'E-commerce' },
-                            { value: 'Sistema de reservas', label: 'Sistema de reservas' },
-                            { value: 'Sistema interno', label: 'Sistema interno' },
-                            { value: 'Automatización', label: 'Automatización' },
-                            { value: 'Otro', label: 'Otro' },
-                          ]}
-                        />
-                      </Field>
-
-                      <Field index={7} label="¿Cuál es el objetivo de negocio más importante?" filled={!!formState.objetivoPrincipal.trim()}>
-                        <CustomSelect
-                          value={formState.objetivoPrincipal}
-                          placeholder="Seleccionar objetivo"
-                          required
-                          onChange={(value) => update('objetivoPrincipal', value)}
-                          options={[
-                            { value: 'Generar más leads calificados', label: 'Generar más leads calificados' },
-                            { value: 'Vender online con mayor conversión', label: 'Vender online con mayor conversión' },
-                            { value: 'Reducir tareas manuales y errores operativos', label: 'Reducir tareas manuales y errores operativos' },
-                            { value: 'Mejorar la experiencia de clientes actuales', label: 'Mejorar la experiencia de clientes actuales' },
-                            { value: 'Validar una nueva idea de producto', label: 'Validar una nueva idea de producto' },
-                          ]}
-                        />
-                      </Field>
-                    </div>
-
-                    <Field
-                      index={8}
-                      label="¿Quién es tu cliente ideal y en qué mercado te movés?"
-                      filled={!!formState.publicoObjetivo.trim()}
-                      hint="Cuanto más específico, mejor entendemos a quién hablarle."
-                    >
-                      <textarea
-                        rows={3}
-                        className={textareaClass}
-                        placeholder="Ej: pymes de Montevideo, clínicas de Uruguay, consumidores B2C en Latam…"
-                        value={formState.publicoObjetivo}
-                        onChange={(event) => update('publicoObjetivo', event.target.value)}
-                        required
-                      />
-                    </Field>
-
-                    <Field
-                      index={9}
-                      label="¿Qué funcionalidad es imprescindible para la primera versión?"
-                      filled={!!formState.funcionalidadClave.trim()}
-                      hint="Pensá en el mínimo que tiene que funcionar el día del lanzamiento."
-                    >
-                      <textarea
-                        rows={3}
-                        className={textareaClass}
-                        placeholder="Ej: checkout con tarjeta, agenda online con recordatorios, panel para gestionar pedidos…"
-                        value={formState.funcionalidadClave}
-                        onChange={(event) => update('funcionalidadClave', event.target.value)}
-                        required
-                      />
-                    </Field>
-                  </section>
-
-                  {/* Section: Inversión */}
-                  <section className="grid gap-6">
-                    <header className="flex items-center gap-3 pb-4 border-b border-white/8">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400/12 text-amber-300 ring-1 ring-amber-400/25 font-mono text-[12px]">03</span>
-                      <div>
-                        <h2 className="text-base font-semibold text-white">Inversión y plazo</h2>
-                        <p className="text-[12.5px] text-white/45">Para alinear alcance con realidad desde el principio.</p>
-                      </div>
-                    </header>
-
-                    <Field index={10} label="¿Cuál es tu rango de inversión y plazo objetivo de lanzamiento?" filled={!!formState.rangoPresupuesto.trim() && !!formState.plazoDeseado.trim()}>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <CustomSelect
-                          value={formState.rangoPresupuesto}
-                          placeholder="Rango de inversión"
-                          required
-                          onChange={(value) => update('rangoPresupuesto', value)}
-                          options={[
-                            { value: 'Menos de USD 1.000', label: 'Menos de USD 1.000' },
-                            { value: 'USD 1.000 - USD 3.000', label: 'USD 1.000 - USD 3.000' },
-                            { value: 'USD 3.000 - USD 7.000', label: 'USD 3.000 - USD 7.000' },
-                            { value: 'Más de USD 7.000', label: 'Más de USD 7.000' },
-                          ]}
-                        />
-                        <CustomSelect
-                          value={formState.plazoDeseado}
-                          placeholder="Plazo objetivo"
-                          required
-                          onChange={(value) => update('plazoDeseado', value)}
-                          options={[
-                            { value: 'Urgente (1-2 semanas)', label: 'Urgente (1-2 semanas)' },
-                            { value: 'Normal (3-6 semanas)', label: 'Normal (3-6 semanas)' },
-                            { value: 'Planificado (2-3 meses)', label: 'Planificado (2-3 meses)' },
-                            { value: 'Más de 3 meses', label: 'Más de 3 meses' },
-                          ]}
-                        />
-                      </div>
-                    </Field>
-                  </section>
-
-                  {feedback ? (
-                    <p className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
-                      {feedback}
-                    </p>
-                  ) : null}
-                  {error ? (
-                    <p className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                      {error}
-                    </p>
-                  ) : null}
-
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-white/8">
-                    <p className="text-[12.5px] text-white/45">
-                      Al enviar este cuestionario recibís respuesta en menos de 24h hábiles. Tus datos no se comparten.
-                    </p>
-                    <button
-                      type="submit"
-                      className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-6 text-sm font-semibold text-white shadow-[0_15px_40px_-15px_rgba(16,185,129,0.9)] transition-all hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-300 disabled:cursor-not-allowed disabled:opacity-70"
-                      disabled={sending}
-                    >
-                      {sending ? (
-                        <>
-                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden>
-                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
-                            <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                          </svg>
-                          Enviando cuestionario…
-                        </>
-                      ) : (
-                        <>
-                          Enviar cuestionario estratégico
-                          <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
-                        </>
-                      )}
-                    </button>
+            <div className="max-w-4xl mx-auto">
+              {done ? (
+                <SuccessPanel />
+              ) : (
+                <div
+                  ref={cardRef}
+                  className="surface-card relative scroll-mt-28 rounded-3xl border border-white/12 backdrop-blur-xl shadow-[0_30px_100px_-40px_rgba(99,102,241,0.65)]"
+                >
+                  <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
+                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
+                    <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-brand-violet/15 blur-[100px]" />
+                    <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-[100px]" />
                   </div>
-                </form>
-              </div>
+
+                  {/* Stepper */}
+                  <div className="relative border-b border-white/8 px-6 md:px-10 pt-7 pb-6">
+                    <Stepper current={step} isValid={isStepValid} canJumpTo={canJumpTo} onJump={jumpTo} />
+                    <div className="mt-6 flex items-baseline gap-3">
+                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-emerald-300/90">
+                        Paso {step + 1} de {TOTAL_STEPS}
+                      </span>
+                      <span className="text-[13px] text-white/45">{STEPS[step].hint}</span>
+                    </div>
+                  </div>
+
+                  <form className="relative p-6 md:p-10" onSubmit={onFormSubmit}>
+                    <div className="min-h-[300px]">
+                      <AnimatePresence mode="wait" custom={dir} initial={false}>
+                        <motion.div
+                          key={step}
+                          custom={dir}
+                          variants={stepVariants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.35, ease: EASE_OUT_EXPO }}
+                          className="grid gap-6"
+                        >
+                          {step === 0 ? (
+                            <>
+                              <Field label="¿Cuál es tu nombre completo?" filled={formState.nombre.trim().length > 1}>
+                                <input
+                                  className={inputClass}
+                                  autoComplete="name"
+                                  placeholder="Ej: Juan Pérez"
+                                  value={formState.nombre}
+                                  onChange={(e) => update('nombre', e.target.value)}
+                                />
+                              </Field>
+                              <Field label="Email para enviarte la propuesta" filled={emailIsValid(formState.email)}>
+                                <input
+                                  type="email"
+                                  className={inputClass}
+                                  autoComplete="email"
+                                  placeholder="nombre@empresa.com"
+                                  value={formState.email}
+                                  onChange={(e) => update('email', e.target.value)}
+                                />
+                              </Field>
+                              <div className="grid md:grid-cols-2 gap-6">
+                                <Field label="WhatsApp de contacto" filled={!!formState.telefono.trim()} optional>
+                                  <input
+                                    className={inputClass}
+                                    autoComplete="tel"
+                                    placeholder="+598 9X XXX XXX"
+                                    value={formState.telefono}
+                                    onChange={(e) => update('telefono', e.target.value)}
+                                  />
+                                </Field>
+                                <Field label="Empresa o marca" filled={!!formState.empresa.trim()} optional>
+                                  <input
+                                    className={inputClass}
+                                    autoComplete="organization"
+                                    placeholder="Ej: Acme S.A."
+                                    value={formState.empresa}
+                                    onChange={(e) => update('empresa', e.target.value)}
+                                  />
+                                </Field>
+                              </div>
+                            </>
+                          ) : null}
+
+                          {step === 1 ? (
+                            <>
+                              <div className="grid md:grid-cols-2 gap-6">
+                                <Field label="¿Qué tipo de proyecto necesitás?" filled={!!formState.tipoProyecto.trim()}>
+                                  <CustomSelect
+                                    value={formState.tipoProyecto}
+                                    placeholder="Seleccionar tipo"
+                                    onChange={(v) => update('tipoProyecto', v)}
+                                    options={[
+                                      { value: 'Landing', label: 'Landing page' },
+                                      { value: 'Sitio institucional', label: 'Sitio institucional' },
+                                      { value: 'E-commerce', label: 'E-commerce / tienda' },
+                                      { value: 'Sistema de reservas', label: 'Sistema de reservas' },
+                                      { value: 'Sistema interno', label: 'Sistema interno / panel' },
+                                      { value: 'Automatización', label: 'Automatización' },
+                                      { value: 'Otro', label: 'Otro' },
+                                    ]}
+                                  />
+                                </Field>
+                                <Field label="¿Es nuevo o una mejora?" filled={!!formState.tipoAlcance.trim()}>
+                                  <CustomSelect
+                                    value={formState.tipoAlcance}
+                                    placeholder="Seleccionar alcance"
+                                    required
+                                    onChange={(v) => update('tipoAlcance', v)}
+                                    options={[
+                                      { value: 'Nuevo desde cero', label: 'Nuevo desde cero' },
+                                      { value: 'Rediseño de algo existente', label: 'Rediseño / mejora' },
+                                      { value: 'Migración a nueva plataforma', label: 'Migración de plataforma' },
+                                      { value: 'Todavía no estoy seguro', label: 'Todavía no estoy seguro' },
+                                    ]}
+                                  />
+                                </Field>
+                              </div>
+                              <Field
+                                label="¿En qué rubro operás?"
+                                filled={!!formState.rubro.trim()}
+                                hint="Nos ayuda a entender tu mercado y tus referencias."
+                              >
+                                <input
+                                  className={inputClass}
+                                  placeholder="Ej: salud, legal, ecommerce, turismo…"
+                                  value={formState.rubro}
+                                  onChange={(e) => update('rubro', e.target.value)}
+                                />
+                              </Field>
+                            </>
+                          ) : null}
+
+                          {step === 2 ? (
+                            <>
+                              <Field label="¿Cuál es el objetivo de negocio más importante?" filled={!!formState.objetivoPrincipal.trim()}>
+                                <CustomSelect
+                                  value={formState.objetivoPrincipal}
+                                  placeholder="Seleccionar objetivo"
+                                  required
+                                  onChange={(v) => update('objetivoPrincipal', v)}
+                                  options={[
+                                    { value: 'Generar más leads calificados', label: 'Generar más leads calificados' },
+                                    { value: 'Vender online con mayor conversión', label: 'Vender online con mayor conversión' },
+                                    { value: 'Reducir tareas manuales y errores operativos', label: 'Reducir tareas manuales y errores' },
+                                    { value: 'Mejorar la experiencia de clientes actuales', label: 'Mejorar la experiencia de clientes' },
+                                    { value: 'Validar una nueva idea de producto', label: 'Validar una nueva idea de producto' },
+                                  ]}
+                                />
+                              </Field>
+                              <Field
+                                label="¿Qué funcionalidad es imprescindible para la primera versión?"
+                                filled={formState.funcionalidadClave.trim().length > 2}
+                                hint="Pensá en el mínimo que tiene que funcionar el día del lanzamiento."
+                              >
+                                <textarea
+                                  rows={3}
+                                  className={textareaClass}
+                                  placeholder="Ej: checkout con tarjeta, agenda online con recordatorios, panel para gestionar pedidos…"
+                                  value={formState.funcionalidadClave}
+                                  onChange={(e) => update('funcionalidadClave', e.target.value)}
+                                />
+                              </Field>
+                              <Field
+                                label="¿Quién es tu cliente ideal y en qué mercado te movés?"
+                                filled={!!formState.publicoObjetivo.trim()}
+                                optional
+                                hint="Cuanto más específico, mejor entendemos a quién hablarle."
+                              >
+                                <textarea
+                                  rows={3}
+                                  className={textareaClass}
+                                  placeholder="Ej: pymes de Montevideo, clínicas de Uruguay, consumidores B2C en Latam…"
+                                  value={formState.publicoObjetivo}
+                                  onChange={(e) => update('publicoObjetivo', e.target.value)}
+                                />
+                              </Field>
+                            </>
+                          ) : null}
+
+                          {step === 3 ? (
+                            <>
+                              <div className="grid md:grid-cols-2 gap-6">
+                                <Field label="Rango de inversión" filled={!!formState.rangoPresupuesto.trim()}>
+                                  <CustomSelect
+                                    value={formState.rangoPresupuesto}
+                                    placeholder="Seleccionar rango"
+                                    required
+                                    onChange={(v) => update('rangoPresupuesto', v)}
+                                    options={[
+                                      { value: 'Menos de USD 1.000', label: 'Menos de USD 1.000' },
+                                      { value: 'USD 1.000 - USD 3.000', label: 'USD 1.000 - USD 3.000' },
+                                      { value: 'USD 3.000 - USD 7.000', label: 'USD 3.000 - USD 7.000' },
+                                      { value: 'Más de USD 7.000', label: 'Más de USD 7.000' },
+                                      { value: 'No lo tengo definido', label: 'No lo tengo definido' },
+                                    ]}
+                                  />
+                                </Field>
+                                <Field label="Plazo objetivo de lanzamiento" filled={!!formState.plazoDeseado.trim()}>
+                                  <CustomSelect
+                                    value={formState.plazoDeseado}
+                                    placeholder="Seleccionar plazo"
+                                    required
+                                    onChange={(v) => update('plazoDeseado', v)}
+                                    options={[
+                                      { value: 'Urgente (1-2 semanas)', label: 'Urgente (1-2 semanas)' },
+                                      { value: 'Normal (3-6 semanas)', label: 'Normal (3-6 semanas)' },
+                                      { value: 'Planificado (2-3 meses)', label: 'Planificado (2-3 meses)' },
+                                      { value: 'Más de 3 meses', label: 'Más de 3 meses' },
+                                    ]}
+                                  />
+                                </Field>
+                              </div>
+
+                              <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-5">
+                                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">
+                                  Resumen
+                                </div>
+                                <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5 text-[13.5px]">
+                                  <div className="flex justify-between gap-4 border-b border-white/5 pb-2">
+                                    <dt className="text-white/45">Proyecto</dt>
+                                    <dd className="text-white/85 text-right">{formState.tipoProyecto || '—'}</dd>
+                                  </div>
+                                  <div className="flex justify-between gap-4 border-b border-white/5 pb-2">
+                                    <dt className="text-white/45">Alcance</dt>
+                                    <dd className="text-white/85 text-right">{formState.tipoAlcance || '—'}</dd>
+                                  </div>
+                                  <div className="flex justify-between gap-4 border-b border-white/5 pb-2">
+                                    <dt className="text-white/45">Rubro</dt>
+                                    <dd className="text-white/85 text-right truncate">{formState.rubro || '—'}</dd>
+                                  </div>
+                                  <div className="flex justify-between gap-4 border-b border-white/5 pb-2">
+                                    <dt className="text-white/45">Contacto</dt>
+                                    <dd className="text-white/85 text-right truncate">{formState.nombre || '—'}</dd>
+                                  </div>
+                                </dl>
+                              </div>
+                            </>
+                          ) : null}
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+
+                    {error ? (
+                      <p className="mt-6 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+                        {error}
+                      </p>
+                    ) : null}
+
+                    {/* Navegación */}
+                    <div className="mt-8 flex items-center justify-between gap-4 border-t border-white/8 pt-6">
+                      {step > 0 ? (
+                        <button
+                          type="button"
+                          onClick={goBack}
+                          className="inline-flex items-center gap-2 rounded-xl border border-white/12 px-5 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:bg-white/[0.04]"
+                        >
+                          <ArrowLeft />
+                          Atrás
+                        </button>
+                      ) : (
+                        <span className="text-[12.5px] text-white/40 max-w-[16rem] hidden sm:block">
+                          Respuesta en menos de 24h hábiles. Tus datos no se comparten.
+                        </span>
+                      )}
+
+                      {step < TOTAL_STEPS - 1 ? (
+                        <button
+                          type="submit"
+                          disabled={!isStepValid(step)}
+                          className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-6 text-sm font-semibold text-[#fff] shadow-[0_15px_40px_-15px_rgba(16,185,129,0.9)] transition-all hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                        >
+                          Continuar
+                          <span className="transition-transform group-hover:translate-x-1">
+                            <ArrowRight />
+                          </span>
+                        </button>
+                      ) : (
+                        <button
+                          type="submit"
+                          disabled={!allValid || sending}
+                          className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-6 text-sm font-semibold text-[#fff] shadow-[0_15px_40px_-15px_rgba(16,185,129,0.9)] transition-all hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                        >
+                          {sending ? (
+                            <>
+                              <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden>
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+                                <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                              </svg>
+                              Enviando…
+                            </>
+                          ) : (
+                            <>
+                              Enviar cuestionario
+                              <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </form>
+                </div>
+              )}
             </div>
           </div>
         </section>

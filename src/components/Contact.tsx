@@ -106,12 +106,8 @@ export default function Contact() {
       id="contacto"
       className="relative py-32 md:py-44 border-t border-white/5 overflow-hidden"
     >
-      <img
-        src="/fondo-idea-2.webp"
-        alt=""
-        loading="lazy"
-        decoding="async"
-        className="absolute inset-0 h-full w-full object-cover opacity-80"
+      <div
+        className="sbg-contact absolute inset-0 bg-cover bg-center opacity-80"
         aria-hidden
       />
       <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/70 to-ink-950" />
@@ -141,8 +137,8 @@ export default function Contact() {
                 <SplitText
                   as="span"
                   text={titleHighlight}
-                  className="block mt-1"
-                  wordClassName="italic-serif text-grad"
+                  className="block mt-1 text-white"
+                  markWord="charla"
                   delay={0.2}
                 />
               ) : null}
@@ -184,7 +180,7 @@ export default function Contact() {
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-400/15 blur-3xl" />
 
             <div className="relative flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-500 text-white shadow-[0_10px_30px_-12px_rgba(16,185,129,0.9)]">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-500 text-[#fff] shadow-[0_10px_30px_-12px_rgba(16,185,129,0.9)]">
                 <IconBrief />
               </div>
               <div className="flex-1">
@@ -218,7 +214,7 @@ export default function Contact() {
             >
               <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-emerald-400/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/30 transition-colors group-hover:bg-emerald-500 group-hover:text-white">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-400/30 transition-colors group-hover:bg-emerald-500 group-hover:text-[#fff]">
                   <IconWhatsApp />
                 </div>
                 <div className="min-w-0">
@@ -246,7 +242,7 @@ export default function Contact() {
             >
               <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-violet/15 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-violet/15 text-brand-violet ring-1 ring-brand-violet/30 transition-colors group-hover:bg-brand-violet group-hover:text-white">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-violet/15 text-brand-violet ring-1 ring-brand-violet/30 transition-colors group-hover:bg-brand-violet group-hover:text-[#fff]">
                   <IconMail />
                 </div>
                 <div className="min-w-0 flex-1">

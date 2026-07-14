@@ -9,7 +9,15 @@
       "destination": "/index.html"
     },
     {
-      "source": "/proyectos/",
+      "source": "/proyectos/:slug*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/nosotros",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/nosotros/",
       "destination": "/index.html"
     },
     {

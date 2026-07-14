@@ -3,7 +3,7 @@ import { useLandingData } from '../content/LandingDataContext';
 import { resolveNavLinksFromLayout } from '../lib/sections';
 import { EASE_OUT_EXPO, viewportOnce } from '../lib/motion';
 
-const BRAND_MARK_SRC = '/isotipo.png?v=20260427-1';
+const BRAND_MARK_SRC = '/isotipo.webp?v=20260714-1';
 
 function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -12,7 +12,14 @@ function trimmed(value: unknown) {
 function isSecondaryLocation() {
   const path = window.location.pathname;
   const hash = window.location.hash.replace(/^#/, '');
-  return path.startsWith('/proyectos') || hash.startsWith('/proyectos');
+  return (
+    path.startsWith('/proyectos') ||
+    hash.startsWith('/proyectos') ||
+    path.startsWith('/nosotros') ||
+    hash.startsWith('/nosotros') ||
+    path.startsWith('/brief') ||
+    hash.startsWith('/brief')
+  );
 }
 
 function normalizeWhatsAppNumber(value: string) {
@@ -75,13 +82,33 @@ export default function Footer() {
 
   return (
     <footer
-      className="relative border-t border-white/8 overflow-hidden bg-cover bg-bottom bg-no-repeat"
-      style={{ backgroundImage: "url('/footer-bg.png')" }}
+      className="sbg-footer relative border-t border-white/8 overflow-hidden bg-cover bg-bottom bg-no-repeat"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-950/75 to-ink-950/50" />
       <div className="absolute inset-0 bg-gradient-to-t from-ink-950/40 via-transparent to-transparent" />
 
       <div className="container-wide pt-20 md:pt-28 pb-16 relative">
+        {/* CTA de cierre */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={viewportOnce}
+          transition={{ duration: 1, ease: EASE_OUT_EXPO }}
+          className="mb-16 md:mb-24 flex flex-col items-start gap-8 border-b border-white/8 pb-16 md:flex-row md:items-end md:justify-between"
+        >
+          <h2 className="display-md text-3xl sm:text-4xl md:text-5xl text-white max-w-2xl leading-[1.05]">
+            ¿Tenés una idea o un problema{' '}
+que vale la pena <span className="kw-mark">resolver</span>?
+          </h2>
+          <a
+            href="/brief"
+            className="group inline-flex shrink-0 items-center gap-2.5 rounded-full bg-bone-50 px-7 py-4 text-sm font-medium text-ink-950 transition-colors hover:bg-brand-mist"
+          >
+            Empezar un proyecto
+            <span aria-hidden className="transition-transform group-hover:translate-x-1.5">→</span>
+          </a>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}

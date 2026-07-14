@@ -88,8 +88,8 @@ export default function Process() {
                 <SplitText
                   as="span"
                   text={titleHighlight}
-                  className="block mt-1"
-                  wordClassName="italic-serif text-grad"
+                  className="block mt-1 text-white"
+                  markWord="pasos"
                   delay={0.2}
                 />
               ) : null}
@@ -120,7 +120,7 @@ export default function Process() {
             >
               <path
                 d={desktopPath}
-                stroke="rgba(255,255,255,0.08)"
+                stroke="rgb(var(--grid-line) / 0.16)"
                 strokeWidth="1.5"
                 vectorEffect="non-scaling-stroke"
               />
@@ -152,7 +152,7 @@ export default function Process() {
             >
               <path
                 d={mobilePath}
-                stroke="rgba(255,255,255,0.08)"
+                stroke="rgb(var(--grid-line) / 0.16)"
                 strokeWidth="1.5"
                 vectorEffect="non-scaling-stroke"
               />

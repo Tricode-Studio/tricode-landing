@@ -1,39 +1,27 @@
 import { useLandingData } from '../content/LandingDataContext';
+import TechIcon, { hasTechIcon } from './TechIcon';
 
 function trimmed(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+// Stack curado a lo que el estudio usa de verdad en producción (ver monorepo:
+// Next/Nest/Prisma/Postgres/Docker/Tailwind/MercadoPago/Vercel). Antes había 29
+// tecnologías (Vue, Angular, Astro, MongoDB, Firebase, GraphQL...) y leía como
+// "todólogo"; menos ítems, más foco, más creíble.
 const BASE_TECH_STACK = [
   'React',
   'Next.js',
-  'Angular',
-  'Vue',
-  'Astro',
   'TypeScript',
-  'JavaScript',
   'Node.js',
   'NestJS',
-  'Express',
-  'Python',
-  'TailwindCSS',
-  'Sass',
   'PostgreSQL',
-  'MySQL',
-  'MongoDB',
   'Prisma',
-  'GraphQL',
-  'Firebase',
-  'Vercel',
+  'TailwindCSS',
   'Docker',
-  'Git',
-  'GitHub',
+  'Vercel',
   'Mercado Pago',
-  'Stripe',
-  'PayPal',
   'Figma',
-  'Framer',
-  'Vite',
 ];
 
 function normalizeTechName(value: string) {
@@ -111,13 +99,10 @@ export default function Marquee() {
           const slug = resolveTechSlug(tech);
           return (
             <div key={`${tech}-${index}`} className="flex items-center gap-3 shrink-0 group">
-              {slug ? (
-                <img
-                  src={`https://cdn.simpleicons.org/${slug}/B9A7FF`}
-                  alt={tech}
-                  loading="lazy"
-                  draggable={false}
-                  className="h-4 w-4 sm:h-[18px] sm:w-[18px] opacity-60 group-hover:opacity-100 transition-opacity"
+              {slug && hasTechIcon(slug) ? (
+                <TechIcon
+                  slug={slug}
+                  className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-brand-lavender/70 opacity-60 group-hover:text-brand-lavender group-hover:opacity-100 transition-colors"
                 />
               ) : (
                 <span className="h-1.5 w-1.5 rounded-full bg-brand-lavender/70 group-hover:bg-brand-lavender transition-colors" />

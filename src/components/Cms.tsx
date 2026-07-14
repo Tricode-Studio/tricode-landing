@@ -291,12 +291,25 @@ export default function Cms() {
       className="relative py-28 md:py-40 border-t border-white/5 overflow-hidden"
     >
       <div className="absolute -top-32 right-1/4 h-[420px] w-[420px] rounded-full bg-brand-violet/10 blur-[160px]" />
-      <div className="absolute bottom-1/4 -left-32 h-[380px] w-[380px] rounded-full bg-brand-indigo/10 blur-[140px]" />
       <div className="absolute inset-0 grid-bg-soft opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_25%,transparent_75%)]" />
 
       <div className="container-wide relative">
         <div className="grid grid-cols-12 gap-x-6 gap-y-12 items-center">
           <div className="col-span-12 lg:col-span-5">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
+              className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-purple/35 bg-brand-purple/10 px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-brand-lavender"
+            >
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-brand-lavender opacity-60 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-lavender" />
+              </span>
+              Incluido en cada proyecto
+            </motion.div>
+
             {sectionLabel ? (
               <motion.div
                 initial={{ opacity: 0, x: -14 }}
@@ -317,8 +330,8 @@ export default function Cms() {
                   <SplitText
                     as="span"
                     text={titleHighlight}
-                    className="block mt-1"
-                    wordClassName="italic-serif text-grad"
+                    className="block mt-1 text-white"
+                    markWord="todo"
                     delay={0.2}
                   />
                 ) : null}

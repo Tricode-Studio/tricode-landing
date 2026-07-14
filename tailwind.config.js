@@ -3,29 +3,40 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      // `xs` para el rango de teléfonos anchos (el Hero ya lo referenciaba).
+      screens: {
+        xs: '475px',
+      },
+      // La paleta neutral (ink/bone/white) y los acentos (brand) se definen como
+      // variables CSS en index.css y se invierten por tema ([data-theme]). Como
+      // el código usa `ink` = familia de fondo, `bone`/`white` = familia de
+      // primer plano de forma consistente, cambiar las variables invierte todo
+      // el sitio sin tocar clases en los componentes. `<alpha-value>` mantiene
+      // funcionando las opacidades tipo `text-white/65` / `bg-white/[0.03]`.
       colors: {
         ink: {
-          950: '#05060B',
-          900: '#0A0C14',
-          800: '#10131D',
-          700: '#171B28',
-          600: '#212638',
+          950: 'rgb(var(--ink-950) / <alpha-value>)',
+          900: 'rgb(var(--ink-900) / <alpha-value>)',
+          800: 'rgb(var(--ink-800) / <alpha-value>)',
+          700: 'rgb(var(--ink-700) / <alpha-value>)',
+          600: 'rgb(var(--ink-600) / <alpha-value>)',
         },
         bone: {
-          50: '#F7F4EC',
-          100: '#EDE9DD',
-          200: '#D9D4C5',
-          300: '#A8A395',
-          400: '#7C7868',
+          50: 'rgb(var(--bone-50) / <alpha-value>)',
+          100: 'rgb(var(--bone-100) / <alpha-value>)',
+          200: 'rgb(var(--bone-200) / <alpha-value>)',
+          300: 'rgb(var(--bone-300) / <alpha-value>)',
+          400: 'rgb(var(--bone-400) / <alpha-value>)',
         },
         brand: {
-          violet: '#7C3AED',
-          purple: '#8B5CF6',
-          lavender: '#B9A7FF',
-          mist: '#D8CCFF',
-          indigo: '#6366F1',
-          ink: '#1B1740',
+          violet: 'rgb(var(--brand-violet) / <alpha-value>)',
+          purple: 'rgb(var(--brand-purple) / <alpha-value>)',
+          lavender: 'rgb(var(--brand-lavender) / <alpha-value>)',
+          mist: 'rgb(var(--brand-mist) / <alpha-value>)',
+          indigo: 'rgb(var(--brand-indigo) / <alpha-value>)',
+          ink: 'rgb(var(--brand-ink) / <alpha-value>)',
         },
+        white: 'rgb(var(--white) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],

@@ -1,4 +1,4 @@
-import type { Project } from '../types/project';
+import type { Project, ProjectMetric, ProjectTestimonial } from '../types/project';
 
 const configuredApiBaseUrl =
   typeof import.meta.env.VITE_API_BASE_URL === 'string'
@@ -27,6 +27,7 @@ type PublicProjectsResponse = {
       short?: string;
       long?: string;
       image?: string;
+      gallery?: unknown;
       tags?: unknown;
       stack?: unknown;
       year?: string;
@@ -34,6 +35,11 @@ type PublicProjectsResponse = {
       url?: string;
       featured?: boolean;
       position?: number;
+      problema?: string;
+      enfoque?: string;
+      resultado?: string;
+      metrics?: unknown;
+      testimonio?: unknown;
     };
   }>;
 };
@@ -204,6 +210,33 @@ function asStringArray(value: unknown): string[] {
   return [];
 }
 
+function asMetricArray(value: unknown): ProjectMetric[] {
+  const source = Array.isArray(value)
+    ? value
+    : value && typeof value === 'object' && Array.isArray((value as { items?: unknown }).items)
+      ? (value as { items: unknown[] }).items
+      : [];
+
+  return source
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null;
+      const record = item as Record<string, unknown>;
+      const label = asString(record.label);
+      const metricValue = asString(record.value);
+      if (!label && !metricValue) return null;
+      return { label, value: metricValue };
+    })
+    .filter((item): item is ProjectMetric => item !== null);
+}
+
+function asTestimonial(value: unknown): ProjectTestimonial | null {
+  if (!value || typeof value !== 'object') return null;
+  const record = value as Record<string, unknown>;
+  const quote = asString(record.quote);
+  if (!quote) return null;
+  return { quote, author: asString(record.author), role: asString(record.role) };
+}
+
 function normalizeProject(
   item: PublicProjectsResponse['items'][number],
   index: number,
@@ -221,11 +254,17 @@ function normalizeProject(
       asString(data.long) ||
       asString(data.descripcion),
     image: asString(data.image),
+    gallery: asStringArray(data.gallery),
     tags: asStringArray(data.tags).length ? asStringArray(data.tags) : asStringArray(data.stack),
     url: asString(data.url) || undefined,
     year: asString(data.year),
     accent: asString(data.accent) || DEFAULT_PROJECT_ACCENT,
     featured: data.featured === true,
+    problem: asString(data.problema),
+    approach: asString(data.enfoque),
+    result: asString(data.resultado),
+    metrics: asMetricArray(data.metrics),
+    testimonial: asTestimonial(data.testimonio),
   };
 }
 

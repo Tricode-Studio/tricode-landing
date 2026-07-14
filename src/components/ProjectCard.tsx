@@ -7,23 +7,12 @@ type Props = {
   ctaLabel?: string;
 };
 
-function resolveProjectHref(rawUrl?: string) {
-  const trimmed = rawUrl?.trim();
-  if (!trimmed) return null;
-  if (/^https?:\/\//i.test(trimmed)) {
-    return { href: trimmed, external: true };
-  }
-  if (trimmed.startsWith('//')) {
-    return { href: `https:${trimmed}`, external: true };
-  }
-  return { href: `https://${trimmed}`, external: true };
-}
-
 export default function ProjectCard({ project, ctaLabel }: Props) {
-  const link = resolveProjectHref(project.url);
+  const href = `/proyectos/${encodeURIComponent(project.slug)}`;
 
   return (
-    <motion.article
+    <motion.a
+      href={href}
       whileHover={{ y: -6 }}
       transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
       className="relative overflow-hidden rounded-2xl border border-bone-50/[0.06] bg-ink-900/40 group h-full flex flex-col"
@@ -85,18 +74,11 @@ export default function ProjectCard({ project, ctaLabel }: Props) {
           </div>
         ) : null}
 
-        {link && ctaLabel ? (
-          <a
-            href={link.href}
-            target={link.external ? '_blank' : undefined}
-            rel={link.external ? 'noreferrer noopener' : undefined}
-            className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-bone-50/80 hover:text-bone-50 group/btn"
-          >
-            <span className="link-reveal">{ctaLabel}</span>
-            <span aria-hidden className="transition-transform group-hover/btn:translate-x-1.5">→</span>
-          </a>
-        ) : null}
+        <span className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-bone-50/80 group-hover:text-bone-50">
+          <span className="link-reveal">{ctaLabel || 'Ver proyecto'}</span>
+          <span aria-hidden className="transition-transform group-hover:translate-x-1.5">→</span>
+        </span>
       </div>
-    </motion.article>
+    </motion.a>
   );
 }

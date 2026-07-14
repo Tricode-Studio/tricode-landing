@@ -1,4 +1,5 @@
 import type {
+  LandingClientLogo,
   LandingCmsFeature,
   LandingConfig,
   LandingSectionId,
@@ -16,14 +17,6 @@ type ServicesBlock = {
   items?: LandingService[];
 };
 
-type TeamBlock = {
-  sectionLabel?: string;
-  titleTop?: string;
-  titleHighlight?: string;
-  description?: string;
-  members?: LandingTeamMember[];
-};
-
 type SectionMeta = {
   id: LandingSectionId;
   navLabel?: string;
@@ -32,16 +25,16 @@ type SectionMeta = {
 
 const SECTION_META: SectionMeta[] = [
   { id: 'hero' },
-  { id: 'about', navLabel: 'Nosotros', navHref: '#nosotros' },
+  { id: 'stats' },
+  { id: 'clients' },
   { id: 'services', navLabel: 'Servicios', navHref: '#servicios' },
   { id: 'cms', navLabel: 'CMS', navHref: '#cms' },
-  { id: 'included' },
+  { id: 'statement' },
   { id: 'projects', navLabel: 'Proyectos', navHref: '#proyectos' },
-  { id: 'faq', navLabel: 'Preguntas', navHref: '#faq' },
   { id: 'process' },
-  { id: 'team' },
+  { id: 'included' },
+  { id: 'about', navLabel: 'Nosotros', navHref: '#nosotros' },
   { id: 'contact', navLabel: 'Contacto', navHref: '#contacto' },
-  { id: 'stats' },
 ];
 
 const DEFAULT_LAYOUT_SECTIONS: LandingSectionLayout[] = SECTION_META.map((section) => ({
@@ -96,24 +89,32 @@ const DEFAULT_SERVICES: LandingService[] = [
   },
 ];
 
+// Logos de clientes: la banda de prueba social más importante. `src` es opcional
+// -- si falta, ClientLogos renderiza el nombre como texto (fallback), así la
+// sección nunca queda vacía mientras se cargan los archivos reales de logo.
+const DEFAULT_CLIENTS: LandingClientLogo[] = [
+  { name: 'Cuevas Automóviles' },
+  { name: 'Ricardo L. Díaz' },
+  { name: 'Maite Inmobiliaria' },
+];
+
+// Equipo: se muestra solo en /nosotros (no en el home). Sin fotos a propósito
+// -- las cards son editoriales (nombre/rol/bio), ver Team.tsx.
 const DEFAULT_TEAM: LandingTeamMember[] = [
   {
-    seed: 'diego-barrera-tricode',
     name: 'Diego Barrera',
-    role: 'Desarrollador backend',
-    bio: 'Arquitectura backend, APIs y escalabilidad.',
+    role: 'Desarrollo backend',
+    bio: 'Arquitectura, APIs y escalabilidad. Se asegura de que lo que construimos aguante y crezca.',
   },
   {
-    seed: 'lautaro-deccia-tricode',
     name: 'Lautaro Deccia',
-    role: 'Desarrollador full stack',
-    bio: 'Experiencias web, diseño de interfaces y rendimiento.',
+    role: 'Desarrollo full stack',
+    bio: 'Experiencias web, interfaces y rendimiento. Traduce el diseño en producto rápido y pulido.',
   },
   {
-    seed: 'juan-diego-elissalde-tricode',
     name: 'Juan Diego Elissalde',
-    role: 'Desarrollador full stack y producto',
-    bio: 'Producto, ejecución técnica y enfoque en negocio.',
+    role: 'Full stack y producto',
+    bio: 'Producto, ejecución técnica y foco en negocio. El puente entre lo que necesitás y lo que entregamos.',
   },
 ];
 
@@ -140,26 +141,31 @@ const DEFAULT_CMS_FEATURES: LandingCmsFeature[] = [
   },
 ];
 
+// El orden importa: IncludedIcon (en Included.tsx) mapea el ícono SVG por índice.
 const DEFAULT_INCLUDED_ITEMS: LandingCmsFeature[] = [
   {
-    icon: '✉',
-    title: 'Correos profesionales',
-    desc: 'tuequipo@tudominio.com configurado y funcionando desde el lanzamiento, no un Gmail genérico.',
+    title: 'Dominio y correos profesionales',
+    desc: 'Tu dominio (tudominio.com) y correos tuequipo@tudominio.com configurados y funcionando desde el día uno, no un Gmail genérico.',
   },
   {
-    icon: '☎',
+    title: 'Hosting e infraestructura',
+    desc: 'Servidores, certificados SSL y despliegue continuo. La parte técnica de tenerlo online la gestionamos nosotros.',
+  },
+  {
+    title: 'CMS a medida incluido',
+    desc: 'El panel para autogestionar tu contenido viene con cada proyecto, sin costo aparte ni licencias de terceros.',
+  },
+  {
+    title: 'Mantenimiento y backups',
+    desc: 'Actualizaciones, copias de seguridad y monitoreo para que todo siga funcionando sin sorpresas.',
+  },
+  {
+    title: 'SEO técnico',
+    desc: 'Estructura, metadatos, sitemap y velocidad pensados desde el inicio para que Google te encuentre.',
+  },
+  {
     title: 'Soporte directo',
     desc: 'Hablás con el mismo equipo que construyó tu proyecto, no con una cola de tickets genérica.',
-  },
-  {
-    icon: '⟳',
-    title: 'Mantenimiento continuo',
-    desc: 'Actualizaciones, backups y monitoreo para que todo siga funcionando sin sorpresas.',
-  },
-  {
-    icon: '◎',
-    title: 'SEO técnico',
-    desc: 'Estructura, metadatos y velocidad pensados desde el día uno para que Google te encuentre.',
   },
 ];
 
@@ -317,13 +323,6 @@ function applySequentialSectionLabels(config: LandingConfig): LandingConfig {
         indexBySection.get('projects') ?? 4,
       ),
     },
-    faq: {
-      ...config.faq,
-      sectionLabel: renumberSectionLabel(
-        config.faq?.sectionLabel ?? '',
-        indexBySection.get('faq') ?? 4,
-      ),
-    },
     process: {
       ...config.process,
       sectionLabel: renumberSectionLabel(
@@ -331,15 +330,6 @@ function applySequentialSectionLabels(config: LandingConfig): LandingConfig {
         indexBySection.get('process') ?? 5,
       ),
     },
-    team: Array.isArray(config.team)
-      ? config.team
-      : {
-          ...config.team,
-          sectionLabel: renumberSectionLabel(
-            config.team?.sectionLabel ?? '',
-            indexBySection.get('team') ?? 6,
-          ),
-        },
     contact: {
       ...config.contact,
       sectionLabel: renumberSectionLabel(
@@ -355,19 +345,23 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
   layout: {
     sections: DEFAULT_LAYOUT_SECTIONS,
   },
+  // Nav a nivel de páginas (no anclas a secciones del home). El botón "Hablemos"
+  // (ctaHref) apunta a #contacto y desde subpáginas se normaliza a /#contacto.
   nav: {
-    links: DEFAULT_LAYOUT_SECTIONS
-      .filter((section) => section.navHref && section.navLabel)
-      .map((section) => ({ href: section.navHref as string, label: section.navLabel as string })),
+    links: [
+      { href: '/', label: 'Inicio' },
+      { href: '/nosotros', label: 'Nosotros' },
+      { href: '/proyectos', label: 'Proyectos' },
+    ],
     ctaLabel: 'Hablemos',
     ctaHref: '#contacto',
   },
   hero: {
     rotatingWords: ['ideas', 'productos', 'marcas', 'experiencias'],
     titlePrefix: 'Transformamos',
-    titleSuffix: 'en soluciones digitales.',
+    titleSuffix: 'en producto digital que crece.',
     description:
-      'En Tricode Studio diseñamos y desarrollamos productos web a medida desde la idea hasta el lanzamiento.',
+      'Estudio de producto, diseño y desarrollo en Uruguay. Trabajás directo con quien diseña y construye tu proyecto, de la idea al lanzamiento.',
     primaryCtaLabel: 'Empezar un proyecto',
     primaryCtaHref: '#contacto',
     secondaryCtaLabel: 'Ver servicios',
@@ -377,10 +371,10 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     backgroundImage: '/hero.webp',
   },
   stats: [
-    { value: 3, suffix: 'x', label: 'Más potencia que un freelancer solo' },
-    { value: 100, suffix: '%', label: 'Proyectos entregados a tiempo' },
-    { value: 24, suffix: 'h', label: 'Tiempo de respuesta promedio' },
-    { value: 15, prefix: '+', label: 'Proyectos en producción' },
+    { value: '2023', label: 'Estudio activo desde' },
+    { value: '24 h', label: 'Respuesta promedio' },
+    { value: 'Full-stack', label: 'Producto, diseño y código in-house' },
+    { value: 'Uruguay', label: 'Base local · trabajo remoto' },
   ],
   about: {
     sectionLabel: 'Sobre nosotros',
@@ -428,11 +422,16 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
       'Cada servicio está enfocado en impacto real: captación comercial, eficiencia operativa y crecimiento sostenible.',
     items: DEFAULT_SERVICES,
   },
+  clients: {
+    sectionLabel: 'Confianza',
+    title: 'Marcas que ya construyeron con nosotros',
+    logos: DEFAULT_CLIENTS,
+  },
   team: {
     sectionLabel: 'Equipo',
-    titleTop: 'Las personas detrás',
-    titleHighlight: 'del código.',
-    description: 'Amigos antes que colegas. Producto y tecnología, lado a lado.',
+    titleTop: 'Las personas',
+    titleHighlight: 'detrás del código.',
+    description: 'Amigos antes que colegas. Producto, diseño y desarrollo, lado a lado.',
     members: DEFAULT_TEAM,
   },
   process: {
@@ -443,17 +442,17 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     steps: DEFAULT_STEPS,
   },
   cms: {
-    sectionLabel: 'CMS',
+    sectionLabel: 'Producto estrella',
     titleTop: 'Tu propio panel para',
     titleHighlight: 'gestionar todo, sin depender de nadie.',
     description:
-      'Cada proyecto que entregamos viene con un CMS hecho a medida. Editás contenido, productos, reservas o casos cuando vos quieras, desde una interfaz pensada para que cualquier persona del equipo pueda usarla.',
+      'Es lo que más nos diferencia: no es un plugin genérico ni un extra que se cobra aparte. Cada proyecto se entrega con un CMS hecho a la medida de tu negocio. Editás contenido, productos, reservas o casos cuando quieras, desde una interfaz que cualquier persona del equipo puede usar.',
     features: DEFAULT_CMS_FEATURES,
     panelTitle: 'Tu CMS · Demo',
     panelSubtitle: 'Panel de control',
     panelMetricLabel: 'Cambios publicados este mes',
     panelMetricValue: '128',
-    panelEntities: ['Proyectos', 'Servicios', 'Equipo', 'FAQs', 'Hero', 'Footer'],
+    panelEntities: ['Proyectos', 'Servicios', 'Equipo', 'Hero', 'Footer'],
     primaryCtaLabel: 'Ver una demo en vivo',
     primaryCtaHref: '#contacto',
     secondaryCtaLabel: 'Cómo funciona',
@@ -461,10 +460,10 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
   },
   included: {
     sectionLabel: 'Todo incluido',
-    titleTop: 'Un proyecto no termina',
-    titleHighlight: 'cuando se lanza.',
+    titleTop: 'Todo lo que incluye tu proyecto,',
+    titleHighlight: 'sin costos ocultos.',
     description:
-      'Cada entrega incluye lo que hace falta para sostenerlo en el tiempo, no solo para prenderlo.',
+      'Cuando cotizamos, esto ya está adentro. Nada de "eso se cobra aparte": dominio, correos, hosting, tu CMS, mantenimiento y soporte forman parte de lo que recibís y de lo que pagás.',
     items: DEFAULT_INCLUDED_ITEMS,
   },
   projects: {
@@ -489,44 +488,6 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     nextStepTitleHighlight: 'el próximo?',
     pageCtaLabel: 'Empezar un proyecto',
     pageCtaHref: '/brief',
-  },
-  faq: {
-    sectionLabel: 'Preguntas frecuentes',
-    titleTop: 'Preguntas',
-    titleHighlight: 'frecuentes',
-    description: 'Respuestas rápidas para tomar decisión con claridad.',
-    items: [
-      {
-        question: '¿Qué tipo de proyectos desarrolla Tricode?',
-        answer:
-          'Trabajamos en landings de alto rendimiento, e-commerce, sistemas de reservas y software a medida para operación interna. También resolvemos integraciones con herramientas externas y paneles de gestión para equipos comerciales y operativos.',
-      },
-      {
-        question: '¿Cuánto demora un proyecto típico?',
-        answer:
-          'Depende del alcance y de la complejidad de negocio. Una landing suele demorar entre 2 y 4 semanas, mientras que un sistema a medida normalmente se trabaja entre 6 y 12 semanas con entregas parciales para validar rápido.',
-      },
-      {
-        question: '¿Trabajan solo en Uruguay?',
-        answer:
-          'Nuestra base está en Trinidad, Flores (Uruguay), y trabajamos de forma remota con clientes de otras ciudades y de Latinoamérica, manteniendo reuniones y seguimiento continuo.',
-      },
-      {
-        question: '¿Incluyen SEO y analítica?',
-        answer:
-          'Sí. Implementamos base técnica SEO (estructura, metadatos, sitemap, rendimiento) y analítica con GA4 para medir conversiones. Además dejamos el sitio listo para escalar campañas y contenido.',
-      },
-      {
-        question: '¿Pueden integrar pagos y herramientas externas?',
-        answer:
-          'Sí. Integramos pasarelas de pago, calendarios, email marketing, CRM y herramientas operativas según el caso. Definimos la integración por flujo real de negocio, no por moda tecnológica.',
-      },
-      {
-        question: '¿Qué diferencia a Tricode de otras opciones?',
-        answer:
-          'Combinamos producto, diseño y desarrollo en el mismo equipo, con foco en objetivos medibles. No entregamos solo “una web”: construimos una solución que se pueda mantener, optimizar y usar para crecer.',
-      },
-    ],
   },
   contact: {
     sectionLabel: 'Hablemos',
@@ -560,11 +521,7 @@ export function withLandingDefaults(rawConfig: LandingConfig | null | undefined)
   const servicesSource: ServicesBlock = Array.isArray(source.services)
     ? { items: source.services }
     : (source.services as ServicesBlock) ?? {};
-  const teamSource: TeamBlock = Array.isArray(source.team)
-    ? { members: source.team }
-    : (source.team as TeamBlock) ?? {};
   const defaultServicesBlock: ServicesBlock = (DEFAULT_LANDING_CONFIG.services as ServicesBlock) ?? {};
-  const defaultTeamBlock: TeamBlock = (DEFAULT_LANDING_CONFIG.team as TeamBlock) ?? {};
 
   const merged: LandingConfig = {
     ...DEFAULT_LANDING_CONFIG,
@@ -666,21 +623,16 @@ export function withLandingDefaults(rawConfig: LandingConfig | null | undefined)
           ? servicesSource.items
           : defaultServicesBlock.items,
     },
-    team: {
-      ...defaultTeamBlock,
-      ...teamSource,
+    clients: {
+      ...DEFAULT_LANDING_CONFIG.clients,
+      ...source.clients,
       sectionLabel:
-        cleanString(teamSource.sectionLabel) || defaultTeamBlock.sectionLabel,
-      titleTop:
-        cleanString(teamSource.titleTop) || defaultTeamBlock.titleTop,
-      titleHighlight:
-        cleanString(teamSource.titleHighlight) || defaultTeamBlock.titleHighlight,
-      description:
-        cleanString(teamSource.description) || defaultTeamBlock.description,
-      members:
-        Array.isArray(teamSource.members) && teamSource.members.length
-          ? teamSource.members
-          : defaultTeamBlock.members,
+        cleanString(source.clients?.sectionLabel) || DEFAULT_LANDING_CONFIG.clients?.sectionLabel,
+      title: cleanString(source.clients?.title) || DEFAULT_LANDING_CONFIG.clients?.title,
+      logos:
+        Array.isArray(source.clients?.logos) && source.clients.logos.length
+          ? source.clients.logos
+          : DEFAULT_LANDING_CONFIG.clients?.logos,
     },
     cms: {
       ...DEFAULT_LANDING_CONFIG.cms,
@@ -801,24 +753,6 @@ export function withLandingDefaults(rawConfig: LandingConfig | null | undefined)
         cleanString(source.projects?.pageCtaLabel) || DEFAULT_LANDING_CONFIG.projects?.pageCtaLabel,
       pageCtaHref:
         cleanString(source.projects?.pageCtaHref) || DEFAULT_LANDING_CONFIG.projects?.pageCtaHref,
-    },
-    faq: {
-      ...DEFAULT_LANDING_CONFIG.faq,
-      ...source.faq,
-      sectionLabel: cleanString(source.faq?.sectionLabel) || DEFAULT_LANDING_CONFIG.faq?.sectionLabel,
-      titleTop: cleanString(source.faq?.titleTop) || DEFAULT_LANDING_CONFIG.faq?.titleTop,
-      titleHighlight:
-        cleanString(source.faq?.titleHighlight) || DEFAULT_LANDING_CONFIG.faq?.titleHighlight,
-      description: cleanString(source.faq?.description) || DEFAULT_LANDING_CONFIG.faq?.description,
-      items:
-        Array.isArray(source.faq?.items) && source.faq.items.length
-          ? source.faq.items
-              .map((item) => ({
-                question: cleanString(item?.question),
-                answer: cleanString(item?.answer),
-              }))
-              .filter((item) => item.question && item.answer)
-          : DEFAULT_LANDING_CONFIG.faq?.items,
     },
     contact: {
       ...DEFAULT_LANDING_CONFIG.contact,

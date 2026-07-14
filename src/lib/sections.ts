@@ -13,16 +13,16 @@ type SectionMeta = {
 
 const SECTION_META: SectionMeta[] = [
   { id: 'hero', defaultEnabled: true },
-  { id: 'about', defaultEnabled: true, defaultNavLabel: 'Nosotros', defaultNavHref: '#nosotros' },
+  { id: 'stats', defaultEnabled: true },
+  { id: 'clients', defaultEnabled: true },
   { id: 'services', defaultEnabled: true, defaultNavLabel: 'Servicios', defaultNavHref: '#servicios' },
   { id: 'cms', defaultEnabled: true, defaultNavLabel: 'CMS', defaultNavHref: '#cms' },
-  { id: 'included', defaultEnabled: true },
+  { id: 'statement', defaultEnabled: true },
   { id: 'projects', defaultEnabled: true, defaultNavLabel: 'Proyectos', defaultNavHref: '#proyectos' },
-  { id: 'faq', defaultEnabled: true, defaultNavLabel: 'Preguntas', defaultNavHref: '#faq' },
   { id: 'process', defaultEnabled: true },
-  { id: 'team', defaultEnabled: true, defaultNavLabel: 'Equipo', defaultNavHref: '#equipo' },
+  { id: 'included', defaultEnabled: true },
+  { id: 'about', defaultEnabled: true, defaultNavLabel: 'Nosotros', defaultNavHref: '#nosotros' },
   { id: 'contact', defaultEnabled: true, defaultNavLabel: 'Contacto', defaultNavHref: '#contacto' },
-  { id: 'stats', defaultEnabled: true },
 ];
 
 export const DEFAULT_SECTION_LAYOUT: LandingSectionLayout[] = SECTION_META.map((section) => ({

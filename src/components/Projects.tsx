@@ -62,8 +62,8 @@ export default function Projects() {
                   <SplitText
                     as="span"
                     text={titleHighlight}
-                    className="block mt-1"
-                    wordClassName="italic-serif text-grad"
+                    className="block mt-1 text-white"
+                    markWord="construir"
                     delay={0.2}
                   />
                 ) : null}

@@ -1,11 +1,11 @@
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
 import { MouseEvent, useRef } from 'react';
 import CardParticles from './CardParticles';
 import SplitText from './SplitText';
 import { useLandingData } from '../content/LandingDataContext';
 import { EASE_OUT_EXPO, fadeUp, stagger, viewportOnce } from '../lib/motion';
 
-const BRAND_MARK_SRC = '/isotipo.png?v=20260427-1';
+const BRAND_MARK_SRC = '/isotipo.webp?v=20260714-1';
 
 const STORY_CHAPTERS = [
   {
@@ -110,6 +110,46 @@ function InteractiveLogo() {
   );
 }
 
+function PillarIcon({ index }: { index: number }) {
+  const common = 'h-6 w-6';
+  // Orientación a resultados
+  if (index === 0) {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="5" />
+        <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+  // Arquitectura mantenible
+  if (index === 1) {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <path d="m12 3 9 5-9 5-9-5 9-5Z" strokeLinejoin="round" />
+        <path d="m3 12 9 5 9-5M3 16l9 5 9-5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  // Diseño con criterio
+  if (index === 2) {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" strokeLinecap="round" />
+        <circle cx="12" cy="12" r="3.2" />
+      </svg>
+    );
+  }
+  // Acompañamiento real
+  return (
+    <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.4">
+      <path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="10" cy="8" r="3.2" />
+      <path d="M19.5 20v-1.5a3.5 3.5 0 0 0-2.5-3.35M15.5 5.15a3.2 3.2 0 0 1 0 5.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export default function About() {
   const { config } = useLandingData();
   const sectionLabel = trimmed(config.about?.sectionLabel);
@@ -148,11 +188,10 @@ export default function About() {
       className="relative py-28 md:py-44 overflow-hidden border-t border-bone-50/5"
     >
       <div className="absolute -top-40 left-1/3 h-[500px] w-[500px] rounded-full bg-brand-purple/8 blur-[160px]" />
-      <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-brand-indigo/8 blur-[160px]" />
 
       <div className="container-wide relative">
         {/* Heading + Chapters */}
-        <div className="grid grid-cols-12 gap-x-8 gap-y-12">
+        <div className="grid grid-cols-12 gap-x-0 lg:gap-x-8 gap-y-12">
           <div className="col-span-12 lg:col-span-5 lg:sticky lg:top-32 self-start">
             {sectionLabel ? (
               <motion.div
@@ -174,8 +213,8 @@ export default function About() {
                   <SplitText
                     as="span"
                     text={titleHighlight}
-                    className="block mt-2"
-                    wordClassName="italic-serif text-grad"
+                    className="block mt-2 text-bone-50"
+                    markWord="construir"
                     delay={0.18}
                   />
                 ) : null}
@@ -246,7 +285,7 @@ export default function About() {
         </div>
 
         {/* Logo meaning split */}
-        <div ref={logoSectionRef} className="mt-36 md:mt-52 grid grid-cols-12 gap-x-8 gap-y-16 items-center">
+        <div ref={logoSectionRef} className="mt-36 md:mt-52 grid grid-cols-12 gap-x-0 lg:gap-x-8 gap-y-16 items-center">
           <motion.div
             style={{ y: sectionY }}
             className="col-span-12 lg:col-span-5 relative flex items-center justify-center"
@@ -267,8 +306,7 @@ export default function About() {
             </motion.div>
 
             <h3 className="display-md text-3xl md:text-5xl text-bone-50 max-w-xl">
-              Una <span className="italic-serif text-grad">T</span> que mira{' '}
-              <span className="italic-serif text-grad">en tres dimensiones.</span>
+              Una T que mira en tres <span className="kw-mark">dimensiones</span>.
             </h3>
 
             <p className="mt-7 max-w-xl text-bone-50/60 leading-relaxed">
@@ -319,7 +357,7 @@ export default function About() {
                   Lo que nos mueve
                 </div>
                 <h3 className="display-md text-3xl md:text-5xl text-bone-50 max-w-2xl">
-                  Cuatro principios <span className="italic-serif text-grad">que no negociamos.</span>
+                  Cuatro principios que no <span className="kw-mark">negociamos</span>.
                 </h3>
               </div>
             </motion.div>
@@ -331,13 +369,13 @@ export default function About() {
               viewport={viewportOnce}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
             >
-              {pillars.map((pillar) => (
+              {pillars.map((pillar, index) => (
                 <motion.div key={pillar.title} variants={fadeUp}>
                   <div className="group card card-hover relative h-full overflow-hidden rounded-2xl p-6">
                     <CardParticles />
-                    {pillar.icon ? (
-                      <div className="relative text-3xl text-brand-lavender leading-none">{pillar.icon}</div>
-                    ) : null}
+                    <div className="relative h-11 w-11 rounded-xl bg-grad-soft border border-brand-purple/30 flex items-center justify-center text-brand-lavender">
+                      <PillarIcon index={index} />
+                    </div>
                     <div className="relative mt-5 font-medium text-bone-50 text-base">{pillar.title}</div>
                     <div className="relative mt-2 text-sm text-bone-50/55 leading-relaxed">{pillar.desc}</div>
                   </div>
@@ -367,7 +405,7 @@ export default function About() {
             <blockquote className="mt-6 display-md text-2xl md:text-4xl leading-snug text-bone-50/90">
               <span className="italic-serif">{quoteText}</span>
               {quoteHighlight ? (
-                <span className="block mt-4 text-grad italic-serif">{quoteHighlight}</span>
+                <span className="block mt-4 italic-serif text-bone-50">{quoteHighlight}</span>
               ) : null}
             </blockquote>
           </motion.div>

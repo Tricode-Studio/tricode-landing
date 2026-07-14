@@ -1,18 +1,23 @@
 import { Fragment, useEffect, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import Stats from './components/Stats';
-import About from './components/About';
+import ClientLogos from './components/ClientLogos';
+import AboutTeaser from './components/AboutTeaser';
 import Services from './components/Services';
 import Cms from './components/Cms';
+import Statement from './components/Statement';
 import Included from './components/Included';
 import Process from './components/Process';
 import Projects from './components/Projects';
-import Faq from './components/Faq';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ProjectsPage from './components/ProjectsPage';
+import ProjectDetailPage from './components/ProjectDetailPage';
+import NosotrosPage from './components/NosotrosPage';
 import BriefPage from './components/BriefPage';
+import ThemeTransition from './components/ThemeTransition';
 import { useReveal } from './hooks/useReveal';
 import { useLenis } from './hooks/useLenis';
 import type { Project } from './types/project';
@@ -25,17 +30,23 @@ import { withLandingDefaults } from './content/defaultLandingConfig';
 import { fetchCmsProjects } from './lib/cms';
 import { resolveEnabledSectionOrder } from './lib/sections';
 import { applyLandingSeo } from './lib/seo';
+import { initAnalytics, trackPageview } from './lib/analytics';
 
 function getRoute() {
   const hashRoute = window.location.hash.replace(/^#/, '');
   if (hashRoute.startsWith('/')) {
-    return hashRoute;
+    return hashRoute.replace(/\/+$/, '') || '/';
   }
 
-  if (window.location.pathname.startsWith('/proyectos')) {
-    return '/proyectos';
+  const path = window.location.pathname.replace(/\/+$/, '');
+  // /proyectos y /proyectos/<slug> (se preserva el slug para el detalle).
+  if (path.startsWith('/proyectos')) {
+    return path || '/proyectos';
   }
-  if (window.location.pathname.startsWith('/brief')) {
+  if (path.startsWith('/nosotros')) {
+    return '/nosotros';
+  }
+  if (path.startsWith('/brief')) {
     return '/brief';
   }
 
@@ -48,16 +59,16 @@ function Home({ sectionOrder }: { sectionOrder: LandingSectionId[] }) {
 
   const sectionMap: Record<LandingSectionId, JSX.Element> = {
     hero: <Hero />,
-    about: <About />,
+    stats: <Stats />,
+    clients: <ClientLogos />,
+    about: <AboutTeaser />,
     services: <Services />,
     cms: <Cms />,
+    statement: <Statement />,
     included: <Included />,
     projects: <Projects />,
-    faq: <Faq />,
     process: <Process />,
-    team: <></>,
     contact: <Contact />,
-    stats: <Stats />,
   };
 
   return (
@@ -77,6 +88,7 @@ export default function App() {
   const [route, setRoute] = useState(getRoute());
   const [config] = useState<LandingConfig>(() => withLandingDefaults({}));
   const [projects, setProjects] = useState<Project[]>([]);
+  const [projectsReady, setProjectsReady] = useState(false);
   const sectionOrder = resolveEnabledSectionOrder(config);
 
   useEffect(() => {
@@ -103,7 +115,9 @@ export default function App() {
         return null;
       });
 
-      if (!alive || !result) return;
+      if (!alive) return;
+      setProjectsReady(true);
+      if (!result) return;
       setProjects(result);
     };
 
@@ -119,16 +133,40 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    applyLandingSeo(route, config);
-  }, [route, config]);
+    applyLandingSeo(route, config, projects);
+  }, [route, config, projects]);
+
+  useEffect(() => {
+    initAnalytics();
+  }, []);
+
+  useEffect(() => {
+    trackPageview(route);
+  }, [route]);
+
+  const projectDetailSlug = route.startsWith('/proyectos/')
+    ? decodeURIComponent(route.slice('/proyectos/'.length))
+    : '';
+
+  let content: JSX.Element;
+  if (projectDetailSlug) {
+    content = <ProjectDetailPage slug={projectDetailSlug} />;
+  } else if (route.startsWith('/proyectos')) {
+    content = <ProjectsPage />;
+  } else if (route.startsWith('/nosotros')) {
+    content = <NosotrosPage />;
+  } else if (route.startsWith('/brief')) {
+    content = <BriefPage />;
+  } else {
+    content = <Home sectionOrder={sectionOrder} />;
+  }
 
   return (
-    <LandingDataProvider value={{ config, projects, isConfigReady: true }}>
-      {route.startsWith('/proyectos')
-        ? <ProjectsPage />
-        : route.startsWith('/brief')
-          ? <BriefPage />
-          : <Home sectionOrder={sectionOrder} />}
-    </LandingDataProvider>
+    <MotionConfig reducedMotion="never">
+      <LandingDataProvider value={{ config, projects, isConfigReady: true, projectsReady }}>
+        {content}
+      </LandingDataProvider>
+      <ThemeTransition />
+    </MotionConfig>
   );
 }
