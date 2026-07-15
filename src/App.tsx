@@ -18,6 +18,7 @@ import ProjectDetailPage from './components/ProjectDetailPage';
 import NosotrosPage from './components/NosotrosPage';
 import BriefPage from './components/BriefPage';
 import PrivacyPage from './components/PrivacyPage';
+import PrivacyWorkspacePage from './components/PrivacyWorkspacePage';
 import ThemeTransition from './components/ThemeTransition';
 import { useReveal } from './hooks/useReveal';
 import { useLenis } from './hooks/useLenis';
@@ -49,6 +50,9 @@ function getRoute() {
   }
   if (path.startsWith('/brief')) {
     return '/brief';
+  }
+  if (path.startsWith('/privacidad-workspace')) {
+    return '/privacidad-workspace';
   }
   if (path.startsWith('/privacidad')) {
     return '/privacidad';
@@ -161,6 +165,8 @@ export default function App() {
     content = <NosotrosPage />;
   } else if (route.startsWith('/brief')) {
     content = <BriefPage />;
+  } else if (route.startsWith('/privacidad-workspace')) {
+    content = <PrivacyWorkspacePage />;
   } else if (route.startsWith('/privacidad')) {
     content = <PrivacyPage />;
   } else {

@@ -92,6 +92,9 @@ function getCanonicalPath(route: string) {
   if (route.startsWith('/brief')) {
     return '/brief';
   }
+  if (route.startsWith('/privacidad-workspace')) {
+    return '/privacidad-workspace';
+  }
   if (route.startsWith('/privacidad')) {
     return '/privacidad';
   }
@@ -157,6 +160,7 @@ export function computeLandingMeta(
   const isBriefPage = canonicalPath === '/brief';
   const isNosotrosPage = canonicalPath === '/nosotros';
   const isPrivacyPage = canonicalPath === '/privacidad';
+  const isPrivacyWorkspacePage = canonicalPath === '/privacidad-workspace';
   const nosotrosDescription =
     cleanString(config.about?.description) ||
     'Conocé a Tricode: un estudio compacto de producto, diseño y desarrollo en Trinidad, Flores, Uruguay.';
@@ -183,6 +187,10 @@ export function computeLandingMeta(
     title = `Política de Privacidad | Tricode CMS`;
     description =
       'Qué datos recopila la app Tricode CMS para Android y la plataforma que la acompaña, y cómo los tratamos.';
+  } else if (isPrivacyWorkspacePage) {
+    title = `Política de Privacidad | Tricode Workspace`;
+    description =
+      'Qué datos recopila la app Tricode Workspace (uso interno del equipo de Tricode) y cómo los tratamos.';
   } else {
     title = `${brandName} | Desarrollo web y software a medida en Uruguay`;
     description = `${heroDescription} En Tricode creamos landing pages, e-commerce y sistemas personalizados.`;
@@ -287,6 +295,16 @@ export function computeLandingMeta(
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
         { '@type': 'ListItem', position: 2, name: 'Política de Privacidad', item: canonicalUrl },
+      ],
+    });
+  }
+  if (isPrivacyWorkspacePage) {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${canonicalUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: 'Política de Privacidad — Workspace', item: canonicalUrl },
       ],
     });
   }

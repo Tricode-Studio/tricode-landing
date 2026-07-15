@@ -35,6 +35,14 @@
     {
       "source": "/privacidad/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/privacidad-workspace",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/privacidad-workspace/",
+      "destination": "/index.html"
     }
   ]
 }

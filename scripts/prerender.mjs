@@ -28,6 +28,7 @@ const ROUTES = [
   { route: '/proyectos', out: 'proyectos/index.html' },
   { route: '/brief', out: 'brief/index.html' },
   { route: '/privacidad', out: 'privacidad/index.html' },
+  { route: '/privacidad-workspace', out: 'privacidad-workspace/index.html' },
 ];
 
 function escapeAttr(value) {
