@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      // Mismo storage key que tricode-landing (localStorage es compartido entre
+      // el iframe y el sitio padre por ser mismo origen): así el mockup arranca
+      // ya con el tema correcto, sin flash, y sin depender de postMessage.
+      (function () {
+        try {
+          var stored = localStorage.getItem('tricode-theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light'
+                : 'dark';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+    <title>Blog — Tricode Studio</title>
+    <script type="module" crossorigin src="/mockups/blog/assets/index-C6k7VCVD.js"></script>
+    <link rel="stylesheet" crossorigin href="/mockups/blog/assets/index-G4-MeVxx.css">
+  </head>
+  <body class="bg-ink-950 text-white">
+    <div id="root"></div>
+  </body>
+</html>

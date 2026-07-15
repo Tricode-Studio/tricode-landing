@@ -52,12 +52,6 @@ const DEFAULT_SERVICES: LandingService[] = [
     audience: 'Ideal para empresas de servicios, campañas puntuales y lanzamientos que necesitan resultados rápidos.',
   },
   {
-    title: 'Sitio institucional',
-    desc: 'Presencia web clara para tu marca: quiénes somos, servicios, contacto y ubicación, sin necesidad de un sistema complejo detrás.',
-    tag: 'Presencia digital',
-    audience: 'Ideal para profesionales, estudios y negocios que necesitan estar online con una base sólida.',
-  },
-  {
     title: 'Catálogos',
     desc: 'Mostrás todo tu catálogo de productos o servicios, organizado y fácil de navegar, sin necesidad de checkout ni pagos online.',
     tag: 'Catálogo digital',
@@ -80,12 +74,6 @@ const DEFAULT_SERVICES: LandingService[] = [
     desc: 'Espacio de contenido propio para publicar artículos y novedades, integrado a tu sitio y editable desde tu CMS, pensado para SEO de largo plazo.',
     tag: 'Contenido y SEO',
     audience: 'Ideal para marcas que quieren posicionarse con contenido y atraer tráfico orgánico.',
-  },
-  {
-    title: 'Soluciones Personalizadas',
-    desc: 'Desarrollamos software a medida para procesos específicos: ventas, seguimiento, operación interna e integraciones con otras plataformas.',
-    tag: 'Sin límites',
-    audience: 'Ideal para empresas que ya crecieron y necesitan una solución propia.',
   },
 ];
 

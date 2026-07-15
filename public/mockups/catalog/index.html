@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      // Mismo storage key que tricode-landing (localStorage compartido por ser
+      // mismo origen una vez copiado a public/mockups/catalog/).
+      (function () {
+        try {
+          var stored = localStorage.getItem('tricode-theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light'
+                : 'dark';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+    <title>MARCO — Arte para tu espacio</title>
+    <script type="module" crossorigin src="/mockups/catalog/assets/index--E9jRMjk.js"></script>
+    <link rel="stylesheet" crossorigin href="/mockups/catalog/assets/index-D7iw4ZiL.css">
+  </head>
+  <body class="bg-ink-950 text-white">
+    <div id="root"></div>
+  </body>
+</html>
