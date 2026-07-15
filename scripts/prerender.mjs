@@ -27,6 +27,7 @@ const ROUTES = [
   { route: '/nosotros', out: 'nosotros/index.html' },
   { route: '/proyectos', out: 'proyectos/index.html' },
   { route: '/brief', out: 'brief/index.html' },
+  { route: '/privacidad', out: 'privacidad/index.html' },
 ];
 
 function escapeAttr(value) {

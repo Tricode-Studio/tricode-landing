@@ -92,6 +92,9 @@ function getCanonicalPath(route: string) {
   if (route.startsWith('/brief')) {
     return '/brief';
   }
+  if (route.startsWith('/privacidad')) {
+    return '/privacidad';
+  }
   return '/';
 }
 
@@ -153,6 +156,7 @@ export function computeLandingMeta(
   const isProjectsPage = canonicalPath === '/proyectos';
   const isBriefPage = canonicalPath === '/brief';
   const isNosotrosPage = canonicalPath === '/nosotros';
+  const isPrivacyPage = canonicalPath === '/privacidad';
   const nosotrosDescription =
     cleanString(config.about?.description) ||
     'Conocé a Tricode: un estudio compacto de producto, diseño y desarrollo en Trinidad, Flores, Uruguay.';
@@ -175,6 +179,10 @@ export function computeLandingMeta(
   } else if (isBriefPage) {
     title = `Cuestionario de Proyecto | ${brandName}`;
     description = briefDescription;
+  } else if (isPrivacyPage) {
+    title = `Política de Privacidad | Tricode CMS`;
+    description =
+      'Qué datos recopila la app Tricode CMS para Android y la plataforma que la acompaña, y cómo los tratamos.';
   } else {
     title = `${brandName} | Desarrollo web y software a medida en Uruguay`;
     description = `${heroDescription} En Tricode creamos landing pages, e-commerce y sistemas personalizados.`;
@@ -269,6 +277,16 @@ export function computeLandingMeta(
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
         { '@type': 'ListItem', position: 2, name: 'Nosotros', item: canonicalUrl },
+      ],
+    });
+  }
+  if (isPrivacyPage) {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${canonicalUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: 'Política de Privacidad', item: canonicalUrl },
       ],
     });
   }

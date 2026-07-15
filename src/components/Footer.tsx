@@ -18,7 +18,9 @@ function isSecondaryLocation() {
     path.startsWith('/nosotros') ||
     hash.startsWith('/nosotros') ||
     path.startsWith('/brief') ||
-    hash.startsWith('/brief')
+    hash.startsWith('/brief') ||
+    path.startsWith('/privacidad') ||
+    hash.startsWith('/privacidad')
   );
 }
 
@@ -228,6 +230,18 @@ que vale la pena <span className="kw-mark">resolver</span>?
             </div>
           ) : null}
         </motion.div>
+
+        <div className="mt-14 md:mt-20 flex flex-col-reverse items-center gap-3 border-t border-white/8 pt-6 text-center sm:flex-row sm:justify-between sm:text-left">
+          <p className="text-xs text-white/30">
+            © {new Date().getFullYear()} {brandName || 'Tricode Studio'}. Todos los derechos reservados.
+          </p>
+          <a
+            href="/privacidad"
+            className="text-xs text-white/30 hover:text-white/55 transition-colors"
+          >
+            Política de privacidad
+          </a>
+        </div>
       </div>
     </footer>
   );

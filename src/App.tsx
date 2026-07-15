@@ -17,6 +17,7 @@ import ProjectsPage from './components/ProjectsPage';
 import ProjectDetailPage from './components/ProjectDetailPage';
 import NosotrosPage from './components/NosotrosPage';
 import BriefPage from './components/BriefPage';
+import PrivacyPage from './components/PrivacyPage';
 import ThemeTransition from './components/ThemeTransition';
 import { useReveal } from './hooks/useReveal';
 import { useLenis } from './hooks/useLenis';
@@ -48,6 +49,9 @@ function getRoute() {
   }
   if (path.startsWith('/brief')) {
     return '/brief';
+  }
+  if (path.startsWith('/privacidad')) {
+    return '/privacidad';
   }
 
   return '/';
@@ -157,6 +161,8 @@ export default function App() {
     content = <NosotrosPage />;
   } else if (route.startsWith('/brief')) {
     content = <BriefPage />;
+  } else if (route.startsWith('/privacidad')) {
+    content = <PrivacyPage />;
   } else {
     content = <Home sectionOrder={sectionOrder} />;
   }

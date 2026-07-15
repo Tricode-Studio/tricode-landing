@@ -27,6 +27,14 @@
     {
       "source": "/brief/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/privacidad",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/privacidad/",
+      "destination": "/index.html"
     }
   ]
 }
