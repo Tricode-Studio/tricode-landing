@@ -50,10 +50,12 @@ export default {
         'grad-bone': 'linear-gradient(135deg, #F7F4EC 0%, #B9A7FF 100%)',
         'grad-deep': 'linear-gradient(180deg, #05060B 0%, #0A0C14 60%, #05060B 100%)',
       },
+      // Los valores viven como variables CSS en index.css y cambian por tema:
+      // glow violeta en oscuro, sombra neutra en claro.
       boxShadow: {
-        glow: '0 0 80px -20px rgba(139, 92, 246, 0.35)',
-        'glow-sm': '0 0 40px -10px rgba(139, 92, 246, 0.25)',
-        'glow-bone': '0 30px 80px -30px rgba(247, 244, 236, 0.15)',
+        glow: 'var(--shadow-glow)',
+        'glow-sm': 'var(--shadow-glow-sm)',
+        'glow-bone': 'var(--shadow-glow-bone)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

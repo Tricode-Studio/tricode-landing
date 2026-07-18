@@ -81,17 +81,31 @@
   /* Superficies elevadas (tarjetas, popovers) que cambian por tema. */
   --surface-card: linear-gradient(180deg, rgba(11, 14, 32, 0.85), rgba(6, 8, 22, 0.85));
   --surface-pop: linear-gradient(180deg, rgba(20, 22, 40, 0.98), rgba(11, 14, 30, 0.98));
+
+  /* Sombras por tema: en oscuro son glows violeta; en claro se reemplazan por
+     sombras neutras suaves (un glow violeta sobre papel se ve lavado). */
+  --shadow-glow: 0 0 80px -20px rgba(139, 92, 246, 0.35);
+  --shadow-glow-sm: 0 0 40px -10px rgba(139, 92, 246, 0.25);
+  --shadow-glow-bone: 0 30px 80px -30px rgba(247, 244, 236, 0.15);
+  --shadow-panel: 0 50px 140px -50px rgba(139, 92, 246, 0.5);
+  --shadow-card-float: 0 30px 80px -40px rgba(139, 92, 246, 0.65);
+  --drop-glow: drop-shadow(0 40px 100px rgba(139, 92, 246, 0.5));
+
+  /* Veladura sobre las imágenes .sbg-* (en oscuro no hace falta: transparente). */
+  --sbg-veil: rgb(var(--ink-950) / 0);
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
 
-  /* Neutrales invertidos: ink = casi-blanco (fondo), bone/white = casi-negro (fg). */
-  --ink-950: 248 246 241;
+  /* Neutrales invertidos: ink = casi-blanco (fondo), bone/white = casi-negro (fg).
+     Papel apenas más frío y luminoso que la versión anterior: menos "crema
+     lavada", más editorial. */
+  --ink-950: 250 249 246;
   --ink-900: 255 255 255;
-  --ink-800: 240 237 230;
-  --ink-700: 226 222 214;
-  --ink-600: 210 205 195;
+  --ink-800: 242 240 235;
+  --ink-700: 229 226 219;
+  --ink-600: 212 208 199;
 
   --bone-50: 24 24 30;
   --bone-100: 34 34 42;
@@ -113,10 +127,11 @@
   --accent-strong: 124 58 237;
   --grid-line: 24 24 30;
 
+  /* Glows mucho más tenues que en oscuro: sobre papel, un 0.08+ de violeta
+     tiñe toda la página de lila y la deja "lavada". */
   --body-bg-image:
-    radial-gradient(ellipse 70% 50% at 50% -20%, rgba(124, 58, 237, 0.1), transparent),
-    radial-gradient(ellipse 55% 40% at 85% 65%, rgba(99, 102, 241, 0.08), transparent),
-    radial-gradient(ellipse 55% 40% at 15% 95%, rgba(139, 92, 246, 0.06), transparent);
+    radial-gradient(ellipse 60% 42% at 50% -12%, rgba(124, 58, 237, 0.055), transparent),
+    radial-gradient(ellipse 45% 32% at 88% 70%, rgba(79, 70, 229, 0.035), transparent);
   --scrollbar-track: #ece8e0;
   --scrollbar-thumb-from: rgba(124, 58, 237, 0.5);
   --scrollbar-thumb-to: rgba(109, 40, 217, 0.7);
@@ -132,6 +147,18 @@
 
   --surface-card: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 245, 240, 0.95));
   --surface-pop: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(247, 245, 240, 0.99));
+
+  /* Sombras neutras: profundidad real en vez de glow violeta difuso. */
+  --shadow-glow: 0 24px 70px -28px rgba(24, 24, 30, 0.22);
+  --shadow-glow-sm: 0 10px 34px -14px rgba(24, 24, 30, 0.2);
+  --shadow-glow-bone: 0 30px 80px -30px rgba(24, 24, 30, 0.14);
+  --shadow-panel: 0 24px 80px -36px rgba(24, 24, 30, 0.3);
+  --shadow-card-float: 0 22px 55px -28px rgba(24, 24, 30, 0.28);
+  --drop-glow: drop-shadow(0 28px 60px rgba(24, 24, 30, 0.25));
+
+  /* Veladura de papel sobre las imágenes de sección para que no laven el
+     contenido (en claro esas imágenes son degradados lila muy presentes). */
+  --sbg-veil: rgb(var(--ink-950) / 0.55);
 }
 
 @layer base {
@@ -167,6 +194,18 @@
   .lenis.lenis-smooth { scroll-behavior: auto !important; }
   .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
   .lenis.lenis-stopped { overflow: clip; }
+
+  /* Focus visible por teclado: anillo violeta consistente en todo el sitio.
+     Solo :focus-visible (no :focus) para no ensuciar clicks de mouse. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--brand-purple));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Tipografía: títulos balanceados, párrafos sin viudas feas. */
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
 }
 
 @layer components {
@@ -192,16 +231,16 @@
     @apply rounded-2xl border border-bone-50/[0.06] bg-gradient-to-br from-bone-50/[0.04] via-bone-50/[0.015] to-transparent backdrop-blur-xl;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-sm transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-sm transition-all duration-300 active:scale-[0.97];
   }
   .btn-primary {
-    @apply btn bg-bone-50 text-ink-950 hover:bg-brand-mist;
+    @apply btn bg-bone-50 text-ink-950 hover:bg-brand-mist hover:shadow-glow-sm;
   }
   .btn-ghost {
     @apply btn border border-bone-50/15 text-bone-50/90 hover:border-bone-50/40 hover:bg-bone-50/[0.04];
   }
   .btn-editorial {
-    @apply inline-flex items-center gap-3 rounded-full border border-bone-50/20 px-7 py-3.5 font-mono text-[11px] uppercase tracking-[0.24em] text-bone-50 transition-all duration-500 hover:border-bone-50 hover:bg-bone-50 hover:text-ink-950;
+    @apply inline-flex items-center gap-3 rounded-full border border-bone-50/20 px-7 py-3.5 font-mono text-[11px] uppercase tracking-[0.24em] text-bone-50 transition-all duration-500 hover:border-bone-50 hover:bg-bone-50 hover:text-ink-950 active:scale-[0.97];
   }
   .grid-bg {
     background-image:
@@ -215,12 +254,18 @@
       linear-gradient(90deg, rgb(var(--grid-line) / 0.018) 1px, transparent 1px);
     background-size: 80px 80px;
   }
-  /* Fondos de sección por tema (las imágenes vienen de las variables --bg-*). */
-  .sbg-hero { background-image: var(--bg-hero); }
-  .sbg-services { background-image: var(--bg-services); }
-  .sbg-included { background-image: var(--bg-included); }
-  .sbg-contact { background-image: var(--bg-contact); }
-  .sbg-footer { background-image: var(--bg-footer); }
+  /* Fondos de sección por tema (las imágenes vienen de las variables --bg-*).
+     La veladura (--sbg-veil) es transparente en oscuro y papel al ~55% en
+     claro, para que la imagen aporte textura sin lavar el contenido. */
+  .sbg-hero { background-image: linear-gradient(var(--sbg-veil), var(--sbg-veil)), var(--bg-hero); }
+  .sbg-services { background-image: linear-gradient(var(--sbg-veil), var(--sbg-veil)), var(--bg-services); }
+  .sbg-included { background-image: linear-gradient(var(--sbg-veil), var(--sbg-veil)), var(--bg-included); }
+  .sbg-contact { background-image: linear-gradient(var(--sbg-veil), var(--sbg-veil)), var(--bg-contact); }
+  .sbg-footer { background-image: linear-gradient(var(--sbg-veil), var(--sbg-veil)), var(--bg-footer); }
+  /* Sombras tematizadas para paneles/mockups flotantes (ver variables --shadow-*). */
+  .shadow-panel { box-shadow: var(--shadow-panel); }
+  .shadow-card-float { box-shadow: var(--shadow-card-float); }
+  .drop-glow { filter: var(--drop-glow); }
   /* Superficies elevadas por tema. */
   .surface-card { background-image: var(--surface-card); }
   .surface-pop { background-image: var(--surface-pop); }
@@ -419,6 +464,58 @@
   opacity: 0.4;
 }
 
+/* --- Sheen: barrido de luz diagonal en CTAs primarios al hacer hover --- */
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.btn-sheen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Lavanda con alpha: visible tanto sobre el botón crema (tema oscuro)
+     como sobre el botón casi-negro (tema claro). */
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgb(var(--brand-lavender) / 0.45) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .btn-sheen:hover::before {
+    transform: translateX(120%);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* --- Spotlight card: glow radial que sigue al cursor.
+   Las coordenadas --mx/--my las setea el JS (onMouseMove) en px. --- */
+.spot-card {
+  position: relative;
+}
+.spot-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(var(--brand-purple) / 0.12),
+    transparent 65%
+  );
+}
+@media (hover: hover) and (pointer: fine) {
+  .spot-card:hover::after {
+    opacity: 1;
+  }
+}
+
 /* --- Noise overlay --- */
 .noise-overlay::after {
   content: '';
@@ -428,4 +525,88 @@
   opacity: 0.04;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
+}
+
+/* =====================================================================
+   Ajustes de tema claro. El sitio se diseñó dark-first: varios acentos
+   (emerald 300/400, blobs violeta gigantes con blur) funcionan sobre tinta
+   pero se lavan sobre papel. Estos overrides los corrigen sin tocar los
+   ~80 call sites de Tailwind.
+   ===================================================================== */
+
+/* Emerald: los tonos 300/400 casi no contrastan sobre fondo claro.
+   Se remapean a un esmeralda profundo (≈ emerald-700). Los sólidos
+   (bg-emerald-400 con texto oscuro) quedan como están. */
+:root[data-theme='light'] [class*='text-emerald-3'],
+:root[data-theme='light'] [class*='text-emerald-4'] {
+  color: rgb(4 120 87 / 0.95);
+}
+
+/* Blobs decorativos gigantes (blur 80-180px): sobre papel tiñen secciones
+   enteras de lila. Se bajan a la mitad (el !important también congela los
+   que tienen animate-pulse, que aquí es lo deseado). */
+:root[data-theme='light'] div[class*='blur-['] {
+  opacity: 0.45 !important;
+}
+
+/* Cards y vidrios: en claro la jerarquía la dan sombras suaves y hairlines
+   algo más firmes, no el glow. */
+:root[data-theme='light'] .card,
+:root[data-theme='light'] .glass {
+  border-color: rgb(var(--bone-50) / 0.1);
+  box-shadow: 0 1px 2px rgba(24, 24, 30, 0.04), 0 14px 36px -22px rgba(24, 24, 30, 0.16);
+}
+:root[data-theme='light'] .surface-card {
+  box-shadow: 0 1px 2px rgba(24, 24, 30, 0.04), 0 18px 44px -26px rgba(24, 24, 30, 0.18);
+}
+
+/* El noise con blend overlay ensucia el papel: casi apagarlo. */
+:root[data-theme='light'] .noise-overlay::after {
+  opacity: 0.015;
+}
+
+/* Spotlight de cards: en claro el violeta al 12% es demasiado; más sutil. */
+:root[data-theme='light'] .spot-card::after {
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(var(--brand-purple) / 0.07),
+    transparent 65%
+  );
+}
+
+/* =====================================================================
+   Reduced motion: apaga las animaciones decorativas en loop (marquee,
+   shimmer, caret, pings, floats) y hace los reveals instantáneos.
+   Framer Motion ya respeta esto vía <MotionConfig reducedMotion="user">;
+   este bloque cubre todo lo que es CSS puro.
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .marquee-xl,
+  .shimmer-text,
+  .caret,
+  .animate-float,
+  .animate-pulse-slow,
+  .animate-gradient,
+  .animate-marquee,
+  .animate-marquee-reverse,
+  .animate-shimmer,
+  .animate-spin-slow,
+  .animate-orbit,
+  .animate-glitch,
+  .animate-ping,
+  .animate-pulse {
+    animation: none !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .particle {
+    display: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

@@ -8,7 +8,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
  * funcione en claro y oscuro.
  */
 
-const CARD_SHADOW = 'shadow-[0_30px_80px_-40px_rgba(139,92,246,0.65)]';
+const CARD_SHADOW = 'shadow-card-float';
 
 function ChromeDots() {
   return (
@@ -178,7 +178,7 @@ export default function HeroShowcase() {
 
       <motion.div
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-        className="relative mx-auto h-[400px] w-[420px]"
+        className="relative mx-auto h-[400px] w-[420px] max-w-full"
       >
         <motion.div
           style={{ z: 0, transformStyle: 'preserve-3d' }}

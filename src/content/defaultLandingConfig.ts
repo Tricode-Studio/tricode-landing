@@ -37,9 +37,15 @@ const SECTION_META: SectionMeta[] = [
   { id: 'contact', navLabel: 'Contacto', navHref: '#contacto' },
 ];
 
+// Secciones apagadas a propósito (se reactivan sacándolas de este set):
+// - 'clients': la banda "Confianza" queda oculta hasta juntar más logos/marcas
+//   (hoy son 3 y en texto plano). El componente ClientLogos y los datos
+//   DEFAULT_CLIENTS quedan intactos — alcanza con quitar 'clients' de acá.
+const DISABLED_SECTIONS = new Set<LandingSectionId>(['clients']);
+
 const DEFAULT_LAYOUT_SECTIONS: LandingSectionLayout[] = SECTION_META.map((section) => ({
   id: section.id,
-  enabled: true,
+  enabled: !DISABLED_SECTIONS.has(section.id),
   navLabel: section.navLabel,
   navHref: section.navHref,
 }));
@@ -162,7 +168,7 @@ const DEFAULT_STEPS: LandingStep[] = [
   { n: '02', title: 'Diseño', desc: 'Definimos estructura, experiencia y propuesta visual.' },
   { n: '03', title: 'Desarrollo', desc: 'Construimos con entregas iterativas y feedback continuo.' },
   { n: '04', title: 'Lanzamiento', desc: 'Publicamos y dejamos todo operativo y medible.' },
-  { n: '05', title: 'Evolución', desc: 'Mejoramos producto, conversión y crecimiento.' },
+  { n: '05', title: 'Evolución', desc: 'Medimos cómo se usa y mejoramos sobre datos reales.' },
 ];
 
 function cleanString(value: unknown) {
@@ -398,8 +404,8 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
       },
     ],
     quote: {
-      text: 'Cada línea de código que escribimos es una inversión en crecimiento.',
-      highlight: 'No buscamos clientes, buscamos socios.',
+      text: 'Tomamos pocos proyectos a la vez para poder meternos a fondo en cada uno.',
+      highlight: 'Nuestro mejor marketing es que tu web funcione.',
     },
   },
   services: {
@@ -407,7 +413,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     titleTop: '¿Qué podemos',
     titleHighlight: 'construir para vos?',
     description:
-      'Cada servicio está enfocado en impacto real: captación comercial, eficiencia operativa y crecimiento sostenible.',
+      'Cinco formatos concretos. Todos se entregan funcionando, con dominio, CMS y soporte incluidos — elegí el que tu negocio necesita hoy.',
     items: DEFAULT_SERVICES,
   },
   clients: {
@@ -426,7 +432,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     sectionLabel: 'Proceso',
     titleTop: 'De la idea al producto',
     titleHighlight: 'en 5 pasos.',
-    description: 'Un proceso claro y transparente para avanzar con foco.',
+    description: 'Cinco etapas sin misterio: siempre sabés en qué está tu proyecto y qué viene después.',
     steps: DEFAULT_STEPS,
   },
   cms: {
@@ -458,7 +464,7 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
     sectionLabel: 'Proyectos',
     title: 'Lo que somos capaces',
     titleHighlight: 'de construir.',
-    description: 'Una selección de proyectos donde aplicamos diseño, código y producto.',
+    description: 'Proyectos en producción, que sus dueños usan y actualizan todos los días.',
     viewAllLabel: 'Ver todos los proyectos',
     viewAllHref: '/proyectos',
     featuredLimit: 6,
@@ -497,7 +503,6 @@ export const DEFAULT_LANDING_CONFIG: LandingConfig = {
   footer: {
     socials: [
       { label: 'Instagram', url: 'https://instagram.com/tricode.studio' },
-      { label: 'LinkedIn', url: 'https://linkedin.com' },
       { label: 'Email', url: 'mailto:contacto@tricode.studio' },
     ],
     copyright: `© ${new Date().getFullYear()} Tricode Studio. Todos los derechos reservados.`,

@@ -20,6 +20,7 @@ import BriefPage from './components/BriefPage';
 import PrivacyPage from './components/PrivacyPage';
 import PrivacyWorkspacePage from './components/PrivacyWorkspacePage';
 import ThemeTransition from './components/ThemeTransition';
+import BackToTop from './components/BackToTop';
 import { useReveal } from './hooks/useReveal';
 import { useLenis } from './hooks/useLenis';
 import type { Project } from './types/project';
@@ -64,6 +65,32 @@ function getRoute() {
 function Home({ sectionOrder }: { sectionOrder: LandingSectionId[] }) {
   useReveal();
   useLenis();
+
+  // Aterrizaje con ancla desde otra página (ej. /privacidad → /#contacto):
+  // el navegador intenta anclar antes de que React monte la sección, así que
+  // queda en el hero. Acá se reintenta hasta que el elemento exista y se
+  // scrollea con el mismo offset que usa Lenis para los clicks de ancla.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash || hash.startsWith('#/')) return undefined;
+    const id = decodeURIComponent(hash.slice(1));
+    let attempts = 0;
+    let rafId = 0;
+    const tryScroll = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 40;
+        window.scrollTo({ top, behavior: 'smooth' });
+        return;
+      }
+      if (attempts < 90) {
+        attempts += 1;
+        rafId = requestAnimationFrame(tryScroll);
+      }
+    };
+    rafId = requestAnimationFrame(tryScroll);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
 
   const sectionMap: Record<LandingSectionId, JSX.Element> = {
     hero: <Hero />,
@@ -174,10 +201,11 @@ export default function App() {
   }
 
   return (
-    <MotionConfig reducedMotion="never">
+    <MotionConfig reducedMotion="user">
       <LandingDataProvider value={{ config, projects, isConfigReady: true, projectsReady }}>
         {content}
       </LandingDataProvider>
+      <BackToTop />
       <ThemeTransition />
     </MotionConfig>
   );

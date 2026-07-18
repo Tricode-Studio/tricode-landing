@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import SplitText from './SplitText';
+import { trackSpotlight } from '../lib/spotlight';
 import { useLandingData } from '../content/LandingDataContext';
 import { EASE_OUT_EXPO, viewportOnce } from '../lib/motion';
 
@@ -99,7 +100,7 @@ export default function Contact() {
       ? `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
       : '');
 
-  const guarantees = ['10 preguntas precisas', 'Respuesta en 24h hábiles', 'Enfoque en negocio y producto'];
+  const guarantees = ['10 preguntas, 5 minutos', 'Respuesta en 24h hábiles', 'Propuesta con alcance y precio'];
 
   return (
     <section
@@ -174,7 +175,8 @@ export default function Contact() {
           {/* Primary: Brief */}
           <a
             href="/brief"
-            className="group relative md:col-span-3 lg:col-span-3 overflow-hidden rounded-3xl border border-white/12 bg-[linear-gradient(135deg,rgba(16,185,129,0.18),rgba(99,102,241,0.18)_55%,rgba(139,92,246,0.22))] p-7 md:p-9 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_30px_90px_-30px_rgba(16,185,129,0.55)] reveal reveal-delay-3"
+            onMouseMove={trackSpotlight}
+            className="spot-card group relative md:col-span-3 lg:col-span-3 overflow-hidden rounded-3xl border border-white/12 bg-[linear-gradient(135deg,rgba(16,185,129,0.18),rgba(99,102,241,0.18)_55%,rgba(139,92,246,0.22))] p-7 md:p-9 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-[0_30px_90px_-30px_rgba(16,185,129,0.55)] reveal reveal-delay-3"
           >
             <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.25),transparent_60%)]" />
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-400/15 blur-3xl" />
@@ -210,7 +212,8 @@ export default function Contact() {
               href={whatsappHref}
               target="_blank"
               rel="noreferrer"
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] p-6 md:p-7 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-white/[0.04] reveal reveal-delay-3"
+              onMouseMove={trackSpotlight}
+              className="spot-card group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] p-6 md:p-7 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-white/[0.04] reveal reveal-delay-3"
             >
               <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-emerald-400/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative flex items-start gap-4">
@@ -238,7 +241,8 @@ export default function Contact() {
               href={secondaryCtaHref}
               target="_blank"
               rel="noreferrer"
-              className="group relative md:col-span-2 lg:col-span-2 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] p-6 md:p-7 transition-all duration-300 hover:-translate-y-1 hover:border-brand-purple/50 hover:bg-white/[0.04] reveal reveal-delay-4"
+              onMouseMove={trackSpotlight}
+              className="spot-card group relative md:col-span-2 lg:col-span-2 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] p-6 md:p-7 transition-all duration-300 hover:-translate-y-1 hover:border-brand-purple/50 hover:bg-white/[0.04] reveal reveal-delay-4"
             >
               <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-violet/15 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative flex items-start gap-4">
@@ -265,7 +269,7 @@ export default function Contact() {
 
         {/* Footer micro-line */}
         <p className="mt-12 text-center text-xs uppercase tracking-[0.28em] text-white/35 reveal reveal-delay-4">
-          Diagnóstico estratégico · Sin compromiso · Respuesta humana
+          Sin compromiso · Sin spam · Te responde el equipo, no un bot
         </p>
       </div>
     </section>

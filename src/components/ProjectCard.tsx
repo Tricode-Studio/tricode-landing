@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Project } from '../types/project';
 import { EASE_OUT_EXPO } from '../lib/motion';
+import { trackSpotlight } from '../lib/spotlight';
 
 type Props = {
   project: Project;
@@ -9,13 +11,15 @@ type Props = {
 
 export default function ProjectCard({ project, ctaLabel }: Props) {
   const href = `/proyectos/${encodeURIComponent(project.slug)}`;
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <motion.a
       href={href}
       whileHover={{ y: -6 }}
+      onMouseMove={trackSpotlight}
       transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
-      className="relative overflow-hidden rounded-2xl border border-bone-50/[0.06] bg-ink-900/40 group h-full flex flex-col"
+      className="spot-card relative overflow-hidden rounded-2xl border border-bone-50/[0.06] bg-ink-900/40 group h-full flex flex-col transition-colors duration-500 hover:border-brand-purple/25"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-ink-900">
         {project.image ? (
@@ -26,7 +30,14 @@ export default function ProjectCard({ project, ctaLabel }: Props) {
             decoding="async"
             draggable={false}
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1100ms] ease-out group-hover:scale-[1.06]"
+            onLoad={() => setImageLoaded(true)}
+            ref={(el) => {
+              // Si la imagen ya estaba en cache, onLoad puede no disparar.
+              if (el?.complete) setImageLoaded(true);
+            }}
+            className={`absolute inset-0 h-full w-full object-cover transition-[transform,opacity] duration-[1100ms] ease-out group-hover:scale-[1.06] ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
           />
         ) : null}
         {project.accent ? (

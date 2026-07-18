@@ -94,7 +94,7 @@ function InteractiveLogo() {
         style={{ rotateX: sx, rotateY: sy, transformStyle: 'preserve-3d' }}
         animate={{ y: [0, -14, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative w-3/4 h-3/4 object-contain drop-shadow-[0_40px_100px_rgba(139,92,246,0.5)] will-change-transform"
+        className="relative w-3/4 h-3/4 object-contain drop-glow will-change-transform"
       />
 
       {/* Corner brackets */}

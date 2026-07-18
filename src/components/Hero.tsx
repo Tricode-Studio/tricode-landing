@@ -167,7 +167,7 @@ export default function Hero() {
                   <MagneticButton
                     href={primaryCtaHref}
                     strength={0.3}
-                    className="group inline-flex items-center justify-center gap-2 rounded-full bg-bone-50 text-ink-950 px-7 py-4 text-sm font-medium transition-colors duration-300 hover:bg-brand-mist"
+                    className="btn-sheen group inline-flex items-center justify-center gap-2 rounded-full bg-bone-50 text-ink-950 px-7 py-4 text-sm font-medium transition-colors duration-300 hover:bg-brand-mist hover:shadow-glow-sm"
                   >
                     <span>{primaryCtaLabel}</span>
                     <span aria-hidden className="transition-transform group-hover:translate-x-1.5">

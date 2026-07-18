@@ -76,7 +76,7 @@ function CmsPanel({
       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       viewport={viewportOnce}
       transition={{ duration: 1.2, ease: EASE_OUT_EXPO }}
-      className="relative rounded-2xl border border-bone-50/10 bg-ink-900/85 backdrop-blur-2xl shadow-[0_50px_140px_-50px_rgba(139,92,246,0.5)] overflow-hidden"
+      className="relative rounded-2xl border border-bone-50/10 bg-ink-900/85 backdrop-blur-2xl shadow-panel overflow-hidden"
       style={{ transformPerspective: 1400 }}
     >
       {/* Window chrome */}
@@ -259,7 +259,6 @@ function CmsPanel({
 
 export default function Cms() {
   const { config } = useLandingData();
-  const sectionLabel = trimmed(config.cms?.sectionLabel);
   const titleTop = trimmed(config.cms?.titleTop);
   const titleHighlight = trimmed(config.cms?.titleHighlight);
   const description = trimmed(config.cms?.description);
@@ -301,27 +300,16 @@ export default function Cms() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={viewportOnce}
               transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-              className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-purple/35 bg-brand-purple/10 px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-brand-lavender"
+              className="mb-7 inline-flex items-center gap-2 rounded-full border border-brand-purple/35 bg-brand-purple/10 px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-brand-lavender"
             >
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-brand-lavender opacity-60 animate-ping" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-lavender" />
               </span>
+              {/* Un solo eyebrow: antes había dos etiquetas apiladas (este chip +
+                  el sectionLabel "Producto estrella") compitiendo por jerarquía. */}
               Incluido en cada proyecto
             </motion.div>
-
-            {sectionLabel ? (
-              <motion.div
-                initial={{ opacity: 0, x: -14 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={viewportOnce}
-                transition={{ duration: 0.7, ease: EASE_OUT_EXPO }}
-                className="eyebrow mb-7"
-              >
-                <span className="h-px w-8 bg-brand-purple/50" />
-                {sectionLabel}
-              </motion.div>
-            ) : null}
 
             {(titleTop || titleHighlight) ? (
               <h2 className="display-xl text-[2.5rem] sm:text-5xl md:text-6xl lg:text-[4.5rem]">

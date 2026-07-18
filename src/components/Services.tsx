@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import SplitText from './SplitText';
 import { useLandingData } from '../content/LandingDataContext';
 import { EASE_OUT_EXPO, fadeUp, stagger, viewportOnce } from '../lib/motion';
@@ -65,7 +65,7 @@ function MockupChrome({
   noPadding?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-ink-900/85 backdrop-blur-2xl shadow-[0_50px_140px_-50px_rgba(139,92,246,0.5)] overflow-hidden">
+    <div className="rounded-2xl border border-white/10 bg-ink-900/85 backdrop-blur-2xl shadow-panel overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06] bg-ink-950/40">
         <div className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
@@ -185,6 +185,33 @@ export default function Services() {
   const [active, setActive] = useState(0);
   const activeIndex = Math.min(active, Math.max(services.length - 1, 0));
 
+  // --- Auto-scroll del acordeón en mobile ---
+  // Al tocar un servicio, el contenido se expande debajo del tab pero el
+  // viewport queda donde estaba (a menudo mostrando solo el final del mock).
+  // Se registra el índice tocado y, cuando termina la animación de expansión
+  // (altura ya definitiva), se scrollea para dejar ese servicio arriba,
+  // justo debajo del header fijo.
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const pendingScrollIndex = useRef<number | null>(null);
+  const isTouchLayout = () => window.matchMedia('(max-width: 767px)').matches;
+
+  const selectService = (index: number) => {
+    if (index !== activeIndex && isTouchLayout()) {
+      pendingScrollIndex.current = index;
+    }
+    setActive(index);
+  };
+
+  const scrollToPendingItem = (index: number) => {
+    if (pendingScrollIndex.current !== index || !isTouchLayout()) return;
+    pendingScrollIndex.current = null;
+    const el = itemRefs.current[index];
+    if (!el) return;
+    const headerOffset = 80;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
+
   return (
     <section
       id="servicios"
@@ -248,12 +275,24 @@ export default function Services() {
               {services.map((service, index) => {
                 const isActive = index === activeIndex;
                 return (
-                  <motion.div key={service.title} variants={fadeUp}>
+                  <motion.div
+                    key={service.title}
+                    variants={fadeUp}
+                    ref={(el: HTMLDivElement | null) => {
+                      itemRefs.current[index] = el;
+                    }}
+                  >
                     <button
                       type="button"
-                      onClick={() => setActive(index)}
-                      onMouseEnter={() => setActive(index)}
-                      className={`group w-full flex items-center gap-4 rounded-2xl border px-5 py-4 text-left transition-colors duration-400 ${
+                      onClick={() => selectService(index)}
+                      onMouseEnter={() => {
+                        // Solo hover real: en touch, mouseenter dispara junto al
+                        // tap y rompería la detección de "cambio por click".
+                        if (window.matchMedia('(hover: hover)').matches) {
+                          setActive(index);
+                        }
+                      }}
+                      className={`group w-full flex items-center gap-4 rounded-2xl border px-5 py-4 text-left transition-[color,background-color,border-color,transform] duration-400 active:scale-[0.99] ${
                         isActive
                           ? 'border-brand-purple/45 bg-white/[0.045]'
                           : 'border-transparent hover:border-white/10 hover:bg-white/[0.02]'
@@ -298,6 +337,7 @@ export default function Services() {
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
+                          onAnimationComplete={() => scrollToPendingItem(index)}
                           className="md:hidden overflow-hidden"
                         >
                           <div className="px-5 pt-4 pb-2">

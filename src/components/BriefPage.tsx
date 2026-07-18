@@ -332,8 +332,11 @@ function Stepper({
                 </span>
               </button>
 
+              {/* El sm:-mt-7 compensa la altura del label bajo el círculo, que
+                  solo existe en sm+: en mobile el label está oculto y la línea
+                  va centrada con los círculos, sin offset. */}
               {index < TOTAL_STEPS - 1 ? (
-                <span className="relative mx-2 sm:mx-3 -mt-6 sm:-mt-7 h-px flex-1 overflow-hidden rounded-full bg-white/10">
+                <span className="relative mx-2 sm:mx-3 sm:-mt-7 h-px flex-1 overflow-hidden rounded-full bg-white/10">
                   <span
                     className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300 transition-all duration-500"
                     style={{ width: isValid(index) ? '100%' : '0%' }}

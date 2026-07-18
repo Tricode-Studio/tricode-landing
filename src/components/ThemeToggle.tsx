@@ -33,9 +33,11 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
   };
 
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onToggle}
+      whileTap={{ scale: 0.88 }}
+      transition={{ duration: 0.2, ease: EASE_OUT_EXPO }}
       aria-label={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
       title={isDark ? 'Tema claro' : 'Tema oscuro'}
       className={`relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/12 text-white/70 transition-colors hover:text-white hover:border-white/30 hover:bg-white/[0.05] ${className}`}
@@ -52,6 +54,6 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
           {isDark ? <MoonIcon /> : <SunIcon />}
         </motion.span>
       </AnimatePresence>
-    </button>
+    </motion.button>
   );
 }
